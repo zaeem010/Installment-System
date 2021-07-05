@@ -1,0 +1,115 @@
+﻿@model IEnumerable<AR_IS.ViewModelQuery.ProductVMQ>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","Product")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div id="mydiv1" class="col-md-3">
+                <p class="text-center bg-danger">@TempData["Reg1"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Product Tables</u></h5>
+                            </div>
+                            <div class="card-block">
+                                <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Sr#</th>
+                                            <th>Image </th>
+                                            <th>Brand </th>
+                                            <th>Category </th>
+                                            <th>Product </th>
+                                            <th>Cost Price </th>
+                                            <th>Sale Price </th>
+                                            <th>Pieces In Box </th>
+                                            <th>Shelf Number </th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Sr#</th>
+                                            <th>Image </th>
+                                            <th>Brand </th>
+                                            <th>Category </th>
+                                            <th>Product </th>
+                                            <th>Cost Price </th>
+                                            <th>Sale Price </th>
+                                            <th>Item Unit </th>
+                                            <th>Shelf Number </th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var lst_Product in Model)
+                                        {
+                                        <tr>
+                                            <td>@lst_Product.Id</td>
+                                            @if (lst_Product.Image == null || lst_Product.Image == "'NULL'" || lst_Product.Image == "")
+                                            {
+                                                <td style="width:30px; text-align:center;"><img src="~/uploads/default_product_icon.png" width="50" height="50" class="img-thumbnail" /></td>
+                                            }
+                                            else
+                                            {
+                                                <td style="width:30px; text-align:center;"><img src="~/uploads/@lst_Product.Image" width="50" height="50" class="img-thumbnail" /></td>
+                                            }
+                                            <td>@lst_Product.Brand</td>
+                                            <td>@lst_Product.Category</td>
+                                            <td><i class="icofont icofont-cart-alt f-20" style="color: #ff6a00"></i>@lst_Product.Iname</td>
+                                            <td>@lst_Product.Cprice</td>
+                                            <td>@lst_Product.Sprice</td>
+                                            <td>@lst_Product.Itemunit</td>
+                                            <td>@lst_Product.Shelfnumber</td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", new { id = lst_Product.Id })" new { onclick="return confirm('Are you sure you want to Edit this Product?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                                <a href="@Url.Action("Delete", new {id = lst_Product.Id} )" new { onclick="return confirm('Are you sure you want to Delete this Product?');" data-toggle="tooltip" data-placement="left" title="Click Me To Delete" class="badge badge-danger b-rounded"><i class="fa fa-trash-o"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+<script>
+    setTimeout(function () {
+        $('#mydiv1').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

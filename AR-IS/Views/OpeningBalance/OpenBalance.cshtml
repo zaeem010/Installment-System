@@ -1,0 +1,58 @@
+﻿@model AR_IS.ViewModel.AccountVM
+@{
+    ViewBag.Title = "OpenBalance";
+}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","OpeningBalance")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Opening Balances</a>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br />
+                        <br />
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Opening Balance</u></h5>
+                            </div>
+                            <div class="card-block">
+                                @using (Html.BeginForm("OpenBalance", "OpeningBalance", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label><b>Select Account</b></label>
+                                            @Html.DropDownListFor(m => m.ThirdLevel.AccountNo, new SelectList(Model.ThirdLevellist, "AccountNo", "AccountTitle"), "Select Account", htmlAttributes: new { @class = "chosen-select form-control", @disabled = "true" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label> Dr</label>
+                                            @Html.TextBoxFor(m => m.ThirdLevel.Dr, new { @class = "form-control input-xs" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label> Cr</label>
+                                            @Html.TextBoxFor(m => m.ThirdLevel.Cr, new { @class = "form-control input-xs" })
+                                        </div>
+                                        <br />
+                                        <div class="col-md-3 offset-sm-9">
+                                            <button type="submit" class="btn btn-primary " style="margin-top:30px"><i class="fa fa-plus"></i> Update Opening Balance</button>
+                                        </div>
+                                        @Html.HiddenFor(m => m.ThirdLevel.Id)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+
+<script>
+    $('.chosen-select').chosen();
+</script>

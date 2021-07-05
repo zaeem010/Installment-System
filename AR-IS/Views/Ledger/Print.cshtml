@@ -1,0 +1,104 @@
+﻿@model AR_IS.ViewModel.LedgerVM
+@{
+    Layout = null;
+    double position = 0.00;
+    double bal = 0.00;
+    double sum_cr = 0.00;
+    double sum_dr = 0.00;
+    double total = 0.00;
+    double gbal = 0.00;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Print</title>
+</head>
+<body onload="window.print()">
+    <div class="container-fluid" style="border:1px solid black">
+        <br />
+        <div class="row">
+            <div class="col-md-5">
+                <h4><u style="font-size:18px">Installement System</u></h4>
+                <br />
+                <h4>From:&nbsp;&nbsp;&nbsp;<u style="font-size:18px">@Model.s_date</u></h4>
+                <h4>&nbsp;&nbsp;&nbsp;To:&nbsp;&nbsp;&nbsp;&nbsp;<u style="font-size:18px">@Model.e_date</u></h4>
+            </div>
+
+        </div>
+        <br />
+        <table class="table table-striped">
+            <thead class="bordered-darkorange">
+                <tr>
+                    <th></th>
+                    <th colspan="2">(Account Holder Name : <u>@Model.ThirdLevel.AccountTitle</u>)</th>
+
+
+                    <th colspan="2">( Opening Balance Pkr : <u> @Model.ThirdLevel.Cr)</u></th>
+
+                </tr>
+                <tr>
+
+                    <th style="width:130px">Date</th>
+                    <th style="width:530px">Description</th>
+                    <th>DEBIT</th>
+                    <th>CREDIT</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.trans_list)
+                {
+                    // position = 0;
+                    sum_cr += Convert.ToDouble(item.Cr);
+                    sum_dr += Convert.ToDouble(item.Dr);
+                    if (position == 0 && item.HeadId == 1)
+                    {
+                        bal = (Convert.ToDouble(Model.ThirdLevel.Cr) + (Convert.ToDouble(item.Dr - item.Cr)));
+                    }
+                    else
+                    {
+                        if (item.HeadId == 1 || item.HeadId == 4 || item.HeadId == 5)
+                        {
+                            bal = (bal + (Convert.ToDouble(item.Dr - item.Cr)));
+                        }
+                        else
+                        {
+                            bal = (bal + (Convert.ToDouble(item.Cr - item.Dr)));
+                        }
+                    }
+                    <tr>
+
+                        <td style="width:50px">@item.TransDate</td>
+                        <td>@item.TransDes</td>
+                        <td>@item.Dr</td>
+                        <td>@item.Cr</td>
+                        <td>@bal</td>
+                    </tr>
+
+                    position++;
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+
+                    <th style="width:50px"></th>
+                    <th class="pull-right">Grand Total</th>
+                    <th style="display:none"> @(total = Convert.ToDouble(Model.ThirdLevel.Cr) + sum_dr) </th>
+                    <th> @Model.sumDr </th>
+                    <th>@Model.SumCr</th>
+                    <th style="display:none">@(gbal = total - sum_cr)</th>
+                    <th>@(gbal)</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+</html>

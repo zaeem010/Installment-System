@@ -1,0 +1,88 @@
+﻿@model IEnumerable<AR_IS.ViewModelQuery.TranscationVMQ>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","ExpenseSheet")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div id="mydiv1" class="col-md-3">
+                <p class="text-center bg-danger">@TempData["Reg1"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Expense Sheet Tables</u></h5>
+                            </div>
+                            <div class="card-block">
+                                <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Main Head</th>
+                                            <th>Sub Head</th>
+                                            <th>Amount</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Main Head</th>
+                                            <th>Sub Head</th>
+                                            <th>Amount</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var lst in Model)
+                                        {
+                                        <tr>
+                                            <td>@Convert.ToDateTime(lst.TransDate).ToString("dd MMM yyyy")</td>
+                                            <td>@lst.AccountType</td>
+                                            <td>@lst.AccountTitle</td>
+                                            <td>@lst.Dr</td>
+                                            <td>@lst.TransDes</td>
+                                            <td>
+                                                <a href="@Url.Action("Delete", new { V_No = lst.V_No })" new { onclick="return confirm('Are you sure you want to Delete this Invoice?');" class="badge badge-danger" data-toggle="tooltip" data-placement="left" title="Click Me To Delete"><i class="fa fa-trash"></i></a>
+                                                <a href="@Url.Action("Edit", new { V_No = lst.V_No })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+<script>
+    setTimeout(function () {
+        $('#mydiv1').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+

@@ -1,0 +1,421 @@
+﻿@model AR_IS.ViewModel.TrailVM
+@{
+    ViewBag.Title = "TrailBalanceSearch";
+    double sum_cr = 0; double sum_ccr = 0; double sum_cdr = 0; double sum_closingcr = 0; double sum_closingdr = 0;
+    double sum_dr = 0;
+    double a = 0;
+    double b = 0;
+    double c = 0;
+    double closing = 0;
+    double tota1 = 0;
+    double tota2 = 0;
+}
+
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a onClick="printdiv('div_print');" class="btn btn-primary offset-lg-10 text-white " style="color:white"><i class="fa fa-print " style="color:white"></i> Print</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><u><b>Trial Balance</b></u></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("TrailBalanceSearch", "TrailBalance", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Start Date</label>
+                                <input type="date" name="s_date" value="@Model.s_date" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>End Date</label>
+                                <input type="date" name="e_date" value="@Model.e_date" class="form-control" />
+                            </div>
+                            <br />
+                            <div class="col-md-3 offset-sm-10">
+                                <button type="submit" class="btn btn-primary " style="margin-top:30px"><i class="fa fa-search"></i>&nbsp; Search</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px" id="div_print">
+
+                <div class="card-block">
+                    <div class="row invoice-info">
+                        <div class="col-sm-4 invoice-col">
+                            <img id="user_img" height="80" width="90" src="~/uploads/@Model.Setting.Logo" style="border:thin;margin-left:5px" class="img-fluid" />
+                            <br />
+                            <br />
+                        </div>
+                        <div class="col-sm-4 invoice-col">
+                            <h2 class="text-center"><b>Trail Balance</b></h2>
+                            <h6 class="text-center text-primary"><b><u>@Model.Setting.Companyname</u></b></h6>
+                            <h6 class="text-center text-primary"><b>@Convert.ToDateTime(Model.s_date).ToString("dd-MMM-yyyy")  To  @Convert.ToDateTime(Model.e_date).ToString("dd-MMM-yyyy") </b></h6>
+                        </div>
+                        <div class="col-sm-4 invoice-col">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="table-example" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th colspan="2" style="border-left: 1px solid #000;"><center>Opening Balance</center></th>
+                                    <th colspan="2" style="border-left: 1px solid #000;"><center>Running Balance</center></th>
+                                    <th colspan="2" style="border-left: 1px solid #000;"><center>Final Balance</center></th>
+                                </tr>
+                                <tr>
+                                    <th>Account No.</th>
+                                    <th>Account Title</th>
+                                    <th style="border-left: 1px solid #000;">DEBIT</th>
+                                    <th>CREDIT</th>
+                                    <th style="border-left: 1px solid #000;">DEBIT</th>
+                                    <th>CREDIT</th>
+                                    <th style="border-left: 1px solid #000;">DEBIT</th>
+                                    <th>CREDIT</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr style="background-color:grey;color:white;font-size:15px">
+                                    <td colspan="8">
+                                        <b>Assets</b>
+                                    </td>
+
+                                </tr>
+                                @foreach (var item2 in Model.trail.Where(z => z.HeadId == 1))
+                                {
+                                    a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
+                                    b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
+                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+
+                                    sum_dr += Convert.ToDouble(item2.Dr);
+                                    sum_cr += Convert.ToDouble(item2.Cr);
+                                    sum_cdr += Convert.ToDouble(item2.cdr);
+                                    sum_ccr += Convert.ToDouble(item2.ccr);
+                                    if (c > 0)
+                                    {
+                                        sum_closingdr += c;
+                                    }
+                                    if (c < 0)
+                                    {
+                                        sum_closingcr += c;
+                                    }
+
+                                    <tr>
+                                        <td> @item2.AccountNo</td>
+                                        <td> @item2.AccountTitle</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
+                                        <td> @item2.Cr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
+                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;">
+                                            @if (c > 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (c < 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tbody>
+                                <tr style="background-color:grey;color:white;font-size:15px">
+                                    <td colspan="8">
+                                        <b>Liabilty</b>
+                                    </td>
+
+                                </tr>
+                                @foreach (var item2 in Model.trail.Where(z => z.HeadId == 2))
+                                {
+                                    a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
+                                    b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
+                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+
+                                    sum_dr += Convert.ToDouble(item2.Dr);
+                                    sum_cr += Convert.ToDouble(item2.Cr);
+                                    sum_cdr += Convert.ToDouble(item2.cdr);
+                                    sum_ccr += Convert.ToDouble(item2.ccr);
+                                    if (c > 0)
+                                    {
+                                        sum_closingdr += c;
+                                    }
+                                    if (c < 0)
+                                    {
+                                        sum_closingcr += c;
+                                    }
+
+                                    <tr>
+                                        <td> @item2.AccountNo</td>
+                                        <td> @item2.AccountTitle</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
+                                        <td> @item2.Cr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
+                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;">
+                                            @if (c > 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (c < 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tbody>
+                                <tr style="background-color:grey;color:white;font-size:15px">
+                                    <td colspan="8">
+                                        <b>Capital</b>
+                                    </td>
+
+                                </tr>
+                                @foreach (var item2 in Model.trail.Where(z => z.HeadId == 3))
+                                {
+                                    a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
+                                    b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
+                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+
+                                    sum_dr += Convert.ToDouble(item2.Dr);
+                                    sum_cr += Convert.ToDouble(item2.Cr);
+                                    sum_cdr += Convert.ToDouble(item2.cdr);
+                                    sum_ccr += Convert.ToDouble(item2.ccr);
+                                    if (c > 0)
+                                    {
+                                        sum_closingdr += c;
+                                    }
+                                    if (c < 0)
+                                    {
+                                        sum_closingcr += c;
+                                    }
+
+                                    <tr>
+                                        <td> @item2.AccountNo</td>
+                                        <td> @item2.AccountTitle</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
+                                        <td> @item2.Cr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
+                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;">
+                                            @if (c > 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (c < 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tbody>
+                                <tr style="background-color:grey;color:white;font-size:15px">
+                                    <td colspan="8">
+                                        <b>Revenue</b>
+                                    </td>
+                                </tr>
+                                @foreach (var item2 in Model.trail.Where(z => z.HeadId == 4))
+                                {
+                                    a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
+                                    b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
+                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+
+                                    sum_dr += Convert.ToDouble(item2.Dr);
+                                    sum_cr += Convert.ToDouble(item2.Cr);
+                                    sum_cdr += Convert.ToDouble(item2.cdr);
+                                    sum_ccr += Convert.ToDouble(item2.ccr);
+                                    if (c > 0)
+                                    {
+                                        sum_closingdr += c;
+                                    }
+                                    if (c < 0)
+                                    {
+                                        sum_closingcr += c;
+                                    }
+
+                                    <tr>
+                                        <td> @item2.AccountNo</td>
+                                        <td> @item2.AccountTitle</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
+                                        <td> @item2.Cr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
+                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;">
+                                            @if (c > 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (c < 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tbody>
+                                <tr style="background-color:grey;color:white;font-size:15px">
+                                    <td colspan="8">
+                                        <b>Expense</b>
+                                    </td>
+                                </tr>
+                                @foreach (var item2 in Model.trail.Where(z => z.HeadId == 5))
+                                {
+                                    a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
+                                    b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
+                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+
+                                    sum_dr += Convert.ToDouble(item2.Dr);
+                                    sum_cr += Convert.ToDouble(item2.Cr);
+                                    sum_cdr += Convert.ToDouble(item2.cdr);
+                                    sum_ccr += Convert.ToDouble(item2.ccr);
+                                    if (c > 0)
+                                    {
+                                        sum_closingdr += c;
+                                    }
+                                    if (c < 0)
+                                    {
+                                        sum_closingcr += c;
+                                    }
+
+                                    <tr>
+                                        <td> @item2.AccountNo</td>
+                                        <td> @item2.AccountTitle</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
+                                        <td> @item2.Cr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
+                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;">
+                                            @if (c > 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (c < 0)
+                                            {
+                                                @c;
+                                            }
+                                            else
+                                            {
+                                                @closing;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="border-left: 1px solid #000;">
+                                        <button class="btn btn-warning">@sum_dr</button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-danger">@sum_cr</button>
+                                    </th>
+                                    <th style="border-left: 1px solid #000;"><button class="btn btn-primary">@sum_cdr</button></th>
+                                    <th><button class="btn btn-info">@sum_ccr</button></th>
+                                    <th style="display:none"><button class="btn btn-success">@(tota1= sum_dr + sum_cdr)</button></th>
+                                    <th style="border-left: 1px solid #000;"><button class="btn btn-success">@(tota1)</button></th>
+                                    <th style="display:none"><button class="btn" style="background-color:#2C3E50;color:white">@(tota2=sum_cr + sum_ccr)</button></th>
+                                    <th><button class="btn" style="background-color:#2C3E50;color:white">@(tota2)</button></th>
+                                </tr>
+
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="javascript">
+    $('.chosen-select').chosen();
+    function printdiv(printpage) {
+        var headstr = "<html><head><title></title></head><body>";
+        var footstr = "</body>";
+        var newstr = document.all.item(printpage).innerHTML;
+        var oldstr = document.body.innerHTML;
+        document.body.innerHTML = headstr + newstr + footstr;
+        window.print();
+        document.body.innerHTML = oldstr;
+        return false;
+    }
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

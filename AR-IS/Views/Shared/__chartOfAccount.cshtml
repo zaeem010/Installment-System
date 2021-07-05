@@ -1,0 +1,455 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>IMS</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
+    <!-- Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700" rel="stylesheet">
+    <!-- themify -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/icon/themify-icons/themify-icons.css">
+    <!-- Font Awesome -->
+    <link href="~/Content/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- iconfont -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/icon/icofont/css/icofont.css">
+    <!-- simple line icon -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/icon/simple-line-icons/css/simple-line-icons.css">
+    <!-- Required Fremwork -->
+    <link rel="stylesheet" type="text/css" href="~/Content/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Data Table Css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/plugins/data-table/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/bower_components/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
+    <!-- Style.css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/main.css">
+    <!-- Responsive.css-->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/responsive.css">
+    <!-- Chartlist chart css -->
+    <link rel="stylesheet" href="~/Content/bower_components/chartist/dist/chartist.css" type="text/css" media="all">
+    <!-- Color Picker css -->
+    <link rel="stylesheet" href="~/Content/bower_components/spectrum/spectrum.css" />
+    <!-- Tags css -->
+    <link rel="stylesheet" href="~/Content/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" />
+    <!-- Switchery css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/bower_components/switchery/dist/switchery.min.css">
+    <!-- bash syntaxhighlighter css -->
+    <link type="text/css" rel="stylesheet" href="~/Content/bower_components/syntaxhighlighter/styles/shCoreDjango.css" />
+    <!--color css-->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/color/color-1.min.css" id="color" />
+    <!-- Max-Length js -->
+    <script src="~/Content/bower_components/bootstrap-maxlength/src/bootstrap-maxlength.js"></script>
+    <!-- Sweetalert CSS -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/plugins/sweetalert/css/sweetalert.css">
+    <!-- Modal animation CSS -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/plugins/modal/css/component.css">
+    <!-- Weather css -->
+    <link href="~/Content/assets/css/svg-weather.css" rel="stylesheet">
+    <style>
+        .top {
+            margin-top: 20px;
+        }
+
+        tfoot {
+            display: table-header-group;
+        }
+
+        .he {
+            height: 90px;
+        }
+
+        input {
+            height: 27px
+        }
+
+        label {
+            font-weight: bold;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        function PageLoad() {
+            Actiona();
+        }
+        window.onload = PageLoad;
+    </script>
+    <style type="text/css">
+/**
+ * Nestable
+ */
+
+.dd { position: relative; display: block; margin: 0; padding: 0; max-width: 600px; list-style: none; font-size: 13px; line-height: 20px; }
+
+.dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
+.dd-list .dd-list { padding-left: 30px; }
+.dd-collapsed .dd-list { display: none; }
+
+.dd-item,
+.dd-empty,
+.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+
+.dd-handle { display: block; height: 30px; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+    background: #fafafa;
+    background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:         linear-gradient(top, #fafafa 0%, #eee 100%);
+    -webkit-border-radius: 3px;
+            border-radius: 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.dd-handle:hover { color: #2ea8e5; background: #fff; }
+
+.dd-item > button { display: block; position: relative; cursor: pointer; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; font-weight: bold; }
+.dd-item > button:before { content: '+'; display: block; position: absolute; width: 100%; text-align: center; text-indent: 0; }
+.dd-item > button[data-action="collapse"]:before { content: '-'; }
+
+.dd-placeholder,
+.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf; box-sizing: border-box; -moz-box-sizing: border-box; }
+.dd-empty { border: 1px dashed #bbb; min-height: 100px; background-color: #e5e5e5;
+    background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+                      -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image:    -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+                         -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image:         linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+                              linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+}
+
+.dd-dragel { position: absolute; pointer-events: none; z-index: 9999; }
+.dd-dragel > .dd-item .dd-handle { margin-top: 0; }
+.dd-dragel .dd-handle {
+    -webkit-box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
+            box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
+}
+
+/**
+ * Nestable Extras
+ */
+
+.nestable-lists { display: block; clear: both; padding: 30px 0; width: 100%; border: 0; border-top: 2px solid #ddd; border-bottom: 2px solid #ddd; }
+
+#nestable-menu { padding: 0; margin: 20px 0; }
+
+#nestable-output,
+#nestable2-output { width: 100%; height: 7em; font-size: 0.75em; line-height: 1.333333em; font-family: Consolas, monospace; padding: 5px; box-sizing: border-box; -moz-box-sizing: border-box; }
+
+#nestable2 .dd-handle {
+    color: #fff;
+    border: 1px solid #999;
+    background: red;
+}
+#nestable2 .dd-handle:hover { background: #bbb; }
+#nestable2 .dd-item > button:before { color: #fff; }
+
+@*@media only screen and (min-width: 700px) {
+
+    .dd { float: left; width: 48%; }
+    .dd + .dd { margin-left: 2%; }
+
+}*@
+
+.dd-hover > .dd-handle { background: #2ea8e5 !important; }
+
+/**
+ * Nestable Draggable Handles
+ */
+
+.dd3-content { display: block; height: 30px; margin: 5px 0; padding: 5px 10px 5px 40px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+    background: #fafafa;
+    background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:         linear-gradient(top, #fafafa 0%, #eee 100%);
+    -webkit-border-radius: 3px;
+            border-radius: 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.dd3-content:hover { color: #2ea8e5; background: #fff; }
+
+.dd-dragel > .dd3-item > .dd3-content { margin: 0; }
+
+.dd3-item > button { margin-left: 30px; }
+
+.dd3-handle { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; white-space: nowrap; overflow: hidden;
+    border: 1px solid #aaa;
+    background: #ddd;
+    background: -webkit-linear-gradient(top, #ddd 0%, #bbb 100%);
+    background:    -moz-linear-gradient(top, #ddd 0%, #bbb 100%);
+    background:         linear-gradient(top, #ddd 0%, #bbb 100%);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.dd3-handle:before { content: '≡'; display: block; position: absolute; left: 0; top: 3px; width: 100%; text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
+.dd3-handle:hover { background: #ddd; }
+
+/**
+ * Socialite
+ */
+
+.socialite { display: block; float: left; height: 35px; }
+
+    </style>
+
+</head>
+
+<body class="sidebar-mini fixed">
+
+    <div class="loader-bg">
+        <div class="loader-bar"></div>
+    </div>
+    <div class="wrapper">
+        <!-- Navbar-->
+        <header class="main-header-top hidden-print">
+            <a href="@Url.Action("Index","Home")" class="logo"><h1 class="text-center">IMS</h1></a>
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#!" data-toggle="offcanvas" class="sidebar-toggle"></a>
+
+                <!-- Navbar Right Menu-->
+                <div class="navbar-custom-menu">
+                    <ul class="top-nav">
+                        <!-- window screen -->
+                        @*<li class="pc-rheader-submenu">
+                            <a href="#!" class="drop icon-circle" onclick="javascript:toggleFullScreen()">
+                                <i class="icon-size-fullscreen"></i>
+                            </a>
+                        </li>*@
+                        <!-- User Menu-->
+                        <li class="dropdown">
+                            <a href="#!" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle drop icon-circle drop-image">
+                                <span>@(Session["UserName"])<i class=" icofont icofont-simple-down"></i></span>
+                            </a>
+                            <ul class="dropdown-menu settings-menu">
+                                <li><a href="@Url.Action("LogOut","Home")"><i class="icon-logout"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        @if (Session["UserName"] != null)
+        {
+            <!-- Side-Nav-->
+            <aside class="main-sidebar hidden-print ">
+                <section class="sidebar" id="sidebar-scroll">
+                    <!-- Sidebar Menu-->
+                    <ul class="sidebar-menu">
+                        <li class="treeview"><a class="waves-effect waves-dark" href="@Url.Action("Index", "Home")"><i class="fa fa-home" style="color:#2196F3"></i><span> Dashboard</span></a></li>
+                        <li class="treeview">
+                            <a class="waves-effect waves-dark" href="#">
+                                <i class="fa fa-modx" style="color: #2196F3 "></i><span> Registrations</span><i class="icon-arrow-down"></i>
+                            </a>
+                            <ul class="treeview-menu" style="background-color:white">
+                                <li class="treeview " id="category-tabs">
+                                    <a class="waves-effect waves-dark " href="#">
+                                        <i class="fa fa-mail-forward"></i><span>Loctions</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                    </a>
+                                    <ul class="treeview-menu ">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Province")"><i class="fa fa-mail-forward"></i> Provinces</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Town")"><i class="fa fa-mail-forward"></i> Towns</a></li>
+                                    </ul>
+                                </li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Supplier")"><i class="fa fa-mail-forward"></i> Suppliers</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Customer")"><i class="fa fa-mail-forward"></i>Customers</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Brand")"><i class="fa fa-mail-forward"></i> Brands</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Category")"><i class="fa fa-mail-forward"></i> Categories</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Product")"><i class="fa fa-mail-forward"></i> Products</a></li>
+                                @*<li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Company")"><i class="fa fa-mail-forward"></i> Companies</a></li>*@
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a class="waves-effect waves-dark" href="#">
+                                <i class="fa fa-save" style="color: #2196F3 "></i><span> Purchase</span><i class="icon-arrow-down"></i>
+                            </a>
+                            <ul class="treeview-menu" style="background-color:white">
+                                <li class="treeview " id="category-tabs">
+                                    <a class="waves-effect waves-dark " href="#">
+                                        <i class="fa fa-mail-forward"></i><span>Invoices</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                    </a>
+                                    <ul class="treeview-menu ">
+                                        <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "Purchase")"><i class="fa fa-mail-forward"></i> General Purchase</a></li>
+                                        <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseWTC")"><i class="fa fa-mail-forward"></i> Purchase With Cottons</a></li>
+                                        <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseVehicle")"><i class="fa fa-mail-forward"></i> Vehicle Purchase</a></li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul class="treeview-menu" style="background-color:white">
+                                <li class="treeview " id="category-tabs">
+                                    <a class="waves-effect waves-dark mya" href="#">
+                                        <i class="fa fa-mail-forward"></i><span>Reports</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                    </a>
+                                    <ul class="treeview-menu ">
+                                        <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseReport")"><i class="fa fa-mail-forward"></i> Purchase Report</a></li>
+                                        <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseSummary")"><i class="fa fa-mail-forward"></i> Purchase Summary</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a class="waves-effect waves-dark" href="#">
+                                <i class="fa fa-save" style="color: #2196F3 "></i><span> Sale</span><i class="icon-arrow-down"></i>
+                            </a>
+                            <ul class="treeview-menu" style="background-color:white">
+                                <li class="treeview " id="category-tabs">
+                                    <a class="waves-effect waves-dark mya" href="#">
+                                        <i class="fa fa-mail-forward"></i><span>Invoices</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Sale")"><i class="fa fa-mail-forward"></i> General Sale</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SaleWTC")"><i class="fa fa-mail-forward"></i> Sale With Cottons</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SWI")"><i class="fa fa-mail-forward"></i> Sale  Installment</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul class="treeview-menu" style="background-color:white">
+                                <li class="treeview " id="category-tabs">
+                                    <a class="waves-effect waves-dark mya" href="#">
+                                        <i class="fa fa-mail-forward"></i><span>Reports</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                    </a>
+                                    <ul class="treeview-menu ">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SaleReport")"><i class="fa fa-mail-forward"></i> Sale Report</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SaleSummary")"><i class="fa fa-mail-forward"></i> Sale Summary</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#!"><i class="fa fa-send" style="color: #2196F3"></i><span>Reports</span><i class="icon-arrow-down"></i></a>
+                            <ul class="treeview-menu">
+                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "DeadList")"><i class="fa fa-mail-forward"></i>Dead List</a></li>
+                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "VehicleProfit")"><i class="fa fa-mail-forward"></i>Vehicle Profit </a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#!"><i class="fa fa-send" style="color: #2196F3"></i><span>Vouchers</span><i class="icon-arrow-down"></i></a>
+                            <ul class="treeview-menu">
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "ExpenseSheet")"><i class="fa fa-mail-forward"></i> Daily Expense Sheet</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "CashPayment")"><i class="fa fa-mail-forward"></i> Cash Payment Voucher</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "CashRecepit")"><i class="fa fa-mail-forward"></i> Cash Recipt Voucher</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "BankPayment")"><i class="fa fa-mail-forward"></i> Bank Payment Voucher</a></li>
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "BankRecepit")"><i class="fa fa-mail-forward"></i> Bank Recipt Voucher</a></li>
+                                @*<li><a class="waves-effect waves-dark " href="@Url.Action("Index", "JournalVoucher")"><i class="fa fa-mail-forward"></i> Journal Vouchers</a></li>*@
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a class="waves-effect waves-dark" href="#"><i class="fa fa-usd" style="color: #2196F3 "></i><span> Accounts</span><i class="icon-arrow-down"></i></a>
+                            <ul class="treeview-menu" style="background-color:white">
+                                <li class="treeview " id="category-tabs">
+                                    <a class="waves-effect waves-dark mya" href="#">
+                                        <i class="fa fa-deviantart"></i><span> Registrations</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu ">
+                                        <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "OpeningBalance")"><i class="fa fa-mail-forward"></i> Opening Balance</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Firstlevel")"><i class="fa fa-mail-forward"></i> First Level</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Secondlevel")"><i class="fa fa-mail-forward"></i> Second Level</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Thirdlevel")"><i class="fa fa-mail-forward"></i> Third Level</a></li>
+                                    </ul>
+                                </li>
+                                <li class="treeview mya">
+                                    <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Chart Of Accounts</span><i class="icon-arrow-down"></i></a>
+                                    <ul class="treeview-menu">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "ChartofAccount")"><i class="fa fa-mail-forward"></i> Open Chart Of Account</a></li>
+                                    </ul>
+                                </li>
+                                <li class="treeview mya">
+                                    <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Ledger</span><i class="icon-arrow-down"></i></a>
+                                    <ul class="treeview-menu">
+                                        <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "Ledger")"><i class="fa fa-mail-forward"></i> Simple Ledger</a></li>
+                                    </ul>
+                                </li>
+                                <li class="treeview mya">
+                                    <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Monthly Report</span><i class="icon-arrow-down"></i></a>
+                                    <ul class="treeview-menu">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "MonthlyExpense")"><i class="fa fa-mail-forward"></i>Expense Report</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a class="waves-effect waves-dark" href="#">
+                                <i class="fa fa-cog" style=" color: #2196F3 "></i><span>Settings</span><i class="icon-arrow-down"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a class="waves-effect waves-dark " href="@Url.Action("Update", "Setting")"><i class="fa fa-mail-forward"></i> Go To Settings</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+        }
+
+        @RenderBody()
+    </div>
+    <script src="~/Content/assets/nestable/jquery.nestable.js"></script>
+    <script src="~/Content/assets/nestable/jquery.nestable.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            var updateOutput = function (e) {
+                var list = e.length ? e : $(e.target),
+                    output = list.data('output');
+                if (window.JSON) {
+                    output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+                } else {
+                    output.val('JSON browser support required for this demo.');
+                }
+            };
+
+            // activate Nestable for list 1
+            $('#nestable').nestable({
+                group: 1
+            })
+                .on('change', updateOutput);
+
+            // activate Nestable for list 2
+            $('#nestable2').nestable({
+                group: 1
+            })
+                .on('change', updateOutput);
+            $('.dd').nestable('collapseAll');
+            // output initial serialised data
+            updateOutput($('#nestable').data('output', $('#nestable-output')));
+            updateOutput($('#nestable2').data('output', $('#nestable2-output')));
+            $('#nestable3').nestable();
+
+        });
+    </script>
+    <script src="~/Content/bower_components/tether/dist/js/tether.min.js"></script>
+    <!-- Required Fremwork -->
+    <script src="~/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- waves effects.js -->
+    <script src="~/Content/bower_components/Waves/dist/waves.min.js"></script>
+    <!-- Scrollbar JS-->
+    <script src="~/Content/bower_components/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script src="~/Content/bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
+    <!--classic JS-->
+    <script src="~/Content/bower_components/classie/classie.js"></script>
+    <!-- notification -->
+    <script src="~/Content/assets/plugins/notification/js/bootstrap-growl.min.js"></script>
+    <!-- custom js -->
+    <script type="text/javascript" src="~/Content/assets/js/main.min.js"></script>
+    <script src="~/Content/assets/js/data-table.js"></script>
+    <script src="~/Content/assets/pages/modal.js"></script>
+    <script type="text/javascript" src="~/Content/assets/pages/preloader.js"></script>
+    <script type="text/javascript" src="~/Content/assets/pages/elements.js"></script>
+    <script src="~/Content/assets/js/menu.min.js"></script>
+    <!-- switchery js -->
+    <script type="text/javascript" src="~/Content/bower_components/switchery/dist/switchery.min.js"></script>
+</body>
+
+
+
+</html>
+
+
+

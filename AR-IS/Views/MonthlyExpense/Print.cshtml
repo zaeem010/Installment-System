@@ -1,0 +1,90 @@
+﻿@model AR_IS.ViewModel.VoucherVM
+@{
+    Layout = null;
+    int sr = 0;
+    double sum = 0.00;
+    double loss = 0.00;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" **media="screen" **>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Expense Report</title>
+    <style>
+        a[href]:after {
+            visibility: hidden !important;
+        }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid" style="height: 40px;">
+            <h2 class="display-4" style="margin-top: -20px;"><b>INCOME & EXPENSE SHEET FOR THE MONTH OF @Convert.ToDateTime(Model.Month).ToString("MMM yyyy")</b></h2>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <h2><b style="color: green;">Net Profit:</b> <span>@Model.Profit.ToString("#,##0.00")</span></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card-header">
+                <h2 class="text-center"><b>Detail Of Expenses</b></h2>
+            </div>
+            <div class="col-md-12">
+                <table class="table table-light">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Sr#</th>
+                            <th>Head Name</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lst in Model.MonthlyExpense)
+                        {
+                            sum += Convert.ToDouble(lst.Expenses);
+                            loss = Convert.ToDouble((Convert.ToDouble(Model.Profit) - sum));
+                            <tr>
+                                <td>@{sr++;}@sr</td>
+                                <td><a href="@Url.Action("Details", new { Ac= lst.SecondLevelId , Month=Model.Month} )" target="_blank" style="color:black">@lst.AccountType</a></td>
+                                <td>@lst.Expenses.ToString("#,##0.00")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>Total</th>
+                            <th>@sum.ToString("#,##0.00")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="jumbotron">
+            <h3 class="text-center" style="margin-top: -30px;">STATEMENT AFTER INCOME & EXPENSE</h3>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    @if (loss > 0)
+                    {
+                        <h2><b style="color: green;">Net Profit:</b> <span>@loss.ToString("#,##0.00")</span></h2>
+                    }
+                    else
+                    {
+                        <h2><b style="color: red;">Net Loss:</b> <span>@loss.ToString("#,##0.00")</span></h2>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

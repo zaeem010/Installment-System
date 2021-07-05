@@ -1,0 +1,198 @@
+﻿@model AR_IS.ViewModel.VoucherVM
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","ExpenseSheet")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i>Expense Sheet List</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div id="mydiv1" class="col-md-3">
+                <p class="text-center bg-danger">@TempData["Reg1"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Daily Expense Sheet</u></h5>
+                            </div>
+                            @if (Model.Transcation == null)
+                            {
+                                using (Html.BeginForm("Save", "ExpenseSheet", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+
+                                    <div class="col-md-4">
+                                        <label>Date </label>
+                                        <input id="date" name="date" type="date" class="form-control" />
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <br />
+                                                <br />
+                                                <table id="table1" class="table dt-responsive table-striped table-bordered nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Main Head</th>
+                                                            <th>Sub Head</th>
+                                                            <th>Amount</th>
+                                                            <th>Remarks</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Main Head</th>
+                                                            <th>Sub Head</th>
+                                                            <th>Amount</th>
+                                                            <th>Remarks</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        @foreach (var lst in Model.Accounts)
+                                                        {
+                                                            <tr>
+                                                                <td>@lst.AccountType</td>
+                                                                <td>@lst.AccountTitle <input type="hidden" name="accountno" value="@lst.AccountNo" /></td>
+                                                                <td><input type="number" value="0" name="amount" class="form-control" /></td>
+                                                                <td><textarea class="form-control" rows="1" name="Remarks" cols="60"></textarea></td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-10" style="margin-left:370px;margin-top:20px">
+                                            <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Expenses?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                                        </div>
+                                    </div>
+
+
+
+                                }
+                            }
+                            else
+                            {
+                                using (Html.BeginForm("Update", "ExpenseSheet", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+
+                                    <div class="col-md-4">
+                                        <label>Date </label>
+                                        <input id="date" value="@Model.Transcation.TransDate" name="date" type="date" class="form-control" />
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <br />
+                                                <br />
+                                                <table id="table1" class="table dt-responsive table-striped table-bordered nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Main Head</th>
+                                                            <th>Sub Head</th>
+                                                            <th>Amount</th>
+                                                            <th>Remarks</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Main Head</th>
+                                                            <th>Sub Head</th>
+                                                            <th>Amount</th>
+                                                            <th>Remarks</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody>
+                                                            <tr>
+                                                                <td>@Model.Transcation.AccountType</td>
+                                                                <td>@Model.Transcation.AccountTitle <input type="hidden" name="accountno" value="@Model.Transcation.AccountNo" /></td>
+                                                                <td><input type="number" value="@Model.Transcation.Dr" name="amount" class="form-control" /><input type="hidden" name="id" value="@Model.Transcation.V_No" /></td>
+                                                                <td><textarea class="form-control" rows="1" name="Remarks" cols="60">@Model.Transcation.TransDes</textarea></td>
+                                                            </tr>
+                                                        
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-10" style="margin-left:370px;margin-top:20px">
+                                            <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this Expenses?');"><i class="icofont icofont-ui-check"></i>  Update </button>
+                                        </div>
+                                    </div>
+
+
+
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+<script>
+    setTimeout(function () {
+        $('#mydiv1').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+<script>
+    $(document).ready(function () {
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        $('#date').val(today);
+
+    });
+</script>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+    //start
+    $(document).ready(function () {
+        var table1 = $('#table1').DataTable({
+            "paging": false,
+            "ordering": false,
+            "info": true,
+        });
+        // Setup - add a text input to each footer cell
+        $('#table1 tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<div class="md-input-wrapper"><input type="text" class="md-form-control" placeholder="Search" /></div>');
+        });
+        //
+        table1.columns().every(function () {
+            var that = this;
+
+            $('input', this.footer()).on('keyup change', function () {
+                if (that.search() !== this.value) {
+                    that
+                        .search(this.value)
+                        .draw();
+                }
+            });
+        });
+        //
+    });
+</script>

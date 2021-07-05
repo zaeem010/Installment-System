@@ -1,0 +1,113 @@
+﻿@model AR_IS.ViewModel.AccountVM
+@{
+    ViewBag.Title = "New";
+}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","Thirdlevel")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Third Level List </a>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><u>Third Level</u></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "Thirdlevel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label><b>Select Account Head</b></label>
+                            @if (Model.ThirdLevel.Id == 0)
+                            {
+                                @Html.DropDownListFor(m => m.ThirdLevel.HeadId, new SelectList(Model.Ac_headlist, "id", "Head_Name"), "Select Account Head", htmlAttributes: new { @class = "chosen-select form-control", onChange = "Action(this.value)", style = "height:35px" })
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(m => m.ThirdLevel.HeadId, new SelectList(Model.Ac_headlist, "id", "Head_Name"), "Select Account Head", htmlAttributes: new { @class = "chosen-select form-control", onChange = "Action(this.value)", style = "height:35px", @disabled = "true" })
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <label><b>Select First Level</b></label>
+                            @if (Model.ThirdLevel.Id == 0)
+                            {
+                                <select class="form-control" style="height:35px" id="FL" name="SubHead" onChange="Action1(this.value)">
+                                    <option value="">Select First Level</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control" readonly value="@Model.firstlevel" />
+                            }
+
+                        </div>
+                        <div class="col-md-4">
+                            <label><b>Select Second Level</b></label>
+                            @if (Model.ThirdLevel.Id == 0)
+                            {
+                                <select class="form-control" style="height:35px" id="SL" name="SecondHeadid">
+                                    <option value="">Select Second Level</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control" readonly value="@Model.secondlevel" />
+                            }
+                        </div>
+                    </div>
+                        <div class="col-md-4" style="margin-top:20px">
+                            <label> Account Title</label>
+                            @Html.TextBoxFor(m => m.ThirdLevel.AccountTitle, new { @class = "form-control input-xs", @autocomplete = "off" })
+                        </div>
+                        <br />
+                        <div class="col-md-10" style="margin-left:410px;margin-top:20px">
+                            @if (Model.ThirdLevel.Id == 0)
+                            {
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Account?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this Account?');"><i class="icofont icofont-ui-check"></i>  Update </button>
+                            }
+                        </div>
+                        @Html.HiddenFor(m => m.ThirdLevel.Id)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+    function Action(code) {
+        //alert(code);
+        $.ajax({
+            type: "GET",
+            url: "/Thirdlevel/ShowData?message=" + code,
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="-1">Select First Level</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].AccountNo + '">' + data[i].AccountTitle + '</option>';
+                }
+                $('#FL').html(s);
+            }
+        });
+    };
+    function Action1(code) {
+        //alert(code);
+        $.ajax({
+            type: "GET",
+            url: "/Thirdlevel/Second?message=" + code,
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="-1">Select Second Level</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].AccountNo + '">' + data[i].AccountTitle + '</option>';
+                }
+                $('#SL').html(s);
+            }
+        });
+    };
+
+</script>

@@ -1,0 +1,744 @@
+﻿@model AR_IS.ViewModel.SWIVM
+@{
+    ViewBag.Title = "New";
+}
+<style>
+    hr.new2 {
+        color: #2196F3;
+        border-top: 4px dotted;
+    }
+    select:invalid {
+        height: 2px !important;
+        opacity: 0 !important;
+        position: absolute !important;
+        display: flex !important;
+        width: 250px;
+       
+    }
+        select:invalid[multiple] {
+        }      
+</style>
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+           <br />
+            <a href="@Url.Action("Index","SWI")" class="btn btn-primary pull-right" data-toggle="tooltip" style="margin-left:20px"><i class="fa fa-list"></i> Invoice List</a>
+            <button class="btn btn-primary pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent1"><i class="fa fa-list"></i> Recent Invoice List</button>
+            <br />
+            
+            <div class="card" style="margin-top:20px">
+                <div class="card-header text-center">
+                    <h3 class="text-primary-color"><u><b>Sale Installment Invoice</b></u></h3>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "SWI", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div id="mydiv" class="col-md-3">
+                            <p class="text-center bg-success">@TempData["Reg"]</p>
+                        </div>
+                        @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="card-header">
+                        <h5 class="card-header-text text-primary-color"><b><u class="size">Invoice Info</u></b></h5>
+                    </div>
+                    <div class="col-md-1">
+                        <label>Inv No </label>
+                        @Html.TextBoxFor(m => m.SWI.Invid, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off" })
+                    </div>
+                    <div class="col-md-3">
+                        <label> Date </label>
+                        @Html.TextBoxFor(m => m.SWI.Date, new { @class = "form-control thresold-i", @placeholder = "", @type = "date", id = "Date" })
+                    </div>
+                    <div class="col-md-4">
+                        <label><b>Select Reference</b>&nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addReference"><i class="fa fa-plus " style="color:white"></i></a></label>
+                        @Html.DropDownListFor(m => m.SWI.Rid, new SelectList(Model.Ref_list, "id", "Name"), "Select Reference", htmlAttributes: new { @class = "form-control input-xs chosen-select" })
+                    </div>
+                    <div class="col-md-4">
+                        <label><b>Select Customer</b>&nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addCustomer"><i class="fa fa-plus " style="color:white"></i></a></label>
+                        @Html.DropDownListFor(m => m.SWI.AccountNo, new SelectList(Model.Cus_list, "AccountNo", "Name"), "Select Customer", htmlAttributes: new { @class = "form-control input-xs chosen-select" })
+                    </div>
+                    
+                </div>
+                        <div class="col-md-12">
+                            <hr class="new2">
+                        </div>
+                        <div class="row">
+                            <div class="card-header">
+                                <h5 class="card-header-text text-primary-color"><b><u class="size">Vehicle Info</u></b></h5>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <br />
+                                    <label><b>Select Vehicle</b></label>
+                                    <select class="form-control  chosen-select  " onchange="Action(this.value)">
+                                        <option value="">Select Vehicle </option>
+                                        @foreach (var lst in Model.Vehiclelist)
+                                        {
+                                            <option value="@lst.EngineNo">@lst.VehicleName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <br />
+                                    <label><b>Vehicle Name</b></label>
+                                    @Html.TextBoxFor(m => m.SWI.VehicleName, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "VehicleName" })
+                                </div>
+                                <div class="col-md-3">
+
+                                    <br />
+                                    <label><b>Model No</b></label>
+                                    @Html.TextBoxFor(m => m.SWI.ModelNo, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "ModelNo" })
+
+                                </div>
+                                <div class="col-md-3">
+                                    <br />
+                                    <label>Chassis No</label>
+                                    @Html.TextBoxFor(m => m.SWI.ChassiNo, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "ChassiNo" })
+
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <br />
+                                    <label>Engine No</label>
+                                    @Html.TextBoxFor(m => m.SWI.EngineNo, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "EngineNo" })
+                                </div>
+                                <div class="col-md-3">
+                                    <br />
+                                    <label>Key No</label>
+                                    @Html.TextBoxFor(m => m.SWI.KeyNo, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "KeyNo" })
+                                </div>
+                                <div class="col-md-3">
+                                    <br />
+                                    <label>Color</label>
+                                    @Html.TextBoxFor(m => m.SWI.Color, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "Color" })
+                                </div>
+                                <div class="col-md-3">
+                                    <br />
+                                    <label>Remarks</label>
+                                    @Html.TextBoxFor(m => m.SWI.Remarks, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "Remarks" })
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-12">
+                                <hr class="new2">
+                            </div>
+                            <div class="row">
+                                <div class="card-header">
+                                    <h5 class="card-header-text"><b><u class="size text-primary-color">Installment Plan</u></b></h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <label><b>Installment Plan</b>&nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addPlan"><i class="fa fa-plus " style="color:white"></i></a></label>
+                                    @Html.DropDownListFor(m => m.SWI.PlanId, new SelectList(Model.InstallmentPlans, "Id", "year"), "Select Plan", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action1(this.value)" })
+                                </div>
+                                <div class="col-md-6">
+                                    <label><b>MarkUp%</b></label>
+                                    @Html.TextBoxFor(m => m.SWI.MarkUp, new { @class = "form-control thresold-i", @type = "number", @readonly = "off", id = "MarkUp" })
+                                </div>
+
+                            </div>
+                            <div class="col-md-12">
+                                <hr class="new2">
+                            </div>
+                            <div class="row">
+                                <div class="card-header">
+                                    <h5 class="card-header-text"><b><u class="size text-primary-color">Payment Info</u></b></h5>
+                                </div>
+                                <div class="col-md-4">
+                                    <br />
+                                    <label>Total Rate</label>
+                                    @Html.TextBoxFor(m => m.SWI.TotalRate, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "WithGSTTotal", onkeyup = "getPrice()" })
+                                </div>
+                                <div class="col-md-4">
+                                    <br />
+                                    <label>Markup Amount </label>
+                                    @Html.TextBoxFor(m => m.SWI.Interests, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "getPrice()", id = "Interests", @autocomplete = "off", @readonly = "true" })
+                                </div>
+                                <div class="col-md-4">
+                                    <br />
+                                    <label>Discount </label>
+                                    @Html.TextBoxFor(m => m.SWI.Discount, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "getPrice()", id = "Dis", @autocomplete = "off" })
+                                </div>
+                                <div class="col-md-4">
+                                    <br />
+                                    <label>Net Total </label>
+                                    @Html.TextBoxFor(m => m.SWI.NetTotal, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", id = "nettotal", onkeyup = "getPrice()" })
+                                </div>
+                                <div class="col-md-4">
+                                    <br />
+                                    <label>Advance Payment </label>
+                                    @Html.TextBoxFor(m => m.SWI.AdvancePayment, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "getPrice()", id = "AdvancePayment", @autocomplete = "off" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <br />
+                                    <label>Balance Total </label>
+                                    @Html.TextBoxFor(m => m.SWI.BalanceTotal, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off", onkeyup = "getPrice()", id = "balancetotal" })
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <hr class="new2">
+                            </div>
+                            <div class="row">
+                                <div class="card-header">
+                                    <h5 class="card-header-text"><b><u class="size text-primary-color">Installment Procedure</u></b></h5>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Insatllment Date</label>
+                                    @if (Model.SWI.Id == 0)
+                                    {
+                                        @Html.TextBoxFor(m => m.SWI.Installmentdate, new { @class = "form-control thresold-i", @type = "date", @placeholder = "", @autocomplete = "off", id = "Date1" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(m => m.SWI.Installmentdate, new { @class = "form-control thresold-i", @type = "date", @placeholder = "", @autocomplete = "off", })
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    <label>First Installment</label>
+                                    @Html.TextBoxFor(m => m.SWI.FirstInstallment, new { @class = "form-control thresold-i", @type = "number", @placeholder = "", @autocomplete = "off", @required = "true" })
+                                </div>
+                                <div class="col-md-4">
+                                    <label>Last Installment</label>
+                                    @Html.TextBoxFor(m => m.SWI.LastInstallment, new { @class = "form-control thresold-i", @type = "number", @placeholder = "", @autocomplete = "off", @required = "true" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-10" style="margin-left:350px;margin-top:20px">
+                                @if (Model.SWI.Id == 0)
+                                {
+                                    <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-paste f-20"></i> &nbsp; Save Invoice</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Update ..')"><i class="fa fa-paste f-20"></i> &nbsp; Update Invoice</button>
+                                }
+
+                            </div>
+                            @Html.HiddenFor(m => m.SWI.Id)
+                            }
+                        </div>
+              </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="recent1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <h4 class="modal-title text-center" style="color:white">Recent Invoices</h4>
+            </div>
+            <!-- Modal body -->
+            <div style="overflow-x:auto">
+                <div class="modal-body">
+                    <br />
+                    <br />
+                    <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                        <thead>
+                            <tr>
+                                <th>Inv No</th>
+                                <th>Date </th>
+                                <th>Customer </th>
+                                <th>Vehicle </th>
+                                <th>Net Total </th>
+                                <th>Received Total </th>
+                                <th>Balance Total </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Inv No</th>
+                                <th>Date </th>
+                                <th>Customer </th>
+                                <th>Vehicle </th>
+                                <th>Net Total </th>
+                                <th>Received  </th>
+                                <th>Balance  </th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach (var lst in Model.RecentSaleInstallement)
+                            {
+                                <tr>
+                                    <td>
+                                        @lst.Invid
+
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
+                                    </td>
+                                    <td>
+                                        @lst.Name
+                                    </td>
+                                    <td>
+                                        @lst.VehicleName-@lst.EngineNo
+                                    </td>
+                                    <td>
+                                        @lst.NetTotal
+                                    </td>
+
+                                    <td>
+                                        @lst.ReceivedTotal
+                                    </td>
+                                    <td>
+                                        @lst.RemainingBalance
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                        <a href="@Url.Action("Print", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i></a>
+                                        <a href="@Url.Action("InstallmentDetail", new { Invid = lst.Invid })" class="badge badge-success"><i class="fa fa-bicycle"></i></a>
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary " style="margin-top:30px" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addCustomer">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <h4 class="modal-title text-center" style="color:white">Register Customer</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_cus", "SWI", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <span id="uname_response"></span>
+                    @Html.AntiForgeryToken()
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-8">
+                                @if (Model.Customer.id == 0)
+                                {
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Name Customer</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Name Customer</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control thresold-i ", @required = "required", @readonly = "true", autocomplete = "off" })
+                                    </div>
+                                }
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Father Name </label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.FatherName, new { @class = "form-control thresold-i ", @required = "required", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>CNIC</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.CNIC, new { @class = "form-control thresold-i ", @type = "", @placeholder = "", autocomplete = "off", @maxlength = "15", @id = "cnic" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Phone</label>
+                                    <br />
+
+                                    @Html.TextBoxFor(m => m.Customer.Phone1, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Phone2</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.Phone2, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Phone3</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.Phone3, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Email</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>NTN</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.NTN, new { @class = "form-control thresold-i ", @type = "", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label><b>Select Town</b></label>
+                                    @Html.DropDownListFor(m => m.Customer.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs  select" })
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Address</label>
+                                    <br />
+                                    @Html.TextAreaFor(m => m.Customer.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "20", rows = "3" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <label><b>Photo</b></label>
+                                    @if (Model.Customer.Image == "" || Model.Customer.Image == null)
+                                    {
+                                        <div>
+                                            <img id="user_img" height="97" src="~/Content/Image/Demo.png" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
+                                        </div>
+                                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <img id="user_img" height="97" src="~/uploads/@Model.Customer.Image" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
+                                        </div>
+                                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
+                                    }
+                                </div>
+                                <div class="col-md-12">
+                                    <br />
+                                    <label>GST</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.Customer.GST, new { @class = "form-control thresold-i ", @type = "", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-12">
+                                    <br />
+                                    <label><b>Select Province</b></label>
+                                    @Html.DropDownListFor(m => m.Customer.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select" })
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Customer?');"><i class="icofont icofont-ui-check"></i>  Save </button>      
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addReference">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <h4 class="modal-title text-center" style="color:white">Register Reference</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_Ref", "SWI", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <span id="uname_response"></span>
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-8">
+
+                                @if (Model.References.id == 0)
+                                {
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Name Reference</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.References.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Name References</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.References.Name, new { @class = "form-control thresold-i ", @required = "required", @readonly = "true", autocomplete = "off" })
+                                    </div>
+                                }
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>CNIC</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.References.CNIC, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off", @id = "cnic", @maxlength = "15", @required = "required" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Phone1</label>
+                                    <br />
+
+                                    @Html.TextBoxFor(m => m.References.Phone1, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Phone2</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.References.Phone2, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Phone3</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.References.Phone3, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Email</label>
+                                    <br />
+                                    @Html.TextBoxFor(m => m.References.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                                </div>
+
+                                <div class="col-md-6">
+                                    <br />
+                                    <label><b>Select Town</b></label>
+                                    @Html.DropDownListFor(m => m.References.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select", onchange = "Action(this.value)" })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Address</label>
+                                    <br />
+                                    @Html.TextAreaFor(m => m.References.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "30", rows = "4" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <label><b>Photo</b></label>
+                                    @if (Model.References.Image == "" || Model.References.Image == null)
+                                    {
+                                        <div>
+                                            <img id="user_img" height="97" src="~/Content/Image/Demo.png" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
+                                        </div>
+                                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <img id="user_img" height="97" src="~/uploads/@Model.References.Image" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
+                                        </div>
+                                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
+                                    }
+                                </div>
+                                <div class="col-md-12">
+                                    <br />
+                                    <label><b>Select Province</b></label>
+                                    @Html.DropDownListFor(m => m.References.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select", onchange = "Action(this.value)" })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Customer?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addPlan">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <h4 class="modal-title text-center" style="color:white">Register Installment Plan  </h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_Plan", "SWI", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <span id="uname_response"></span>
+                    @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-4">
+                    <label>No of Year </label>
+                    @Html.TextBoxFor(m => m.InstallmentPlan.year, new { @class = "form-control thresold-i", @placeholder = "", @maxlength = "30", @required = "required", @autocomplete = "off", @type = "text", id = "txtChar", onkeypress = "return isNumberKey(event)" })
+                </div>
+                <div class="col-md-4">
+                    <label>MarkUp % </label>
+                    @Html.TextBoxFor(m => m.InstallmentPlan.MarkUp, new { @class = "form-control thresold-i", @required = "required", @type = "", maxlength = "3", id = "smsCode" })
+                </div>
+                <div class="col-md-4">
+                    <label>Details </label>
+                    @Html.TextAreaFor(m => m.InstallmentPlan.Detail, new { @class = "form-control thresold-i", @placeholder = "", })
+                </div>
+            </div>
+
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Customer?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".select").chosen({ width: "250px" })
+    $('.chosen-select').chosen();
+    $(document).ready(function () {
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+
+        $('#Date').val(today);
+        $('#Date1').val(today);
+    });
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000);
+    function Action(id) {
+        $.ajax({
+            url: '@Url.Action("Action", "SWI")',
+            type: "POST",
+            data: { "id": id },
+        "success": function (data) {
+        if (data != null) {
+            var vdata = data;
+            $("#VehicleName").val(vdata[0].VehicleName);
+            $("#ModelNo").val(vdata[0].ModelNo);
+            $("#ChassiNo").val(vdata[0].ChassiNo);
+            $("#EngineNo").val(vdata[0].EngineNo);
+            $("#KeyNo").val(vdata[0].KeyNo);
+            $("#Color").val(vdata[0].Color);
+            $("#Remarks").val(vdata[0].Remarks);
+            $("#Rate").val(vdata[0].Rate);
+            $("#Discount").val(vdata[0].Discount);
+            $("#WithoutGSTTotal").val(vdata[0].WithoutGSTTotal);
+            $("#GST").val(vdata[0].GST);
+            $("#WithGSTTotal").val(vdata[0].WithGSTTotal);
+            $("#nettotal").val(vdata[0].WithGSTTotal);
+            $("#balancetotal").val(vdata[0].WithGSTTotal);
+            var numval1 = parseFloat(document.getElementById("WithGSTTotal").value || 0);
+            var numval2 = parseFloat(document.getElementById("MarkUp").value || 0);
+            var t_f = parseFloat(numval1 * numval2 / 100)
+            if (!isNaN(t_f)) {
+                document.getElementById("Interests").value = t_f.toFixed(2);
+            }
+            var numval3 = parseFloat(document.getElementById("WithGSTTotal").value || 0);
+            var t_f1 = parseFloat(t_f) + parseFloat(numval3);
+            var numval4 = parseFloat(document.getElementById("Dis").value || 0);
+            var t_f2 = parseFloat(t_f1) - parseFloat(numval4);
+            if (!isNaN(t_f2)) {
+                document.getElementById("nettotal").value = t_f2.toFixed(2);
+                document.getElementById("balancetotal").value = t_f2.toFixed(2);
+            }
+            var numval5 = parseFloat(document.getElementById("AdvancePayment").value || 0);
+            var t_f3 = parseFloat(t_f2) - parseFloat(numval5);
+            if (!isNaN(t_f3)) {
+                document.getElementById("balancetotal").value = t_f3.toFixed(2);
+            }
+        }
+    }
+});
+    }
+function Action1(id) {
+        $.ajax({
+            url: '@Url.Action("Action1", "SWI")',
+            type: "POST",
+            data: { "id": id },
+        "success": function (data) {
+        if (data != null) {
+            var vdata = data;
+            $("#MarkUp").val(vdata[0].MarkUp);
+            }
+            var numval1 = parseFloat(document.getElementById("WithGSTTotal").value || 0);
+            var numval2 = parseFloat(document.getElementById("MarkUp").value || 0);
+            var t_f = parseFloat(numval1 * numval2 / 100)
+            if (!isNaN(t_f)) {
+                document.getElementById("Interests").value = t_f.toFixed(2);
+            }
+            var numval3 = parseFloat(document.getElementById("WithGSTTotal").value || 0);
+            var t_f1 = parseFloat(t_f) + parseFloat(numval3);
+            var numval4 = parseFloat(document.getElementById("Dis").value || 0);
+            var t_f2 = parseFloat(t_f1) - parseFloat(numval4);
+            if (!isNaN(t_f2)) {
+                document.getElementById("nettotal").value = t_f2.toFixed(2);
+                document.getElementById("balancetotal").value = t_f2.toFixed(2);
+            }
+            var numval5 = parseFloat(document.getElementById("AdvancePayment").value || 0);
+            var t_f3 = parseFloat(t_f2) - parseFloat(numval5);
+            if (!isNaN(t_f3)) {
+                document.getElementById("balancetotal").value = t_f3.toFixed(2);
+            }
+    }
+});
+    }
+    function getPrice() {
+        var numval1 = parseFloat(document.getElementById("WithGSTTotal").value || 0);
+        var numval2 = parseFloat(document.getElementById("Interests").value || 0);
+        var t_f = parseFloat(numval1) + parseFloat(numval2);
+        if (!isNaN(t_f)) {
+            document.getElementById("nettotal").value = t_f.toFixed(2);
+            document.getElementById("balancetotal").value = t_f.toFixed(2);
+        }
+        var numval3 = parseFloat(document.getElementById("Dis").value || 0);
+        var t_f1 = parseFloat(t_f) - parseFloat(numval3);
+        if (!isNaN(t_f)) {
+            document.getElementById("nettotal").value = t_f1.toFixed(2);
+            document.getElementById("balancetotal").value = t_f1.toFixed(2);
+        }
+        var numval4 = parseFloat(document.getElementById("AdvancePayment").value || 0);
+        var t_f2 = parseFloat(t_f1) - parseFloat(numval4);
+        if (!isNaN(t_f2)) {
+           document.getElementById("balancetotal").value = t_f2.toFixed(2);
+        }
+
+    };
+    function preview_image(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('user_img');
+            output.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    };
+    $('#cnic').keydown(function () {
+        if (event.keyCode == 8 || event.keyCode == 9
+            || event.keyCode == 27 || event.keyCode == 13
+            || (event.keyCode == 65 && event.ctrlKey === true))
+            return;
+        if ((event.keyCode < 48 || event.keyCode > 57))
+            event.preventDefault();
+
+        var length = $(this).val().length;
+
+        if (length == 5 || length == 13)
+            $(this).val($(this).val() + '-');
+    });
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+</script>
+

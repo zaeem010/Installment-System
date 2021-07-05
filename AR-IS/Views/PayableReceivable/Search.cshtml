@@ -1,0 +1,71 @@
+﻿@model AR_IS.ViewModel.PayRecVM
+@{
+    Layout = null;
+    int sr = 0;
+    double sumpay = 0.00;
+    double sumrec = 0.00;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Payable & Recieveable Report</title>
+</head>
+<body onload="window.print()">
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid" style="height: 40px;">
+            <h2 class="display-4" style="margin-top: -20px;"><b>Payable & Recieveable SHEET FOR THE MONTH OF @Model.s_date</b></h2>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card-header">
+                    <h3 class="text-center"><b><u>Payables & Recievables:</u></b></h3>
+                </div>
+                <table class="table table-light">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Sr#</th>
+                            <th>Account Name</th>
+                            <th>Payables</th>
+                            <th>Recievables</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lst in Model.PayrecList)
+                        {
+                            sumpay += Convert.ToDouble(lst.Payable);
+                            sumrec += Convert.ToDouble(lst.Receivable);
+                            <tr>
+                                <td>@{sr++;}@sr</td>
+                                <td>@lst.AccountName</td>
+                                <td class="bg-danger">@lst.Payable.ToString("#,##0.00")</td>
+                                <td class="bg-success">@lst.Receivable.ToString("#,##0.00")</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th>Total</th>
+                            <th>@sumpay.ToString("#,##0.00")</th>
+                            <th>@sumrec.ToString("#,##0.00")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+</body>
+</html>
