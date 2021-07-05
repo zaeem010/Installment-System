@@ -1,0 +1,84 @@
+﻿@model AR_IS.Models.InstallmentPlan
+@{
+    ViewBag.Title = "New";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","InstallmentPlan")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Installment Plans</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><u><b>Register Installment Plan</b></u></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "InstallmentPlan", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>No of Year </label>
+                            @Html.TextBoxFor(m => m.year, new { @class = "form-control thresold-i", @placeholder = "", @maxlength = "30", @required = "required", @autocomplete = "off" , @type = "text", id = "txtChar", onkeypress = "return isNumberKey(event)" })
+                        </div>
+                        <div class="col-md-4">
+                            <label>MarkUp % </label>
+                            @Html.TextBoxFor(m => m.MarkUp, new { @class = "form-control thresold-i",  @required = "required", @type = "" , maxlength = "3", id = "smsCode" })
+                        </div>
+                        <div class="col-md-4">
+                            <label>Details </label>
+                            @Html.TextAreaFor(m => m.Detail, new { @class = "form-control thresold-i", @placeholder = "",   })
+                        </div>
+                    </div>
+                        <br />
+                        <div class="col-md-10" style="margin-left:320px;margin-top:20px">
+                            @if (Model.Id == 0)
+                            {
+
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Installment Plan?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+
+                            }
+                            else
+                            {
+
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this Installment Plan?');"><i class="icofont icofont-ui-check"></i>  Update </button>
+
+                            }
+                            @Html.HiddenFor(m => m.Id)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+<script type="text/javascript">
+    
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+      
+</script>
+
+
+
+
+
+
+
+

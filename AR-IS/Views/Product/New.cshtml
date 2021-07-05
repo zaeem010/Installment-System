@@ -1,0 +1,199 @@
+﻿@model AR_IS.ViewModel.ProductVM
+@{
+    ViewBag.Title = "New";
+}
+<style>
+
+    hr.new2 {
+        color: #2196F3;
+        border-top: 4px dotted;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","Product")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Products</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><b><u>Register Product</u></b></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Select Brand</label>
+                                    <br />
+                                    @Html.DropDownListFor(m => m.Product.Bid, new SelectList(Model.Category_list, "Id", "Name"), "Select Brand", htmlAttributes: new { @class = "form-control input-xs chosen-select", })
+                                </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label>Select Category</label>
+                                    <br />
+                                    @Html.DropDownListFor(m => m.Product.Cid, new SelectList(Model.Brand_list, "Id", "Name"), "Select Category", htmlAttributes: new { @class = "form-control input-xs chosen-select", })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <br />
+                            <div class="col-md-12">
+                                <div style="overflow-x:auto">
+                                    <table class="table dt-responsive table-striped table-bordered nowrap" id="table">
+                                        <thead>
+                                            <tr>
+                                                @if (Model.Product.Id == 0)
+                                                {
+                                                    <th>Action</th>
+                                                }
+                                                <th>Name</th>
+                                                <th>CP</th>
+                                                <th>SP</th>
+                                                <th>Pieces In Box</th>
+                                                <th>Measuring Unit</th>
+                                                <th>Opening Stock</th>
+                                                <th>Shelf Number</th>
+                                                <th>Barcode</th>
+                                                <th>Reorder Level</th>
+                                                <th>Image</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.Product.Id == 0)
+                                            {
+                                            <tr>
+                                                <td><button class="badge badge-danger b-rounded" onclick="productDelete(this)"><i class="fa fa-trash-o"></i></button></td>
+                                                <td><input type="text" name="IName" required class="form-control" autocomplete="off"></td>
+                                                <td><input type="number" name="cprice" class="form-control" autocomplete="off"></td>
+                                                <td><input type="number" name="sprice" class="form-control" autocomplete="off"></td>
+                                                <td><input type="number" name="Itemunit" class="form-control" autocomplete="off"></td>
+                                                <td>
+                                                    <select class="form-control " name="unitid" id="unit">
+                                                        <option value="">Select Unit </option>
+                                                        @foreach (var lst in Model.Unit_list)
+                                                        {
+                                                            <option value="@lst.Id">@lst.Name</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td><input type="number" name="openingstock" class="form-control" autocomplete="off"></td>
+                                                <td><input type="text" name="shelfnumber" class="form-control" autocomplete="off"></td>
+                                                <td><input type="number" name="barcode" class="form-control" autocomplete="off"></td>
+                                                <td><input type="number" name="reorderlevel" class="form-control" autocomplete="off"></td>
+                                                <td><input type="file" name="file" class="form-control" autocomplete="off"></td>
+                                            </tr>
+                                            }
+                                            else
+                                            {
+                                                foreach (var lst_Product in Model.Product_list)
+                                                {
+                                        <tr>
+
+
+                                            <td><input type="text" name="I_Names" value="@lst_Product.Iname" required class="form-control" autocomplete="off"></td>
+                                            <td><input type="number" name="c_prices" value="@lst_Product.Cprice" class="form-control" autocomplete="off"></td>
+                                            <td><input type="number" name="s_prices" value="@lst_Product.Sprice" class="form-control" autocomplete="off"></td>
+                                            <td><input type="number" name="Itemunits" value="@lst_Product.Itemunit" class="form-control" autocomplete="off"></td>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.Product.MeasuringUnit, new SelectList(Model.Unit_list, "Id", "Name"), "Select Unit", htmlAttributes: new { @class = "form-control input-xs ", })
+                                            </td>
+
+                                            <td><input type="number" name="opening_stocks" value="@lst_Product.Openingstock" class="form-control" autocomplete="off"></td>
+                                            <td><input type="number" name="Shelfnumbers" value="@lst_Product.Shelfnumber" class="form-control" autocomplete="off"></td>
+
+                                            <td><input type="number" name="barcodes" value="@lst_Product.Barcode" class="form-control" autocomplete="off"></td>
+                                            <td><input type="number" name="reorder_levels" value="@lst_Product.Reorderlevel" class="form-control" autocomplete="off"></td>
+                                            <td><input type="file" name="img_1" class="form-control" autocomplete="off"></td>
+                                        </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (Model.Product.Id == 0)
+                                {
+                                    <h1><button type="button" onclick="add()" class="btn btn-primary "><i class="fa fa-plus "></i>Add More</button></h1>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-10" style="margin-left:430px;margin-top:20px">
+                            @if (Model.Product.Id == 0)
+                            {
+
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Product?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+
+                            }
+                            else
+                            {
+
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this Product?');"><i class="icofont icofont-ui-check"></i>  Update </button>
+
+                            }
+                            @Html.HiddenFor(m => m.Product.Id)
+                        </div>
+                        <br />
+                       
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>
+<script>
+    //Add rows
+    function add() {
+        var htmlrows = '';
+        htmlrows += '<tr>';
+        htmlrows += '<td><button class="badge badge-danger b-rounded" onclick="productDelete(this)"><i class="fa fa-trash-o"></i></button></td>';
+        htmlrows += '<td><input type="text" name="IName"  required class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="number" name="cprice" class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="number" name="sprice" class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="number" name="Itemunit" class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><select class="form-control "  name="unitid"><option value="">Select Unit </option>@foreach (var lst in Model.Unit_list) { <option value="@lst.Id">@lst.Name</option> }</select></td > ';
+        htmlrows += '<td><input type="number" name="openingstock"class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="text" name="shelfnumber"class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="number" name="barcode"class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="number" name="reorderlevel"class="form-control" autocomplete="off"></td>';
+        htmlrows += '<td><input type="file" name="file" class="form-control" autocomplete="off"></td>';
+        htmlrows += '</tr>';
+        $('#table').append(htmlrows);
+    }
+</script>
+<script>
+    //Delete The Rows.
+    function productDelete(btn) {
+
+        if (confirm('Do you want to delete')) {
+            $(btn).closest('tr').remove();
+        }
+    }
+    
+        setTimeout(function () {
+            $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+
+
+
+
+
+
+
+

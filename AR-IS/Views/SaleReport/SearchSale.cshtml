@@ -1,0 +1,105 @@
+﻿@model AR_IS.ViewModel.ReportsVM
+@{
+    ViewBag.Title = "SearchSale";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            @*<a href="@Url.Action("Index","Category")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Categories</a>*@
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><u><b>Sale Report </b></u></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("SearchSale", "SaleReport", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Start Date</label>
+                            <input type="date" name="Sdate" value="@Model.Sdate"  class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>End Date</label>
+                            <input type="date" name="Edate"  value="@Model.Edate" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label><b>Select Customer</b></label>
+                            @Html.DropDownListFor(m => m.Customer.AccountNo, new SelectList(Model.Cus_list, "AccountNo", "Name"), "Select Customer", htmlAttributes: new { @class = "form-control input-xs chosen-select" })
+                        </div>
+                        <br />
+                        <div class="col-md-3 offset-sm-10">
+                            <button type="submit" class="btn btn-primary " style="margin-top:30px"><i class="fa fa-search"></i>&nbsp; Search</button>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u><b>Sale Report </b></u></h5>
+                            </div>
+                            @*<a href="@Url.Action("Print", new {   } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>*@
+                            <div class="card-block">
+                                <br />
+                                <br />
+                                <table id="" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead class="bordered-darkorange">
+                                        <tr style="background-color:#2196F3;color:white">
+                                            <th>Invoice No  </th>
+                                            <th>Date </th>
+                                            <th>Customer </th>
+                                            <th>Total  Rate </th>
+                                            <th>Interests</th>
+                                            <th>Discount</th>
+                                            <th>Net Total</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach (var lst in Model.SaleReport)
+                                        {
+                                        <tr>
+                                            <td>@lst.Invid</td>
+                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
+                                            <td>@lst.Name</td>
+                                            <td>@lst.TotalRate</td>
+                                            <td>@lst.Interests</td>
+                                            <td>@lst.Discount</td>
+                                            <td>@lst.NetTotal</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+
+                                            <th></th>
+                                            <th></th>
+                                            <th>Final Total</th>
+                                            <th><button type="submit" class="btn btn-primary ">@Model.TotalSaleReport.TRate </button></th>
+                                            <th><button type="submit" class="btn btn-danger ">@Model.TotalSaleReport.TInterests</button></th>
+                                            <th><button type="submit" class="btn btn-warning">@Model.TotalSaleReport.TDiscount</button></th>
+                                            <th><button type="submit" class="btn btn-success">@Model.TotalSaleReport.GrandNetTotal</button></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>

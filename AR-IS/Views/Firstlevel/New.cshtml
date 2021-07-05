@@ -1,0 +1,58 @@
+﻿@model AR_IS.ViewModel.AccountVM
+@{
+    ViewBag.Title = "New";
+}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","Firstlevel")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Accounts</a>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><b><u>First Level Account</u></b></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "Firstlevel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="col-md-6" style="margin-top:0px">
+                                <label>Select Account Head</label>
+                                @if (Model.Firstlevel.Id == 0)
+                                {
+                                    @Html.DropDownListFor(m => m.Firstlevel.Headid, new SelectList(Model.Ac_headlist, "id", "Head_Name"), "Select Account Head", htmlAttributes: new { @class = "form-control  chosen-select", id = "select_Account" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => m.Firstlevel.Headid, new SelectList(Model.Ac_headlist, "id", "Head_Name"), "Select Account Head", htmlAttributes: new { @class = "form-control  chosen-select", id = "select_Account", @disabled = "true" })
+                                }
+                            </div>
+                            <div class="col-md-6">
+                                <label>Account Name</label>
+                                @Html.TextBoxFor(m => m.Firstlevel.AccountTitle, new { @class = "form-control thresold-i", @placeholder = "", @maxlength = "25", @required = "true", @autocomplete = "off" })
+                            </div>
+                        </div>
+                        <div class="col-md-10" style="margin-left:410px;margin-top:20px">
+                            @if (Model.Firstlevel.Id == 0)
+                            {
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Account?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this Account?');"><i class="icofont icofont-ui-check"></i>  Update </button>
+                            }
+                        </div>
+                        @Html.HiddenFor(m => m.Firstlevel.Id)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>
+
+
+
+

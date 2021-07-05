@@ -1,0 +1,108 @@
+﻿@model AR_IS.ViewModel.LoginVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IMS</title>
+    <link rel="stylesheet" href="~/Content/login/fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="~/Content/login/css/style.css">
+    <meta name="robots" content="noindex, follow">
+</head>
+<body>
+    <div class="main">
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Sign up</h2>
+
+                        @using (Html.BeginForm("Save", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <p id="userStatus"></p>
+                            <div class="form-group">
+                                <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                @Html.TextBoxFor(m => m.GeneralUser.UserName, new { @class = "form-control thresold-i", @placeholder = "User Name", @required = "required", @autocomplete = "off", id = "txtUsername" })
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                @Html.TextBoxFor(m => m.GeneralUser.Email, new { @class = "form-control thresold-i", @placeholder = "Your Email", @required = "required", @autocomplete = "off", @type = "email" })
+                            </div>
+                            <div class="form-group">
+                                <label for="pass"><i class="zmdi zmdi-phone"></i></label>
+                                @Html.TextBoxFor(m => m.GeneralUser.Phone, new { @class = "form-control thresold-i", @placeholder = "Phone", @required = "required", @autocomplete = "off", @type = "number" })
+                            </div>
+                            <div class="form-group">
+                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                @Html.PasswordFor(m => m.GeneralUser.Password, new { @class = "form-control thresold-i", @placeholder = "Password", @required = "required", @autocomplete = "off", @type = "Password" })
+                            </div>
+                            <div class="form-group">
+                                <label for="pass"><i class="zmdi zmdi-play"></i></label>
+                                @Html.TextBoxFor(m => m.GeneralUser.Plan, new { @class = "form-control thresold-i", @required = "required", Value = "14 days free trial", @readonly = "true" })
+                            </div>
+                            <div class="">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register" autocomplete="off" />
+                            </div>
+                        }
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="~/Content/login/images/signup-image.jpg" alt="sing up image"></figure>
+                        <a href="@Url.Action("Login","Home")" class="signup-image-link">Sign in Instead</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="~/Content/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/js/main.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+    </script>
+    <script defer src="../../../../static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"65b0b8476cdd7ab6","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.5.2","si":10}'></script>
+</body>
+
+</html>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(function () {
+        $("#txtUsername").keyup(function () {
+            var name = $("#txtUsername").val();
+            var status = $("#userStatus");
+            var user = $.trim(name);
+            if (user.length > 3) {
+                status.html("Checking....")
+                $.post("/Home/chkPrevUser", { username: name },
+                    function (data) {
+                        
+                        
+                        if (data == true) {
+                            status.html("<font color=red>'<b>" + name + "</b>' is not available!</font>");
+                        } else {
+                            status.html("<font color=green>'<b>" + name + "</b>' is  available!</font>");
+                        }
+                    });
+            }
+            if (name.length == 0) {
+                status.html("");
+            }
+        });
+    });
+    $(function () {
+        $('#txtUsername').on('keypress', function (e) {
+            if (e.which == 32) {
+                console.log('Space Detected');
+                return false;
+            }
+        });
+    })
+</script>

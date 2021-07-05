@@ -1,0 +1,103 @@
+﻿@model IEnumerable<AR_IS.Models.Supplier>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","Supplier")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div id="mydiv1" class="col-md-3">
+                <p class="text-center bg-danger">@TempData["Reg1"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Supplier Tables</u></h5>
+                            </div>
+                            <div class="card-block">
+                                <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Account No</th>
+                                            <th>Image</th>
+                                            <th>Supplier Name</th>
+                                            <th>Company Name</th>
+                                            <th>CNIC</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Account No</th>
+                                            <th>Image</th>
+                                            <th>Supplier Name</th>
+                                            <th>Company Name</th>
+                                            <th>CNIC</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var lst_Supplier in Model)
+                                        {
+
+                                            <tr>
+                                                <td>@lst_Supplier.AccountNo</td>
+
+                                                @if (lst_Supplier.Image == null || lst_Supplier.Image == "'NULL'" || lst_Supplier.Image == "")
+                                                {
+                                                    <td style="width:30px; text-align:center;"><img src="~/Content/Image/Demo.png" width="50" height="50" class="img-thumbnail" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="width:30px; text-align:center;"><img src="~/uploads/@lst_Supplier.Image" width="50" height="50" class="img-thumbnail" /></td>
+                                                }
+                                                <td>@lst_Supplier.Name</td>
+                                                <td>@lst_Supplier.Comname</td>
+                                                <td>@lst_Supplier.CNIC</td>
+                                                <td>
+                                                    <a href="@Url.Action("Edit", new { id = lst_Supplier.AccountNo })" new { onclick="return confirm('Are you sure you want to Edit this Supplier?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                                    <a href="@Url.Action("Delete", new {id = lst_Supplier.AccountNo} )" new { onclick="return confirm('Are you sure you want to Delete this Supplier?');" data-toggle="tooltip" data-placement="left" title="Click Me To Delete" class="badge badge-danger b-rounded"><i class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+<script>
+    setTimeout(function () {
+        $('#mydiv1').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,239 @@
+﻿@model AR_IS.ViewModel.SupplierVM
+@{
+    ViewBag.Title = "New";
+}
+<style>
+    hr.new2 {
+        color: #2196F3;
+        border-top: 4px dotted;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("Index","Supplier")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i> Suppliers </a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><b><u>Register Supplier</u></b></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "Supplier", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <span id="uname_response"></span>
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-8">
+                                    @if (Model.Supplier.Id == 0)
+                                    {
+                                        <div class="col-md-6">
+                                            <br />
+                                            <label>Name Supplier</label>
+                                            <br />
+                                            @Html.TextBoxFor(m => m.Supplier.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-6">
+                                            <br />
+                                            <label>Name Supplier</label>
+                                            <br />
+                                            @Html.TextBoxFor(m => m.Supplier.Name, new { @class = "form-control thresold-i ", @required = "required", @readonly = "true", autocomplete = "off" })
+                                        </div>
+                                    }
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Name Company </label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Supplier.Comname, new { @class = "form-control thresold-i ", @required = "required", autocomplete = "off" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>CNIC</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Supplier.CNIC, new { @class = "form-control thresold-i ", @type = "", @placeholder = "", autocomplete = "off" , @id= "cnic" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Phone</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Supplier.Phone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Telephone</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Supplier.Telephone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Email</label>
+                                        <br />
+                                        @Html.TextBoxFor(m => m.Supplier.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label><b>Select Town</b></label>
+                                        @Html.DropDownListFor(m => m.Supplier.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                                    </div>
+                                   
+                                    <div class="col-md-6">
+                                        <br />
+                                        <label>Address</label>
+                                        <br />
+                                        @Html.TextAreaFor(m => m.Supplier.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "30", rows = "3" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="col-md-12">
+                                        <label><b>Photo</b></label>
+                                        @if (Model.Supplier.Image == "" || Model.Supplier.Image == null)
+                                        {
+                                            <div>
+                                                <img id="user_img" height="97" src="~/Content/Image/Demo.png" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
+                                            </div>
+                                            <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                <img id="user_img" height="97" src="~/uploads/@Model.Supplier.Image" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
+                                            </div>
+                                            <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
+                                        }
+                                    </div>
+                                    <div class="col-md-12">
+                                        <br />
+                                        <label><b>Select Province</b></label>
+                                        @Html.DropDownListFor(m => m.Supplier.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-10" style="margin-left:320px;margin-top:20px">
+                            
+                            <br />
+                            @if (Model.Supplier.Id == 0)
+                            {
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Supplier?');" ><i class="icofont icofont-ui-check"></i>  Save </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this Supplier?');" ><i class="icofont icofont-ui-check"></i>  Update </button>
+
+                            }
+                        </div>
+                        <br />
+                        @Html.HiddenFor(m => m.Supplier.Id)
+                        @Html.HiddenFor(m => m.Supplier.AccountNo)
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $('.chosen-select').chosen();
+</script>
+<script type="text/javascript">
+    function preview_image(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            var output = document.getElementById('user_img');
+            output.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    };
+    $('#cnic').keydown(function () {
+        if (event.keyCode == 8 || event.keyCode == 9
+            || event.keyCode == 27 || event.keyCode == 13
+            || (event.keyCode == 65 && event.ctrlKey === true))
+            return;
+        if ((event.keyCode < 48 || event.keyCode > 57))
+            event.preventDefault();
+
+        var length = $(this).val().length;
+
+        if (length == 5 || length == 13)
+            $(this).val($(this).val() + '-');
+    });
+    //Duplicate user
+    $(document).ready(function () {
+
+        $("#txt_username").keyup(function () {
+
+            var name = $(this).val().trim();
+            var dis = $(this).val().trim();
+
+            if (name != '') {
+
+                $.ajax({
+                    type: 'GET',
+                    url: "Getemployee/Employee",
+                    data: { name: name },
+                    success: function (response) {
+
+                        // Show response
+                        $("#uname_response").html(response);
+                    }
+                });
+            }
+            else {
+                $("#uname_response").html("");
+            }
+
+        });
+
+    });
+    $(document).ready(function () {
+
+        $("#txt_username").keyup(function () {
+            var count = document.getElementById("txt_username").value.length;
+            //alert(count);
+            if (count == 0) {
+                document.getElementById("btn").disabled = true;
+            }
+            var name = $(this).val().trim();
+            if (name != '') {
+                $.ajax({
+                    type: 'GET',
+                    url: "Getemployeebtn/Employee",
+                    data: { name: name },
+                    success: function (response) {
+                        if (response == 0) {
+                            document.getElementById("btn").disabled = false;
+                        }
+                        else {
+                            document.getElementById("btn").disabled = true;
+                        }
+                        // Show response
+                        $("#disable").html(response);
+                    }
+                });
+            }
+            else {
+                $("#disable").html("");
+            }
+
+        });
+
+    });
+</script>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+
+

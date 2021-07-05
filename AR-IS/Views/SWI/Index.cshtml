@@ -1,0 +1,134 @@
+﻿@model IEnumerable<AR_IS.ViewModelQuery.SWIVMQ>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","SWI")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Sale Tables</u></h5>
+                            </div>
+                            <div class="row">
+                                <div id="mydiv" class="col-md-3">
+                                    <p class="text-center bg-success">@TempData["Reg"]</p>
+                                    <p class="text-center bg-danger">@TempData["Reg1"]</p>
+                                </div>
+                            </div>
+                            <div class="card-block">
+                                <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Inv No</th>
+                                            <th>Date </th>
+                                            <th>Customer </th>
+                                            <th>Vehicle </th>
+                                            <th>Net Total </th>
+                                            <th>Received  </th>
+                                            <th>Balance  </th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Inv No</th>
+                                            <th>Date </th>
+                                            <th>Customer </th>
+                                            <th>Vehicle </th>
+                                            <th>Net Total </th>
+                                            <th>Received  </th>
+                                            <th>Balance  </th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var lst in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @lst.Invid
+
+                                                </td>
+                                                <td>
+                                                    @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
+                                                </td>
+                                                <td>
+                                                    @lst.Name
+                                                </td>
+                                                <td>
+                                                    @lst.VehicleName-@lst.EngineNo
+                                                </td>
+                                                <td>
+                                                    @lst.NetTotal
+                                                </td>
+
+                                                <td>
+                                                    @lst.ReceivedTotal
+                                                </td>
+                                                <td>
+                                                    @lst.RemainingBalance
+                                                </td>
+                                                <td>
+                                                    <a href="@Url.Action("Delete", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Delete this Invoice?');" class="badge badge-danger" data-toggle="tooltip" data-placement="left" title="Click Me To Delete"><i class="fa fa-trash"></i></a>
+                                                    <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                                    <a href="@Url.Action("Print", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i></a>
+                                                    <a href="@Url.Action("InstallmentDetail", new { Invid = lst.Invid })" class="badge badge-success" data-toggle="tooltip" data-placement="left" title="Click Me To Installment Detail"><i class="fa fa-bicycle"></i></a>
+
+                                                </td>
+                                            </tr>
+
+                                        }
+                                        @*<tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>12</td>
+                                            <td>12</td>
+                                            <td>12</td>
+                                            <td>00</td>
+                                        </tr>*@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

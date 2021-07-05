@@ -1,0 +1,302 @@
+﻿@model AR_IS.ViewModel.LoginVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IMS</title>
+    <link rel="stylesheet" href="~/Content/login/fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="~/Content/login/css/style.css">
+    <meta name="robots" content="noindex, follow">
+</head>
+<body>
+    <div class="main">
+        <section class="sign-in">
+            <div class="container">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="~/Content/login/images/signin-image.jpg" alt="sing up image"></figure>
+                        
+                    </div>
+
+                    <div class="signin-form">
+                        <h2 class="form-title">Sign In</h2>
+                        @using (Html.BeginForm("Login_check", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "login100-form validate-form p-l-55 p-r-55 p-t-178" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                @Html.TextBoxFor(m => m.GeneralUser.UserName, new { @class = "form-control thresold-i", @placeholder = "User Name", @required = "required", @autocomplete = "off", })
+                            </div>
+                            <div class="form-group">
+                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                                @Html.TextBoxFor(m => m.GeneralUser.Password, new { @class = "form-control thresold-i",@type= "Password", @placeholder = "Password", @required = "required", @autocomplete = "off", })
+                            </div>
+                            <!--<div class="form-group">
+                                <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                                <label class="label-agree-term"><a href="@Url.Action("ForgotPassword","Home")">Forgot password</a></label>-->
+                                @*<label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>*@
+                            <!--</div>-->
+                            <div class="form-group">
+                                <label class="label-agree-term"><a href="@Url.Action("New","Home")">Sign Up</a></label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="~/Content/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/js/main.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+    </script>
+    <script defer src="../../../../static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"65b0b8476cdd7ab6","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.5.2","si":10}'></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<html lang="en">
+    <head>
+        <title>AR-IS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/png" href="images/icons/favicon.ico" />
+        <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/vendor/bootstrap/css/bootstrap.min.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/vendor/animate/animate.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/vendor/css-hamburgers/hamburgers.min.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/vendor/animsition/css/animsition.min.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/vendor/select2/select2.min.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/vendor/daterangepicker/daterangepicker.css">
+
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/css/util.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/Login_v8/css/main.css">
+
+    </head>
+    <body>
+        <div class="limiter">
+            <div class="container-login100">
+                <div class="wrap-login100">
+                    <div class="wrap-login100 ">
+                        @using (Html.BeginForm("Login_check", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "login100-form validate-form p-l-55 p-r-55 p-t-178" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <span class="login100-form-title">
+                                Sign In
+                            </span>
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                                <select class="form-control  input100" required name="BranchName" id="">
+                                    <option value="">Select Company</option>
+                                    @foreach (var lst in Model.Companies)
+                                    {
+                                        <option value="@lst.Comid">@lst.Name</option>
+                                    }
+                                </select>
+                                <span class="focus-input100"></span>
+                            </div>
+                            <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                                @Html.TextBoxFor(m => m.Userlogin.UserName, new { @class = "input100", @required = "required", @placeholder = "Username ", maxlength = "20", @autocomplete = "off" })
+                                <span class="focus-input100"></span>
+                            </div>
+                            <div class="wrap-input100 validate-input" data-validate="Please enter password">
+                                @Html.TextBoxFor(m => m.Userlogin.Password, new { @class = "input100", @type = "Password", @placeholder = "Password", @required = "required", maxlength = "20", @autocomplete = "off" })
+                                <span class="focus-input100"></span>
+
+                            </div>
+                            <div class="text-right p-t-13 p-b-23">
+                            </div>
+                            <div class="container-login100-form-btn">
+                                <button type="submit" class="login100-form-btn">
+                                    Sign in
+                                </button>
+                            </div>
+                            <div class="flex-col-c p-t-50 p-b-40">
+                            </div>
+                        }
+                        <br />
+                    </div>
+                    @if (Model.alert == "1")
+                    {
+                        <h4 style="border-radius:10px;background-color:red;color:white;margin-bottom:-400px;margin-left:-370px" class="alert alert-danger text-center">Invalid Login Details</h4>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <script src="~/Content/Login_v8/vendor/jquery/jquery-3.2.1.min.js"></script>
+
+        <script src="~/Content/Login_v8/vendor/animsition/js/animsition.min.js"></script>
+
+        <script src="~/Content/Login_v8/vendor/bootstrap/js/popper.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+        <script src="~/Content/Login_v8/vendor/select2/select2.min.js"></script>
+
+        <script src="~/Content/Login_v8/vendor/daterangepicker/moment.min.js"></script>
+        <script src="~/Content/Login_v8/vendor/daterangepicker/daterangepicker.js"></script>
+
+        <script src="~/Content/Login_v8/vendor/countdowntime/countdowntime.js"></script>
+
+        <script src="~/Content/Login_v8/js/main.js"></script>
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+
+            gtag('config', 'UA-23581568-13');
+        </script>
+        <script defer src="~/Content/Login_v8/js/beacon.min.js" data-cf-beacon='{"rayId":"626b2049ca42d187","version":"2021.2.0","si":10}'></script>
+    </body>
+    </html>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

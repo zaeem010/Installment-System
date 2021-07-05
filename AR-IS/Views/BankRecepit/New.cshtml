@@ -1,0 +1,308 @@
+﻿@model AR_IS.ViewModel.VoucherVM
+@{
+    ViewBag.Title = "Create";
+}
+<style>
+    hr.new2 {
+        border: 1px dashed skyblue;
+        font-size: 10px
+    }
+</style>
+<div class="content-wrapper">
+
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="main-header">
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <a href="@Url.Action("Index","BankRecepit")" class="btn btn-primary pull-right" data-toggle="tooltip" title="Click Me To View" style="margin-left:20px"><i class="fa fa-list"></i> Invoice List</a>
+            @*<button type="button" class="btn btn-skype waves-effect md-trigger pull-right" data-toggle="tooltip" title="Click Me To View" data-modal="modal-12"><i class="fa fa-list"></i>Recent Invoice List</button>*@
+            <br />
+            <div class="card" style="margin-top:20px">
+                <div class="card-header">
+                    <h5 class="card-header-text"><u>Bank Receipt Voucher</u></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("Save", "BankRecepit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="form-group col-sm-1">
+                                <label>V-No</label>
+                                @Html.TextBoxFor(m => m.TranscationDetail.V_No, new { @class = "form-control", @readonly = "readonly", style = "width:70px" })
+                            </div>
+
+                            <div class="form-group col-sm-3">
+                                <label>Date</label>
+                                @if (Model.TranscationDetail.Id == 0)
+                                {
+                                    @Html.TextBoxFor(m => m.TranscationDetail.TransDate, new { @class = "form-control input-xs", id = "date", type = "Date" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.TranscationDetail.TransDate, new { @class = "form-control input-xs", type = "Date" })
+                                }
+
+                            </div>
+                            <div class="col-md-3">
+                                <label>To Account</label>
+                                @Html.DropDownListFor(m => m.TranscationDetail.AccountNo, new SelectList(Model.Banks, "AccountNo", "AccountTitle"), "To Account", htmlAttributes: new { @class = "chosen-select form-control", onChange = "Action(this.value)", style = "height:35px" })
+
+                            </div>
+                            <div class="form-group col-sm-5">
+                                <label>Remarks</label>
+                                @Html.TextAreaFor(m => m.TranscationDetail.TransDes, new { @class = "form-control input-xs", style = " rows=2, columns=40" })
+                            </div>
+
+                        </div>
+                        <hr class="new2"><br />
+                        <div clas="row" style="margin-top:10px;">
+                            <div class="col-md-3">
+                                <label>From Account</label>
+                                <select class="chosen-select form-control" id="account_name">
+                                    <option value=""> From Account</option>
+                                    @foreach (var item in Model.Accounts)
+                                    {
+                                        <option value="@item.AccountNo"> @item.AccountTitle</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-3" @*style="margin-left:-20px"*@>
+                                <label>Cheque No</label>
+                                <input type="text" id="c_no" class="form-control" />
+                            </div>
+                            <div class="form-group col-sm-3" style="margin-left:-20px">
+                                <label>Amount</label>
+                                <input type="number" id="cr" value="0" class="form-control" />
+                            </div>
+                            <div class="col-sm-3">
+                                <label>CLDate</label>
+                                <input type="date" id="cl_date" asp-for="Voucher.Cl_date" value="0" class="form-control" />
+
+                            </div>
+                            <div class="form-group col-sm-2" style="margin-left:-20px">
+
+                                <input type="hidden" id="dr" value="0" readonly class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px">
+
+                            <div class="col-sm-3">
+                                <label> Status </label>
+                                <select class=" form-control " style="height:30px" id="status" asp-for="Voucher.Cheque_status">
+                                    <option value="0" selected="" disabled="">Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Cleared">Cleared</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Returned">Returned</option>
+                                </select>
+                                <a class="btn btn-wide  pull-right" onclick='return add()' style="margin-right:-90px;margin-top:-37px;background-color:#4cff00"> <i class="fa fa-plus"></i> Add</a> &nbsp;&nbsp;
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12" style="margin-top:-15px">
+                                <div class="table-responsive">
+                                    <table id="invoiceItem" class="table table-bordered table-hover table-striped ">
+                                        <thead class="bordered-darkorange">
+                                            <tr style="background-color:#2196F3;color:white">
+                                                <th>Action</th>
+                                                <th>Account Name</th>
+                                                <th>Cheque No</th>
+                                                <th>Amount</th>
+                                                <th>ClDate</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        @if (Model.TranscationDetail.Id == 0)
+                                        {
+                                            <tbody>
+                                            </tbody>
+                                        }
+                                        else
+                                        {
+                                            <tbody>
+                                                @foreach (var lst in Model.TranscationList)
+                                                {
+                                                    <tr>
+                                                        <td style="width:80px !important"><a class="badge badge-danger" onclick="return deleteRow(this)"><i class="fa fa-trash-o"></i></a></td>
+                                                        <td><input type="text" name="account_name" value="@lst.AccountTitle" readonly class="form-control" autocomplete="off"></td>
+                                                        <td><input type="text" name="c_no" value="@lst.check_no" readonly class="form-control" autocomplete="off"></td>
+                                                        <td style="display:none"><input type="text" name="account_no" value="@lst.AccountNo" readonly class="form-control" autocomplete="off"></td>
+                                                        <td><input type="text" name="Cr" value="@lst.Cr" readonly class="form-control" autocomplete="off"></td>
+                                                        <td style="display:none"><input type="text" name="dr" value="@lst.Dr" readonly class="form-control" autocomplete="off"></td>
+                                                        <td><input type="text" name="cl_date" value="@lst.cle_date" readonly class="form-control" autocomplete="off"></td>
+                                                        <td><input type="text" name="narr" value="@lst.BankDes" readonly class="form-control" autocomplete="off"></td>
+                                                        <td style="display:none">@lst.AccountTitle</td>
+                                                        <td style="display:none">@lst.check_no</td>
+                                                        <td style="display:none">@lst.Cr</td>
+                                                        <td style="display:none">@lst.TransDes</td>
+                                                        <td style="display:none">@lst.Dr</td>
+                                                        <td style="display:none">@lst.AccountNo</td>
+
+
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3 offset-lg-4">
+                                <label class="pull-left">Total Amount</label>
+                                @Html.TextBoxFor(m => m.TranscationDetail.Dr, new { @class = "form-control input-xs", id = "t_debit", value = "0", @readonly = "true" })
+                            </div>
+                            <div class="col-md-10" style="margin-left:410px;margin-top:20px">
+                                @if (Model.TranscationDetail.Id == 0)
+                                {
+                                    <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-save"></i> &nbsp; Save Invoice</button>
+
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Update ..')"><i class="fa fa-save"></i> &nbsp; Update Invoice</button>
+
+                                }
+                            </div>
+
+                        </div>
+                        @Html.HiddenFor(m => m.TranscationDetail.Id)
+                        @Html.HiddenFor(m => m.TranscationDetail.Transid)
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+
+<script>
+    $('.chosen-select').chosen();
+
+
+    function add() {
+        var selObj = document.getElementById("account_name");
+        var account_name = selObj.options[selObj.selectedIndex].text;
+        var selObj = document.getElementById("account_name");
+        var account_no = selObj.options[selObj.selectedIndex].value;
+        var c_no = document.getElementById("c_no").value;
+        var cl_date = document.getElementById("cl_date").value;
+        var status = document.getElementById("status").value;
+        var dr = document.getElementById("dr").value;
+        var cr = document.getElementById("cr").value;
+
+
+        // alert(id);
+        if (account_name == "" || account_name == 0) {
+            alert("Please Select Account");
+        }
+        else if (account_no == "" || account_no == 0) {
+            alert("Please Select Account");
+        }
+        else if (cr == "" || cr == 0) {
+
+            alert("Please Enter  Amount");
+        }
+        else {
+            var htmlRows = '';
+            htmlRows += '<tr>';
+            htmlRows += '<td style="width:80px !important"><a class="badge badge-danger" onclick="return deleteRow(this)" ><i class="fa fa-trash-o"></i></a></td>';
+            htmlRows += '<td><input type="text"  name="account_name"  value="' + account_name + '" readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td><input type="text"  name="c_no"  value="' + c_no + '" readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td><input type="text"  name="Cr"  value="' + cr + '"  readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td><input type="text"  name="cl_date"  value="' + cl_date + '" readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td><input type="text"  name="narr"  value="' + status + '"   readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td style="display:none"><input type="text"  name="Dr"  value="' + dr + '"  readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td style="display:none"><input type="text"  name="account_no"  value="' + account_no + ' "   readonly class="form-control" autocomplete="off"></td>';
+            htmlRows += '<td style="display:none">' + account_name + '</td>';
+            htmlRows += '<td style="display:none">' + c_no + '</td>';
+            htmlRows += '<td style="display:none">' + cr + '</td>';
+            htmlRows += '<td style="display:none">' + cl_date + '</td>';
+            htmlRows += '<td style="display:none">' + status + '</td>';
+            htmlRows += '<td style="display:none">' + dr + '</td>';
+            htmlRows += '<td style="display:none">' + account_no + '</td>';
+            $('#invoiceItem').append(htmlRows);
+
+
+            $('#id').val('');
+            $('#account_name').val('');
+            $('#account_no').val('');
+            $('#dr').val('0');
+            $('#cr').val('0');
+            $('#status').val('');
+            $('#c_no').val('');
+            $('#cl_date').val('');
+
+
+
+
+            //    $('#account_name').trigger('change');
+            //$('#account_name').empty(); //remove all child nodes
+            //    var account_name = $('<option value="1">test</option>');
+            //    $('#account_name').append(account_name);
+            //$('#account_name').trigger("chosen:updated");
+
+            var table = document.getElementById("invoiceItem"), sumVal = 0;
+            for (var i = 1; i < table.rows.length; i++) {
+                sumVal = sumVal + parseInt(table.rows[i].cells[10].innerHTML);
+            }
+            document.getElementById("t_debit").value = sumVal;
+        }
+
+
+
+
+    };
+    function deleteRow(btn) {
+        if (confirm("Are you sure want to delete the row?"))
+            $(btn).closest("tr").remove();
+        var table = document.getElementById("invoiceItem"), sumVal = 0;
+        for (var i = 1; i < table.rows.length; i++) {
+            sumVal = sumVal + parseInt(table.rows[i].cells[10].innerHTML);
+        }
+        document.getElementById("t_debit").value = sumVal;
+        $(select).trigger("chosen:updated");
+
+    }
+
+
+    function Action(code) {
+        // alert(code);
+        $.ajax({
+            /**/
+            url: "Action/CashPayment?message=" + code,
+            method: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                var AccountTitleName = data.value1;
+                document.getElementById("account_no").value = AccountTitleName
+            }
+        });
+    };
+    $(document).ready(function () {
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        $('#date').val(today);
+
+    });
+
+</script>

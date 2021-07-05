@@ -1,0 +1,194 @@
+﻿@model   IEnumerable<AR_IS.ViewModelQuery.PaymentRecoveryVMQ>              
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","SWI")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Payment Recovery</u></h5>
+                            </div>
+                            <div class="card-block">
+                                <div class="row">
+                                    @using (Html.BeginForm("SaveInstallment", "PaymentRecovery", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <div class="col-md-12" style="overflow-x:auto">
+                                           
+                                            <table id="table1" class="table table-striped table-bordered nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ins No </th>
+                                                        <th>Checked </th>
+                                                        <th>Customer </th>
+                                                        <th>Installment Month </th>
+                                                        <th>Receiving Date </th>
+                                                        <th>Status </th>
+                                                        <th>Monthly Amount </th>
+                                                        <th>Discount </th>
+                                                        <th>Received Amount </th>
+                                                        <th>Details </th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Ins No </th>
+                                                        <th>Checked </th>
+                                                        <th>Customer </th>
+                                                        <th>Installment Month </th>
+                                                        <th>Receiving Date </th>
+                                                        <th>Status </th>
+                                                        <th>Monthly Amount </th>
+                                                        <th>Discount </th>
+                                                        <th>Received Amount </th>
+                                                        <th>Details </th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+                                                    @foreach (var lst in Model)
+                                                    {
+                                                    <tr>
+                                                        <td>@lst.InsId</td>
+                                                        <td class="pull-left">
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                <span class="badge badge-success">Cleared</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="hidden" class="form-control" value="@lst.InsId" name="InsId">
+                                                                @*<input type="checkbox" class="form-control" value="Clear" name="Status">*@
+                                                                <select class="form-control" style="height:27px" name="checkeds">
+                                                                    <option value="Pending">Pending</option>
+                                                                    <option value="Cleared">Cleared</option>
+                                                                </select>
+                                                            }
+                                                        </td>
+                                                        <td align="center">@lst.Name<input type="hidden" value="@lst.AccountNo"  name="AccountNo"/></td>
+                                                        <td align="center">@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
+                                                        <td>
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                @Convert.ToDateTime(lst.Date).ToString("dd-MM-yyyy")
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="date" class="form-control" name="date" value="@lst.Date" />
+                                                            }
+                                                        </td>
+                                                        @if (lst.Status == "Pending")
+                                                        {
+                                                            <td style="width:30px; text-align:center;"><span class="badge badge-danger">Pending</span><input type="hidden" class="form-control" name="Status" value="Pending" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style="width:30px; text-align:center;"><span class="badge badge-success">Cleared</span></td>
+                                                        }
+
+                                                        <td>
+                                                            @lst.PerMonthAmount<input type="hidden" name="Invid" value="@lst.Invid"/>
+                                                        </td>
+                                                        <td>
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                @lst.Discounts
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="number" name="Dis" value="" class="form-control" />
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                @lst.ReceivedAmount
+                                                            }
+                                                            else
+                                                            {
+                                                                @lst.ReceivedAmount<input type="hidden" value="@lst.PerMonthAmount" name="ReceivedAmount">
+                                                            }
+                                                        </td>
+                                                        <td><a href="@Url.Action("InstallmentDetail","SWI", new {   Invid = lst.Invid  })" class="badge badge-success"><i class="fa fa-list"></i></a></td>
+                                                    </tr>
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-10" style="margin-left:330px;margin-top:20px">
+                                            <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:08px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-money f-20"></i> &nbsp; Payment Recovery</button>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+    //start
+    $(document).ready(function () {
+        var table1 = $('#table1').DataTable({
+            "paging": false,
+            "ordering": false,
+            "info": true,
+        });
+        // Setup - add a text input to each footer cell
+        $('#table1 tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<div class="md-input-wrapper"><input type="text" class="md-form-control" placeholder="Search" /></div>');
+        });
+        //
+        table1.columns().every(function () {
+            var that = this;
+
+            $('input', this.footer()).on('keyup change', function () {
+                if (that.search() !== this.value) {
+                    that
+                        .search(this.value)
+                        .draw();
+                }
+            });
+        });
+        //
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

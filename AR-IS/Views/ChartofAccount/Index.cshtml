@@ -1,0 +1,76 @@
+﻿@model AR_IS.ViewModel.AccountVM
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/__chartOfAccount.cshtml";
+}
+
+<div class="content-wrapper">
+
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        @*<div class="row">
+                <div class="main-header">
+                    <h4>Second Level List</h4>
+                </div>
+            </div>*@
+        <div class="col-lg-12">
+            @*<a href="@Url.Action("OpenBalance","OpeningBalance")" class="btn btn-skype offset-lg-10"><i class="fa fa-plus"></i>Add Opening Balance</a>*@
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Chart OF account</u></h5>
+                            </div>
+                            <div class="card-block">
+                                <div class="cf nestable-lists" style="border:0px solid black;margin-top:-20px;margin-left:30px">
+                                    <div class="dd" id="nestable">
+                                        <ol class="dd-list">
+                                            @foreach (var item0 in Model.Ac_headlist)
+                                            {
+                                                <li class="dd-item" data-id="1">
+                                                    <div class="dd-handle">  @item0.Head_Name ( @item0.Id )</div>
+                                                    <ol class="dd-list">
+                                                        @foreach (var item in Model.Firstlevels.Where(z => z.Headid == item0.Id))
+                                                        {
+                                                            <li class="dd-item" data-id="2">
+                                                                <div class="dd-handle">  @item.AccountTitle ( @item.AccountNo)</div>
+                                                                <ol class="dd-list">
+                                                                    @foreach (var item1 in Model.Secondlevels.Where(x => x.SubHeadid == item.AccountNo))
+                                                                    {
+                                                                        <li class="dd-item" data-id="5">
+                                                                            <div class="dd-handle">@item1.AccountTitle ( @item1.AccountNo)</div>
+                                                                            <ol class="dd-list">
+                                                                                @foreach (var item2 in Model.ThirdLevellist.Where(y => y.SecondLevelId == item1.AccountNo))
+                                                                                {
+                                                                                    <li class="dd-item" data-id="6"><div class="dd-handle">@item2.AccountTitle ( @item2.AccountNo )</div></li>
+                                                                                }
+                                                                            </ol>
+                                                                        </li>
+                                                                    }
+                                                                </ol>
+
+                                                            </li>
+
+                                                        }
+                                                    </ol>
+                                                </li>
+                                            }
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+
+
+

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<AR_IS.Models.Company>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","Company")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div id="mydiv" class="col-md-3">
+                <p class="text-center bg-success">@TempData["Reg"]</p>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Company Tables</u></h5>
+                            </div>
+                            <div class="card-block">
+                                <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr >
+                                            <th>ID </th>
+                                            <th>Company Name</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>ID </th>
+                                            <th>Company Name</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var lst_Company in Model)
+                                        {
+                                            <tr>
+                                                <td>@lst_Company.Id</td>
+                                                <td>@lst_Company.Name</td>
+                                                <td>
+                                                    <a href="@Url.Action("Edit", new { id = lst_Company.Id })" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+
