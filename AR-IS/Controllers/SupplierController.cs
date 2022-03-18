@@ -25,7 +25,7 @@ namespace AR_IS.Controllers
         // GET: Supplier
         public ActionResult Index()
         {
-            return View(_context.Database.SqlQuery<Supplier>("SELECT * FROM   Suppliers WHERE (Comid = '" + Session["Company"] + "')  ").ToList());
+            return View(_context.Database.SqlQuery<Supplier>("SELECT * FROM   Suppliers  WHERE    (Comid = '" + Session["Company"] + "')  ").ToList());
         }
         public ActionResult New(Supplier Supplier)
         {
@@ -37,7 +37,7 @@ namespace AR_IS.Controllers
             };
             return View(viewModel);
         }
-        public ActionResult Save(Supplier Supplier, ThirdLevel Thirdlevel, HttpPostedFileBase img)
+        public ActionResult Save(Supplier Supplier,string CNIC, ThirdLevel Thirdlevel, HttpPostedFileBase img)
         {
             string vardirection = "";
             string ImageName = "";
@@ -61,6 +61,7 @@ namespace AR_IS.Controllers
                 {
                     account_no1 = Convert.ToInt32(Thirdlevel.AccountNo + 1);
                 }
+                Supplier.CNIC = CNIC;
                 Supplier.AccountNo = account_no1;
                 Supplier.Image = ImageName;
                 _context.tbl_Supplier.Add(Supplier);
@@ -68,7 +69,7 @@ namespace AR_IS.Controllers
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlCommand("insert into Thirdlevels (AccountNo,FirstLevelId,HeadId,AccountTitle,AccountType,Cr,Dr,SecondLevelId,Comid) values(" + account_no1 + ",2001,2,N'" + Supplier.Name + "','Supplier',0,0,'2000001','" + Session["Company"] + "')");
                 vardirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
@@ -88,12 +89,21 @@ namespace AR_IS.Controllers
                 Supplierdb.Town = Supplier.Town;
                 Supplierdb.Province = Supplier.Province;
                 Supplierdb.Address = Supplier.Address;
-                Supplierdb.CNIC = Supplier.CNIC;
+                Supplierdb.CNIC = CNIC;
+                Supplierdb.Description = Supplier.Description;
+                Supplierdb.BankDetail = Supplier.BankDetail;
+                Supplierdb.NTN = Supplier.NTN;
+                Supplierdb.GST = Supplier.GST; 
+                Supplierdb.SpecialDiscount = Supplier.SpecialDiscount;
+                Supplierdb.PromptPaymentDiscount = Supplier.PromptPaymentDiscount;
+                Supplierdb.PaymentConditions = Supplier.PaymentConditions;
+                Supplierdb.Daysofpayment = Supplier.Daysofpayment;
+                Supplierdb.CreditLimit = Supplier.CreditLimit;
                 _context.Database.ExecuteSqlCommand("UPDATE Thirdlevels set AccountTitle = '" + Supplier.Name + "' where AccountNo = " + Thirdlevel.AccountNo + "");
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlCommand("update Suppliers set Image='" + ImageName2 + "' where AccountNo=" + Supplier.AccountNo + ";");
                 vardirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             return RedirectToAction(vardirection, "Supplier");
         }

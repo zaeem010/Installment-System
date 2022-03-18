@@ -114,28 +114,28 @@
                                     <tr>
                                         <td> @item2.AccountNo</td>
                                         <td> @item2.AccountTitle</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
-                                        <td> @item2.Cr</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
-                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr.ToString("#,##0")</td>
+                                        <td> @item2.Cr.ToString("#,##0")</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr.ToString("#,##0")</td>
+                                        <td> @item2.ccr.ToString("#,##0")</td>
                                         <td style="border-left: 1px solid #000;">
                                             @if (c > 0)
                                             {
-                                                @c;
+                                                @c.ToString("#,##0");
                                             }
                                             else
                                             {
-                                                @closing;
+                                                @closing.ToString("#,##0");
                                             }
                                         </td>
                                         <td>
                                             @if (c < 0)
                                             {
-                                                @c;
+                                                @c.ToString("#,##0");
                                             }
                                             else
                                             {
-                                                @closing;
+                                                @closing.ToString("#,##0");
                                             }
                                         </td>
                                     </tr>
@@ -152,7 +152,7 @@
                                 {
                                     a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
                                     b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
-                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+                                    c = ( Convert.ToDouble(b) - Convert.ToDouble(a));
 
                                     sum_dr += Convert.ToDouble(item2.Dr);
                                     sum_cr += Convert.ToDouble(item2.Cr);
@@ -170,28 +170,28 @@
                                     <tr>
                                         <td> @item2.AccountNo</td>
                                         <td> @item2.AccountTitle</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
-                                        <td> @item2.Cr</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
-                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr.ToString("#,##0")</td>
+                                        <td> @item2.Cr.ToString("#,##0")</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr.ToString("#,##0")</td>
+                                        <td> @item2.ccr.ToString("#,##0")</td>
                                         <td style="border-left: 1px solid #000;">
-                                            @if (c > 0)
+                                            @if (c < 0)
                                             {
-                                                @c;
+                                                @c.ToString("#,##0");
                                             }
                                             else
                                             {
-                                                @closing;
+                                                @closing.ToString("#,##0");
                                             }
                                         </td>
                                         <td>
-                                            @if (c < 0)
+                                            @if (c > 0)
                                             {
-                                                @c;
+                                                @c.ToString("#,##0");
                                             }
                                             else
                                             {
-                                                @closing;
+                                                @closing.ToString("#,##0");
                                             }
                                         </td>
                                     </tr>
@@ -208,7 +208,7 @@
                                 {
                                     a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
                                     b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
-                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+                                    c = (Convert.ToDouble(b) - Convert.ToDouble(a));
 
                                     sum_dr += Convert.ToDouble(item2.Dr);
                                     sum_cr += Convert.ToDouble(item2.Cr);
@@ -223,34 +223,34 @@
                                         sum_closingcr += c;
                                     }
 
-                                    <tr>
-                                        <td> @item2.AccountNo</td>
-                                        <td> @item2.AccountTitle</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
-                                        <td> @item2.Cr</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
-                                        <td> @item2.ccr</td>
-                                        <td style="border-left: 1px solid #000;">
-                                            @if (c > 0)
-                                            {
-                                                @c;
-                                            }
-                                            else
-                                            {
-                                                @closing;
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (c < 0)
-                                            {
-                                                @c;
-                                            }
-                                            else
-                                            {
-                                                @closing;
-                                            }
-                                        </td>
-                                    </tr>
+                            <tr>
+                                <td> @item2.AccountNo</td>
+                                <td> @item2.AccountTitle</td>
+                                <td style="border-left: 1px solid #000;"> @item2.Dr.ToString("#,##0")</td>
+                                <td> @item2.Cr.ToString("#,##0")</td>
+                                <td style="border-left: 1px solid #000;"> @item2.cdr</td>
+                                <td> @item2.ccr.ToString("#,##0")</td>
+                                <td style="border-left: 1px solid #000;">
+                                    @if (c < 0)
+                                    {
+                                        @c.ToString("#,##0");
+                                    }
+                                    else
+                                    {
+                                        @closing.ToString("#,##0");
+                                    }
+                                </td>
+                                <td>
+                                    @if (c > 0)
+                                    {
+                                        @c.ToString("#,##0");
+                                    }
+                                    else
+                                    {
+                                        @closing.ToString("#,##0");
+                                    }
+                                </td>
+                            </tr>
                                 }
                             </tbody>
                             <tbody>
@@ -263,7 +263,7 @@
                                 {
                                     a = (Convert.ToDouble(item2.Dr) + Convert.ToDouble(item2.cdr));
                                     b = (Convert.ToDouble(item2.Cr) + Convert.ToDouble(item2.ccr));
-                                    c = (Convert.ToDouble(a) - Convert.ToDouble(b));
+                                    c = (Convert.ToDouble(b) - Convert.ToDouble(a));
 
                                     sum_dr += Convert.ToDouble(item2.Dr);
                                     sum_cr += Convert.ToDouble(item2.Cr);
@@ -278,34 +278,34 @@
                                         sum_closingcr += c;
                                     }
 
-                                    <tr>
-                                        <td> @item2.AccountNo</td>
-                                        <td> @item2.AccountTitle</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
-                                        <td> @item2.Cr</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
-                                        <td> @item2.ccr</td>
-                                        <td style="border-left: 1px solid #000;">
-                                            @if (c > 0)
-                                            {
-                                                @c;
-                                            }
-                                            else
-                                            {
-                                                @closing;
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (c < 0)
-                                            {
-                                                @c;
-                                            }
-                                            else
-                                            {
-                                                @closing;
-                                            }
-                                        </td>
-                                    </tr>
+                            <tr>
+                                <td> @item2.AccountNo</td>
+                                <td> @item2.AccountTitle</td>
+                                <td style="border-left: 1px solid #000;"> @item2.Dr.ToString("#,##0")</td>
+                                <td> @item2.Cr.ToString("#,##0")</td>
+                                <td style="border-left: 1px solid #000;"> @item2.cdr.ToString("#,##0")</td>
+                                <td> @item2.ccr.ToString("#,##0")</td>
+                                <td style="border-left: 1px solid #000;">
+                                    @if (c < 0)
+                                    {
+                                        @c.ToString("#,##0");
+                                    }
+                                    else
+                                    {
+                                        @closing.ToString("#,##0");
+                                    }
+                                </td>
+                                <td>
+                                    @if (c > 0)
+                                    {
+                                        @c.ToString("#,##0");
+                                    }
+                                    else
+                                    {
+                                        @closing.ToString("#,##0");
+                                    }
+                                </td>
+                            </tr>
                                 }
                             </tbody>
                             <tbody>
@@ -336,28 +336,28 @@
                                     <tr>
                                         <td> @item2.AccountNo</td>
                                         <td> @item2.AccountTitle</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.Dr</td>
-                                        <td> @item2.Cr</td>
-                                        <td style="border-left: 1px solid #000;"> @item2.cdr</td>
-                                        <td> @item2.ccr</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.Dr.ToString("#,##0")</td>
+                                        <td> @item2.Cr.ToString("#,##0")</td>
+                                        <td style="border-left: 1px solid #000;"> @item2.cdr.ToString("#,##0")</td>
+                                        <td> @item2.ccr.ToString("#,##0")</td>
                                         <td style="border-left: 1px solid #000;">
                                             @if (c > 0)
                                             {
-                                                @c;
+                                                @c.ToString("#,##0");
                                             }
                                             else
                                             {
-                                                @closing;
+                                                @closing.ToString("#,##0");
                                             }
                                         </td>
                                         <td>
                                             @if (c < 0)
                                             {
-                                                @c;
+                                                @c.ToString("#,##0");
                                             }
                                             else
                                             {
-                                                @closing;
+                                                @closing.ToString("#,##0");
                                             }
                                         </td>
                                     </tr>
@@ -369,17 +369,17 @@
                                     <th></th>
                                     <th></th>
                                     <th style="border-left: 1px solid #000;">
-                                        <button class="btn btn-warning">@sum_dr</button>
+                                        <button class="btn btn-warning">@sum_dr.ToString("#,##0")</button>
                                     </th>
                                     <th>
-                                        <button class="btn btn-danger">@sum_cr</button>
+                                        <button class="btn btn-danger">@sum_cr.ToString("#,##0")</button>
                                     </th>
-                                    <th style="border-left: 1px solid #000;"><button class="btn btn-primary">@sum_cdr</button></th>
-                                    <th><button class="btn btn-info">@sum_ccr</button></th>
+                                    <th style="border-left: 1px solid #000;"><button class="btn btn-primary">@sum_cdr.ToString("#,##0")</button></th>
+                                    <th><button class="btn btn-info">@sum_ccr.ToString("#,##0")</button></th>
                                     <th style="display:none"><button class="btn btn-success">@(tota1= sum_dr + sum_cdr)</button></th>
-                                    <th style="border-left: 1px solid #000;"><button class="btn btn-success">@(tota1)</button></th>
+                                    <th style="border-left: 1px solid #000;"><button class="btn btn-success">@(tota1.ToString("#,##0"))</button></th>
                                     <th style="display:none"><button class="btn" style="background-color:#2C3E50;color:white">@(tota2=sum_cr + sum_ccr)</button></th>
-                                    <th><button class="btn" style="background-color:#2C3E50;color:white">@(tota2)</button></th>
+                                    <th><button class="btn" style="background-color:#2C3E50;color:white">@(tota2.ToString("#,##0"))</button></th>
                                 </tr>
 
                             </tfoot>

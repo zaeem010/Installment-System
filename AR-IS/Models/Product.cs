@@ -23,5 +23,6 @@ namespace AR_IS.Models
         public string Image { get; set; }
         public decimal Itemunit { get; set; }
         public int Comid { get; set; }
+        public string Status { get; set; }
     }
 }

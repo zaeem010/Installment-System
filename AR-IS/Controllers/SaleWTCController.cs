@@ -27,24 +27,34 @@ namespace AR_IS.Controllers
 
         public ActionResult Index()
         {
-            return View(_context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Address, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoName, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList());
+            return View(_context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Address, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoId, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList());
         }
-        public ActionResult New(SaleMaster SaleMaster, TranscationDetail TranscationDetail)
+        public ActionResult New(SaleMaster SaleMaster,Customer Customer, Cargo cargo)
         {
             SaleMaster.Invid = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(Invid AS int)), 0) + 1 AS Invid FROM   SaleMasters  WHERE (Comid = '" + Session["Company"] + "') and Vtype='SINVWTC' ").FirstOrDefault();
             var ViewModel = new SaleWTCVM
             {
-                Cus_list = _context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE (Comid = '" + Session["Company"] + "')").ToList(),
-                Prod_list = _context.Database.SqlQuery<Product>("SELECT *   FROM   Products  WHERE (Comid = '" + Session["Company"] + "')  ORDER BY Id").ToList(),
+                Customer= Customer,
+                Cargo= cargo,
                 SaleMaster = SaleMaster,
-                SaleRecent = _context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoName, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList(),
-                TranscationDetail = TranscationDetail,
+                Cus_list = _context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE (Comid = '" + Session["Company"] + "')").ToList(),
+                Prod_list = _context.Database.SqlQuery<Product>("SELECT *   FROM   Products  WHERE  (status='Active')  and (Comid = '" + Session["Company"] + "')  ORDER BY Id").ToList(),
+                Province_list = _context.Database.SqlQuery<Province>("SELECT * FROM   Provinces").ToList(),
+                Town_list = _context.Database.SqlQuery<Town>("SELECT * FROM   Towns  ").ToList(),
+                Cargo_list = _context.Database.SqlQuery<Cargo>("SELECT *   FROM   Cargoes  WHERE (Comid = '" + Session["Company"] + "') ").ToList(),
+                SaleRecent = _context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoId, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList(),
+               
             };
             return View(ViewModel);
         }
         public ActionResult Save(SaleMaster SaleMaster, TranscationDetail TranscationDetail, int[] prid, string[] productname, decimal[] saleprice, decimal[] qty, decimal[] nettotal, decimal[] ctn, decimal[] itemunit)
         {
             string varDirection = "";
+            string AccountName = _context.Database.SqlQuery<string>("SELECT  AccountTitle  FROM ThirdLevels WHERE     (AccountNo = '" + SaleMaster.AccountNo + "') and Comid= '" + Session["Company"] + "'").FirstOrDefault();
+            string InvoiceMake = " Sale To " + AccountName + " Against this Sale Parts Invoice No:" + SaleMaster.Invid + "";
+            string Sale = " Sale To " + AccountName + " Against this Sale Parts Invoice No:" + SaleMaster.Invid + "";
+            string Stock = "Stock Out : Parts Sale   For " + AccountName + "  Invoice No: " + SaleMaster.Invid + "    ";
+            string Received = " Received To " + AccountName + " Against this Sale Parts Invoice No :" + SaleMaster.Invid + "";
             if (SaleMaster.Id == 0)
             {
                 _context.tbl_SaleMaster.Add(SaleMaster);
@@ -59,46 +69,46 @@ namespace AR_IS.Controllers
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','Customer','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','"+ InvoiceMake + "','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
                     //2
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','"+ Sale + "','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SaleMaster.Date + "',1100003,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','"+ Stock + "','" + SaleMaster.Date + "',1100002,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                 }
                 else
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','Customer','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
                     //2
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SaleMaster.Date + "',1100003,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SaleMaster.Date + "',1100002,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //5
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','Cash','" + SaleMaster.Date + "','1100001','" + SaleMaster.Rtotal + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','" + Received + "','" + SaleMaster.Date + "','1100001','" + SaleMaster.Rtotal + "','0','" + SaleMaster.Invid + "','CRVSINVWTC','" + Session["Company"] + "','0')");
                     //6
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Customer','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','0','" + SaleMaster.Rtotal + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Received + "','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','0','" + SaleMaster.Rtotal + "','" + SaleMaster.Invid + "','CRVSINVWTC','" + Session["Company"] + "','0')");
                 }
                 varDirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Invoice Created Successfully";
             }
             else
             {
                 _context.Database.ExecuteSqlCommand("DELETE FROM SaleMasters  WHERE (Vtype = 'SINVWTC') AND (Invid = '" + SaleMaster.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
                 _context.Database.ExecuteSqlCommand("DELETE FROM SaleDetails  WHERE (Vtype = 'SINVWTC') AND (Invid = '" + SaleMaster.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
-                _context.Database.ExecuteSqlCommand("DELETE FROM TranscationDetails  WHERE (Vtype = 'SINVWTC') AND (Invid = '" + SaleMaster.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
+                _context.Database.ExecuteSqlCommand("DELETE FROM TranscationDetails  WHERE (Vtype in ('SINVWTC','CRVSINVWTC')) AND (Invid = '" + SaleMaster.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
                 _context.tbl_SaleMaster.Add(SaleMaster);
                 SaleMaster.Comid = Convert.ToInt32(Session["Company"]);
                 SaleMaster.Vtype = "SINVWTC";
@@ -111,54 +121,58 @@ namespace AR_IS.Controllers
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','Customer','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
                     //2
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SaleMaster.Date + "',1100003,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SaleMaster.Date + "',1100002,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                 }
                 else
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','Customer','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
                     //2
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SaleMaster.Date + "',4400001,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','CGS','" + SaleMaster.Date + "','5500001','" + SaleMaster.NetAmount + "','0','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SaleMaster.Date + "',1100003,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SaleMaster.Date + "',1100002,'0','" + SaleMaster.NetAmount + "','" + SaleMaster.Invid + "','SINVWTC','" + Session["Company"] + "','0')");
                     //5
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','Cash','" + SaleMaster.Date + "','1100001','" + SaleMaster.Rtotal + "','0','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','" + Received + "','" + SaleMaster.Date + "','1100001','" + SaleMaster.Rtotal + "','0','" + SaleMaster.Invid + "','CRVSINVWTC','" + Session["Company"] + "','0')");
                     //6
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Customer','" + SaleMaster.Date + "','" + SaleMaster.Rtotal + "','0','" + SaleMaster.Rtotal + "','" + SaleMaster.Invid + "','SINV','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Received + "','" + SaleMaster.Date + "','" + SaleMaster.AccountNo + "','0','" + SaleMaster.Rtotal + "','" + SaleMaster.Invid + "','CRVSINVWTC','" + Session["Company"] + "','0')");
                 }
                 varDirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = "Invoice Updated Successfully";
             }
             _context.SaveChanges();
             return RedirectToAction(varDirection, "SaleWTC");
         }
-        public ActionResult Edit(int Invid, TranscationDetail TranscationDetail)
+        public ActionResult Edit(int Invid,  Customer Customer, Cargo cargo)
         {
             var ViewModel = new SaleWTCVM
             {
+                Customer = Customer,
+                Cargo = cargo,
+                Province_list = _context.Database.SqlQuery<Province>("SELECT * FROM   Provinces").ToList(),
+                Town_list = _context.Database.SqlQuery<Town>("SELECT * FROM   Towns  ").ToList(),
+                Cargo_list = _context.Database.SqlQuery<Cargo>("SELECT *   FROM   Cargoes  WHERE (Comid = '" + Session["Company"] + "') ").ToList(),
                 SaleDetail_list = _context.Database.SqlQuery<SaleDetail>("SELECT  * FROM   SaleDetails  WHERE (Vtype='SINVWTC')  AND  (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')").ToList(),
                 SaleMaster = _context.Database.SqlQuery<SaleMaster>("SELECT * FROM   SaleMasters WHERE (Vtype = 'SINVWTC') AND (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')").FirstOrDefault(),
                 Cus_list = _context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE (Comid = '" + Session["Company"] + "')").ToList(),
-                Prod_list = _context.Database.SqlQuery<Product>("SELECT *   FROM   Products  WHERE ( Comid = '" + Session["Company"] + "')  ORDER BY Id").ToList(),
-                TranscationDetail = _context.Database.SqlQuery<TranscationDetail>("SELECT  *    FROM   TranscationDetails  WHERE (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Vtype = 'SINVWTC') AND (TransDes = 'Customer')").FirstOrDefault(),
-                SaleRecent = _context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Address, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoName, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList(),
+                Prod_list = _context.Database.SqlQuery<Product>("SELECT *   FROM   Products  (status='Active')  and  WHERE ( Comid = '" + Session["Company"] + "')  ORDER BY Id").ToList(),
+                SaleRecent = _context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Address, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoId, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList(),
             };
             return View("New", ViewModel);
         }
@@ -170,10 +184,9 @@ namespace AR_IS.Controllers
             {
                 wordsinum = wordsinum,
                 SaleDetail_list = _context.Database.SqlQuery<SaleDetail>("SELECT  * FROM   SaleDetails  WHERE (Vtype='SINVWTC')  AND  (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')").ToList(),
-                PrintSale = _context.Database.SqlQuery<PrintSaleVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Date, SaleMasters.CargoName, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Address, Customers.Email, Customers.Phone, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Vtype = 'SINVWTC') AND (SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Invid = '" + Invid + "') AND (Customers.Comid = '" + Session["Company"] + "')").FirstOrDefault(),
+                PrintSale = _context.Database.SqlQuery<PrintSaleVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Date, SaleMasters.CargoId, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Address, Customers.Email, Customers.Phone1, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Vtype = 'SINVWTC') AND (SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Invid = '" + Invid + "') AND (Customers.Comid = '" + Session["Company"] + "')").FirstOrDefault(),
                 Cus_list = _context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE (Comid = '" + Session["Company"] + "')").ToList(),
                 Prod_list = _context.Database.SqlQuery<Product>("SELECT *   FROM   Products  WHERE ( Comid = '" + Session["Company"] + "')  ORDER BY Id").ToList(),
-                TranscationDetail = _context.Database.SqlQuery<TranscationDetail>("SELECT  *    FROM   TranscationDetails  WHERE (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Vtype = 'SINVWTC') AND (TransDes = 'Supplier')").FirstOrDefault(),
                 Setting = _context.Database.SqlQuery<Setting>("SELECT  *    FROM   Settings  WHERE  (Comid = '" + Session["Company"] + "') ").FirstOrDefault(),
             };
             return View("Print", ViewModel);
@@ -236,6 +249,53 @@ namespace AR_IS.Controllers
             }
             string new_word = Regex.Replace(words, @"(^\w)|(\s\w)", m => m.Value.ToUpper());
             return new_word;
+        }
+        public ActionResult Save_cus(Customer Customer, string CNIC, ThirdLevel Thirdlevel, HttpPostedFileBase img)
+        {
+            string vardirection = "";
+            string ImageName = "";
+            string physicalpath;
+            int account_no1;
+            if (img != null)
+            {
+                ImageName = System.IO.Path.GetFileName(img.FileName);
+                physicalpath = Server.MapPath("~/uploads/" + ImageName);
+                img.SaveAs(physicalpath);
+            }
+            if (Customer.id == 0)
+            {
+                Thirdlevel.AccountNo = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(AccountNo), 0) as account_no FROM Thirdlevels where HeadId = 1 AND Comid='" + Session["Company"] + "'").FirstOrDefault();
+                if (Thirdlevel.AccountNo == 0)
+                {
+                    account_no1 = Convert.ToInt32("1100001");
+                }
+                else
+                {
+                    account_no1 = Convert.ToInt32(Thirdlevel.AccountNo + 1);
+                }
+                Customer.CNIC = CNIC;
+                Customer.AccountNo = account_no1;
+                Customer.Image = ImageName;
+                _context.tbl_Customer.Add(Customer);
+                Customer.Comid = Convert.ToInt32(Session["Company"]);
+                _context.SaveChanges();
+                _context.Database.ExecuteSqlCommand("insert into Thirdlevels (AccountNo,FirstLevelId,HeadId,AccountTitle,AccountType,cr,dr,SecondLevelId,Comid) values(" + account_no1 + ",1001,1,N'" + Customer.Name + "','Customer',0,0,'1000002','" + Session["Company"] + "')");
+                vardirection = "New";
+                TempData["Reg1"] = "Registered Successfully";
+            }
+
+            return RedirectToAction(vardirection, "SaleWTC");
+        }
+        public ActionResult Save_cargo(Cargo Cargo)
+        {
+            string varDirection = "";
+
+            _context.tbl_Cargo.Add(Cargo);
+            Cargo.Comid = Convert.ToInt32(Session["Company"]);
+            varDirection = "New";
+            TempData["Reg1"] = "Registered Successfully";
+            _context.SaveChanges();
+            return RedirectToAction(varDirection, "SaleWTC");
         }
     }
 }

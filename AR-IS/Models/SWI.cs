@@ -33,7 +33,9 @@ namespace AR_IS.Models
         public decimal FirstInstallment { get; set; }
         public decimal LastInstallment { get; set; }
         public int PlanId { get; set; }
+        public string Status { get; set; }
         public int MarkUp { get; set; }
+        public String MergingId { get; set; }
 
 
     }

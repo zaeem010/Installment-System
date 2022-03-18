@@ -30,7 +30,7 @@ namespace AR_IS.Controllers
         public ActionResult New(TranscationDetail TranscationDetail)
         {
             TranscationDetail.V_No = _context.Database.SqlQuery<int>("select ISNULL(Max(TranscationDetails.V_No),0)+1 from TranscationDetails where VType = 'BRV' AND (Comid = '" + Session["Company"] + "')").FirstOrDefault();
-            var Acc_List = _context.Database.SqlQuery<ThirdLevel>("SELECT * FROM ThirdLevels WHERE (Comid = '" + Session["Company"] + "') ORDER BY AccountNo DESC ").ToList();
+            var Acc_List = _context.Database.SqlQuery<ThirdLevel>("SELECT * FROM ThirdLevels WHERE (Comid = '" + Session["Company"] + "') AND (AccountNo NOT IN (4400001,5500001,1100002)) ORDER BY AccountNo DESC ").ToList();
             var Bank_List = _context.Database.SqlQuery<ThirdLevel>("SELECT * FROM  ThirdLevels WHERE (Comid = '" + Session["Company"] + "') AND (SecondLevelId = '1000003') ORDER BY AccountNo DESC").ToList();
             var VoucherVM = new VoucherVM
             {
@@ -52,6 +52,7 @@ namespace AR_IS.Controllers
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails(Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype,V_No, Comid,BankDes,check_no,cle_date,BankAcc) VALUES ('" + TranscationDetail.Transid + "',N'" + narr[i] + "','" + TranscationDetail.TransDate + "','" + account_no[i] + "','" + Dr[i] + "','" + Cr[i] + "','-1','BRV','" + TranscationDetail.V_No + "','" + Session["Company"] + "','" + narr[i] + "','" + c_no[i] + "','" + cl_date[i] + "','" + TranscationDetail.AccountNo + "')");
                 }
                 _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails(Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype,V_No, Comid) VALUES ('" + TranscationDetail.Transid + "','" + paidforbank + "','" + TranscationDetail.TransDate + "','" + TranscationDetail.AccountNo + "','" + TranscationDetail.Dr + "',0,'-1','BRV','" + TranscationDetail.V_No + "','" + Session["Company"] + "')");
+                TempData["Reg"] = "Voucher Created Successfully";
                 return RedirectToAction("New");
             }
             else
@@ -63,6 +64,7 @@ namespace AR_IS.Controllers
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails(Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype,V_No, Comid,BankDes,check_no,cle_date,BankAcc) VALUES ('" + TranscationDetail.Transid + "',N'" + narr[i] + "','" + TranscationDetail.TransDate + "','" + account_no[i] + "','" + Dr[i] + "','" + Cr[i] + "','-1','BRV','" + TranscationDetail.V_No + "','" + Session["Company"] + "','" + narr[i] + "','" + c_no[i] + "','" + cl_date[i] + "','" + TranscationDetail.AccountNo + "')");
                 }
                 _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails(Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype,V_No, Comid) VALUES ('" + TranscationDetail.Transid + "','" + paidforbank + "','" + TranscationDetail.TransDate + "','" + TranscationDetail.AccountNo + "','" + TranscationDetail.Dr + "',0,'-1','BRV','" + TranscationDetail.V_No + "','" + Session["Company"] + "')");
+                TempData["Reg"] = "Voucher Update Successfully";
                 return RedirectToAction("Index");
             }
         }
@@ -70,7 +72,7 @@ namespace AR_IS.Controllers
         {
             var TranscationsList = _context.Database.SqlQuery<TranscationVMQ>("SELECT TranscationDetails.*, ThirdLevels.AccountTitle FROM TranscationDetails INNER JOIN ThirdLevels ON TranscationDetails.AccountNo = ThirdLevels.AccountNo WHERE(TranscationDetails.V_No = '" + id + "') AND (TranscationDetails.Comid = '" + Session["Company"] + "') AND (TranscationDetails.Vtype = 'BRV') AND (TranscationDetails.Cr > 0) AND ThirdLevels.Comid = '" + Session["Company"] + "'").ToList();
             var Transcations = _context.Database.SqlQuery<TranscationDetail>("SELECT * FROM TranscationDetails WHERE(V_No = '" + id + "') AND (Comid = '" + Session["Company"] + "') AND (Vtype = 'BRV') AND (Dr > 0)").SingleOrDefault();
-            var Acc_List = _context.Database.SqlQuery<ThirdLevel>("SELECT * FROM ThirdLevels WHERE (Comid = '" + Session["Company"] + "') ORDER BY AccountNo DESC ").ToList();
+            var Acc_List = _context.Database.SqlQuery<ThirdLevel>("SELECT * FROM ThirdLevels WHERE (Comid = '" + Session["Company"] + "') AND (AccountNo NOT IN (4400001,5500001,1100002)) ORDER BY AccountNo DESC ").ToList();
             var Bank_List = _context.Database.SqlQuery<ThirdLevel>("SELECT * FROM  ThirdLevels WHERE (Comid = '" + Session["Company"] + "') AND (SecondLevelId = '1000003') ORDER BY AccountNo DESC").ToList();
             var VoucherVM = new VoucherVM
             {
@@ -85,6 +87,7 @@ namespace AR_IS.Controllers
         public ActionResult Delete(int id)
         {
             _context.Database.ExecuteSqlCommand("DELETE FROM TranscationDetails WHERE Vtype='BRV' AND (Comid = '" + Session["Company"] + "') AND V_No='" + id + "'");
+            TempData["Reg1"] = "Voucher Deleted Successfully";
             return RedirectToAction("Index");
         }
         public ActionResult Report(int id, TranscationDetail TranscationDetail)

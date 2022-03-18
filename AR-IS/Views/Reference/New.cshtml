@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Create";
 }
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <style>
     hr.new2 {
         color: #2196F3;
@@ -21,122 +22,109 @@
                     <h5 class="card-header-text"><b><u>Register Reference</u></b></h5>
                 </div>
                 <div class="card-block">
-                    @using (Html.BeginForm("Save", "Reference", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @if (TempData["Reg"] != null)
                     {
-                        <span id="uname_response"></span>
-                        @Html.AntiForgeryToken()
-
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-8">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
 
-                                    @if (Model.References.id == 0)
-                                    {
-                                        <div class="col-md-6">
-                                            <br />
-                                            <label>Name Reference</label>
-                                            <br />
-                                            @Html.TextBoxFor(m => m.References.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="col-md-6">
-                                            <br />
-                                            <label>Name References</label>
-                                            <br />
-                                            @Html.TextBoxFor(m => m.References.Name, new { @class = "form-control thresold-i ", @required = "required", @readonly = "true", autocomplete = "off" })
-                                        </div>
-                                    }
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>CNIC</label>
-                                        <br />
-                                        @Html.TextBoxFor(m => m.References.CNIC, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off", @id = "cnic", @maxlength = "15", @required = "required" })
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg"]</span>
                                     </div>
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Phone1</label>
-                                        <br />
-
-                                        @Html.TextBoxFor(m => m.References.Phone1, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
-                                    </div>
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Phone2</label>
-                                        <br />
-                                        @Html.TextBoxFor(m => m.References.Phone2, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
-                                    </div>
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Phone3</label>
-                                        <br />
-                                        @Html.TextBoxFor(m => m.References.Phone3, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
-                                    </div>
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Email</label>
-                                        <br />
-                                        @Html.TextBoxFor(m => m.References.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label><b>Select Town</b></label>
-                                        @Html.DropDownListFor(m => m.References.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
-                                    </div>
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Address</label>
-                                        <br />
-                                        @Html.TextAreaFor(m => m.References.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "30", rows = "4" })
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="col-md-12">
-                                        <label><b>Photo</b></label>
-                                        @if (Model.References.Image == "" || Model.References.Image == null)
-                                        {
-                                            <div>
-                                                <img id="user_img" height="97" src="~/Content/Image/Demo.png" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
-                                            </div>
-                                            <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
-                                        }
-                                        else
-                                        {
-                                            <div>
-                                                <img id="user_img" height="97" src="~/uploads/@Model.References.Image" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
-                                            </div>
-                                            <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
-                                        }
-                                    </div>
-                                    <div class="col-md-12">
-                                        <br />
-                                        <label><b>Select Province</b></label>
-                                        @Html.DropDownListFor(m => m.References.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
-                                    </div>
-                                   
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                    }
+                    @using (Html.BeginForm("Save", "Reference", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+
+                        @Html.AntiForgeryToken()
+                        <div class="col-md-3">
+                            <label>Reference Name </label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            @Html.TextBoxFor(m => m.References.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
                         </div>
-                        <div class="col-md-10" style="margin-left:370px;margin-top:20px">
-                            <br />
-                            <br />
+                        <div class="col-md-3">
+                            <label>Enter CNIC Number</label>
                             @if (Model.References.id == 0)
                             {
-                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this References?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                                <input type="text" data-inputmask="'mask': '99999-9999999-9'" name="CNIC" id="CNIC" class="form-control input-xs">
                             }
                             else
                             {
-                                <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Update this References?');"><i class="icofont icofont-ui-check"></i>  Update </button>
-
+                                <input type="text" data-inputmask="'mask': '99999-9999999-9'" value="@Model.References.CNIC" name="CNIC" id="CNIC" class="form-control input-xs">
                             }
                         </div>
-                        <br />
+                        <script>
+                            $(":input").inputmask();
+
+                        </script>
+                        <div class="col-md-3">
+                            <label>Phone1</label>
+                            @Html.TextBoxFor(m => m.References.Phone1, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>Phone2</label>
+
+                            @Html.TextBoxFor(m => m.References.Phone2, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Phone3</label>
+                            <br />
+                            @Html.TextBoxFor(m => m.References.Phone3, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Email</label>
+                            <br />
+                            @Html.TextBoxFor(m => m.References.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label><b>Photo</b></label>
+                            @if (Model.References.Image == "" || Model.References.Image == null)
+                            {
+
+                                <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" />
+                            }
+                            else
+                            {
+
+                                <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , />
+                            }
+                        </div>
+
+                        <div class="col-md-3">
+                            <br />
+                            <label><b>Select Province</b></label>
+                            @Html.DropDownListFor(m => m.References.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label><b>Select Town</b></label>
+                            @Html.DropDownListFor(m => m.References.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Address</label>
+                            <br />
+                            @Html.TextAreaFor(m => m.References.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                        </div>
+                        <div class="offset-md-4 col-md-5 " style="margin-top:20px">
+                            @if (Model.References.id == 0)
+                            {
+                                <button type="submit" class="btn btn-primary pull-right col-md-8" style="margin-top:0px"><i class="fa fa-check"></i> Save </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary pull-right col-md-8" style="margin-top:0px"><i class="fa fa-check"></i> Update </button>
+                            }
+                        </div>
+
                         @Html.HiddenFor(m => m.References.id)
-                        
+
                     }
                 </div>
             </div>
@@ -144,94 +132,11 @@
     </div>
 </div>
 <script>
-    $('.chosen-select').chosen();
+    
 </script>
-<script type="text/javascript">
-    function preview_image(event) {
-        var reader = new FileReader();
-        reader.onload = function () {
-            var output = document.getElementById('user_img');
-            output.src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
-    };
 
-    //Duplicate user
-    $(document).ready(function () {
-
-        $("#txt_username").keyup(function () {
-
-            var name = $(this).val().trim();
-            var dis = $(this).val().trim();
-
-            if (name != '') {
-
-                $.ajax({
-                    type: 'GET',
-                    url: "Getemployee/Employee",
-                    data: { name: name },
-                    success: function (response) {
-
-                        // Show response
-                        $("#uname_response").html(response);
-                    }
-                });
-            }
-            else {
-                $("#uname_response").html("");
-            }
-
-        });
-
-    });
-    $(document).ready(function () {
-
-        $("#txt_username").keyup(function () {
-            var count = document.getElementById("txt_username").value.length;
-            //alert(count);
-            if (count == 0) {
-                document.getElementById("btn").disabled = true;
-            }
-            var name = $(this).val().trim();
-            if (name != '') {
-                $.ajax({
-                    type: 'GET',
-                    url: "Getemployeebtn/Employee",
-                    data: { name: name },
-                    success: function (response) {
-                        if (response == 0) {
-                            document.getElementById("btn").disabled = false;
-                        }
-                        else {
-                            document.getElementById("btn").disabled = true;
-                        }
-                        // Show response
-                        $("#disable").html(response);
-                    }
-                });
-            }
-            else {
-                $("#disable").html("");
-            }
-
-        });
-
-    });
-    $('#cnic').keydown(function () {
-        if (event.keyCode == 8 || event.keyCode == 9
-            || event.keyCode == 27 || event.keyCode == 13
-            || (event.keyCode == 65 && event.ctrlKey === true))
-            return;
-        if ((event.keyCode < 48 || event.keyCode > 57))
-            event.preventDefault();
-
-        var length = $(this).val().length;
-
-        if (length == 5 || length == 13)
-            $(this).val($(this).val() + '-');
-    });
-</script>
 <script>
+    $('.chosen-select').chosen();
     setTimeout(function () {
         $('#mydiv').fadeOut('fast');
     }, 3000); // <-- time in milliseconds

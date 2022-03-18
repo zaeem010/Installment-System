@@ -18,7 +18,12 @@ namespace AR_IS.ViewModel
         public string s_date { get; set; }
         public string e_date { get; set; }
         public decimal opening { get; set; }
-        public decimal sumDr { get; set; }
-        public decimal SumCr { get; set; }
+        public Setting Setting { get; set; }
+        public IEnumerable<PurDetail> PurDetail { get; set; }
+        public IEnumerable<PurDetailVehicle> PurDetailVehicle { get; set; }
+        public IEnumerable<PurDetailReturn> PurDetailReturn { get; set; }
+        public IEnumerable<SaleDetail> SaleDetail { get; set; }
+        public IEnumerable<SWI> SWI { get; set; }
+        public IEnumerable<SaleDetailReturn> SaleDetailReturn { get; set; }
     }
 }

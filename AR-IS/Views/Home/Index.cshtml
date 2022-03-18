@@ -51,6 +51,10 @@
         width: 100%;
         height: 400px;
     }
+    #user {
+        width: 100%;
+        height: 500px;
+    }
 
     #chartdivexpense {
         width: 100%;
@@ -81,476 +85,797 @@
         #myBtn:hover {
             background-color: #555;
         }
+
+    .tab {
+        height: 35px;
+        background: #2196F3;
+        color: white
+    }
+
+    .selected {
+        background: #2509f7;
+        color: white
+    }
 </style>
-@if (Convert.ToString(Session["SuperAdmin"]) != "SuperAdmin")
+
+@if (Session["UserName"] != null)
 {
-    <div class="content-wrapper">
-        <!-- Container-fluid starts -->
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12 p-0">
-                </div>
-            </div>
-            <div class="row">
-                <div class="bs-example">
-                    <div class="accordion" id="accordionExample">
-                        <div class="card ">
-                            <div class="card-header" id="headingOne">
-                                <button type="button" class="btn  col-lg-12" style="text-align:left;background-color:#2196F3;color:white" data-toggle="collapse" data-target="#collapseOne"><i class="fa fa-plus"></i> Summary</button>
-                            </div>
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                <div class="card-block">
-                                    <div class="row text-center">
-                                        <h4 class="text-left ">Today</h4>
-                                        <div class="col-md-2 col-xl-2 h-50">
-                                            <div class="card bg-primary order-card">
-                                                <div class="card-block">
-                                                    <h5 class="m-b-4 txt-white">Purchase</h5>
-                                                    <h2 class="text-right"><i class="fa fa-motorcycle f-left"></i><span style="font-size: 13px">@Model.TodayPurchase</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card bg-success order-card">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white">Sale</h5>
-                                                    <h2 class="text-right"><i class="fa fa-motorcycle f-left"></i><span style="font-size: 13px">@Model.TodaySale</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="card bg-danger order-card">
-                                                <div class="card-block">
-                                                    <h5 class="m-b-4 txt-white">Recovery</h5>
-                                                    <h2 class="text-right"><i class="fa fa-refresh f-left"></i><span style="font-size: 13px">@Model.DailyRecovery</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card bg-warning order-card">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white"> Payment </h5>
-                                                    <h2 class="text-right"><i class="fa fa-calculator f-left"></i><span style="font-size: 13px">@Model.DailyPayment</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card  order-card" style="background-color:brown">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white"> Discount </h5>
-                                                    <h2 class="text-right "><i class="fa fa-tag   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.DailyDiscount</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card  order-card" style="background-color:skyblue">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white"> Expense </h5>
-                                                    <h2 class="text-right "><i class="fa fa-dollar   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.DailyExpense</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row text-center">
-                                        <h4 class="text-left">Current Month</h4>
-                                        <div class="col-md-2 col-xl-2 h-50">
-                                            <div class="card bg-primary order-card">
-                                                <div class="card-block">
-                                                    <h5 class="m-b-4 txt-white">Purchase</h5>
-                                                    <h2 class="text-right"><i class="fa fa-motorcycle f-left"></i><span style="font-size: 13px">@Model.MonthPurchase</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card bg-success order-card">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white">Sale</h5>
-                                                    <h2 class="text-right"><i class="fa fa-motorcycle f-left"></i><span style="font-size: 13px">@Model.MonthSale</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="card bg-danger order-card">
-                                                <div class="card-block">
-                                                    <h5 class="m-b-4 txt-white">Recovery</h5>
-                                                    <h2 class="text-right"><i class="fa fa-refresh f-left"></i><span style="font-size: 13px">@Model.MonthlyRecovery</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card bg-warning order-card">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white"> Payment </h5>
-                                                    <h2 class="text-right"><i class="fa fa-calculator f-left"></i><span style="font-size: 13px">@Model.MonthlyPayment</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card  order-card" style="background-color:brown">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white">Discount</h5>
-                                                    <h2 class="text-right "><i class="fa  fa-tag   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.MonthlyDiscount</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 h-50">
-                                            <div class="card  order-card" style="background-color:skyblue">
-                                                <div class="card-block h-50">
-                                                    <h5 class="m-b-4 txt-white"> Expense </h5>
-                                                    <h2 class="text-right "><i class="fa fa-dollar   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.MonthlyExpense</span></h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+            <div class="content-wrapper">
+                <!-- Container-fluid starts -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12 p-0">
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="card weather-card">
-                        <div class="card-block">
-                            <ul class="nav nav-tabs">
-                                <li class="nav-item " style="width: 250px; background-color: black ">
-                                    <a class="nav-link active bg-primary" data-toggle="tab" href="#home">Summary</a>
-                                </li>
-                                <li class="nav-item " style="width: 250px ">
-                                    <a class="nav-link bg-primary" data-toggle="tab" href="#menu1">Sale </a>
-                                </li>
-                                <li class="nav-item " style="width: 250px ">
-                                    <a class="nav-link bg-primary" data-toggle="tab" href="#menu2">Purchase</a>
-                                </li>
-                                <li class="nav-item  " style="width: 289px ">
-                                    <a class="nav-link bg-primary" data-toggle="tab" href="#menu3">Account </a>
-                                </li>
-                            </ul>
-                            <div class="tab-content" style="display:block">
-                                <div class="tab-pane  fade in active " id="home">
-                                        <div class="col-md-4" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Customers Balances</h5>
-                                                <div id="chartdiv11"></div>
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Name</th>
-                                                            <th style="text-align:right">Balances</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var lst in Model.Receivable)
-                                                        {
-                                                            <tr>
-                                                                <td>@lst.AccountTitle</td>
-                                                                <td style="text-align:right">@lst.Balance</td>
-                                                            </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
+                    @if (Convert.ToString(Session["SuperAdmin"]) != "SuperAdmin")
+                    {
+                        if (Session["DashBoard"].ToString() != "0")
+                        {
+                            <div class="row">
+                                <div class="bs-example">
+                                    <div class="accordion" id="accordionExample">
+                                        <div class="card ">
+                                            <div class="card-header" id="headingOne">
+                                                <button type="button" class="btn  col-lg-12" style="text-align:left;background-color:#2196F3;color:white" data-toggle="collapse" data-target="#collapseOne"><i class="fa fa-plus"></i> Summary</button>
+                                            </div>
+                                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                                <div class="card-block">
+                                                    <div class="row text-center">
+                                                        <h4 class="text-left  text-primary">Today</h4>
+                                                        <div class="col-md-2 col-xl-2 h-50">
+                                                            <div class="card bg-primary order-card">
+                                                                <div class="card-block">
+                                                                    <h5 class="m-b-4 txt-white">Purchase</h5>
+                                                                    <h2 class="text-right"><i class="fa fa-shopping-cart f-left"></i><span style="font-size: 13px">@Model.TodayPurchase.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card bg-success order-card">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white">Sale</h5>
+                                                                    <h2 class="text-right"><i class="fa fa-bar-chart f-left"></i><span style="font-size: 13px">@Model.TodaySale.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="card bg-danger order-card">
+                                                                <div class="card-block">
+                                                                    <h5 class="m-b-4 txt-white">Recovery</h5>
+                                                                    <h2 class="text-right"><i class="fa fa-refresh f-left"></i><span style="font-size: 13px">@Model.DailyRecovery.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card bg-warning order-card">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white"> Payment </h5>
+                                                                    <h2 class="text-right"><i class="fa fa-calculator f-left"></i><span style="font-size: 13px">@Model.DailyPayment.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card  order-card" style="background-color:brown">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white"> Discount </h5>
+                                                                    <h2 class="text-right "><i class="fa fa-tag   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.DailyDiscount.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card  order-card" style="background-color:skyblue">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white"> Expense </h5>
+                                                                    <h2 class="text-right "><i class="fa fa-dollar   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.DailyExpense.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row text-center">
+                                                        <h4 class="text-left text-primary">Current Month</h4>
+                                                        <div class="col-md-2 col-xl-2 h-50">
+                                                            <div class="card bg-primary order-card">
+                                                                <div class="card-block">
+                                                                    <h5 class="m-b-4 txt-white">Purchase</h5>
+                                                                    <h2 class="text-right"><i class="fa fa-shopping-cart f-left"></i><span style="font-size: 13px">@Model.MonthPurchase.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card bg-success order-card">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white">Sale</h5>
+                                                                    <h2 class="text-right"><i class="fa fa-bar-chart f-left"></i><span style="font-size: 13px">@Model.MonthSale.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="card bg-danger order-card">
+                                                                <div class="card-block">
+                                                                    <h5 class="m-b-4 txt-white">Recovery</h5>
+                                                                    <h2 class="text-right"><i class="fa fa-refresh f-left"></i><span style="font-size: 13px">@Model.MonthlyRecovery.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card bg-warning order-card">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white"> Payment </h5>
+                                                                    <h2 class="text-right"><i class="fa fa-calculator f-left"></i><span style="font-size: 13px">@Model.MonthlyPayment.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card  order-card" style="background-color:brown">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white">Discount</h5>
+                                                                    <h2 class="text-right "><i class="fa  fa-tag   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.MonthlyDiscount.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 h-50">
+                                                            <div class="card  order-card" style="background-color:skyblue">
+                                                                <div class="card-block h-50">
+                                                                    <h5 class="m-b-4 txt-white"> Expense </h5>
+                                                                    <h2 class="text-right "><i class="fa fa-dollar   f-left" style="color:white"></i><span class="txt-white" style="font-size: 13px;">@Model.MonthlyExpense.ToString("#,##0")</span></h2>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Suppliers Balances</h5>
-                                                <div id="chartdiv22"></div>
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Name</th>
-                                                            <th style="text-align:right">Balances</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var lst in Model.Payable)
-                                                        {
-                                                            <tr>
-                                                                <td>@lst.AccountTitle</td>
-                                                                <td style="text-align:right">@lst.Balance</td>
-                                                            </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Cash & Bank Status</h5>
-                                                <div id="chartdiv88"></div>
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">Name</th>
-                                                            <th style="text-align:right">Balances</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var lst in Model.CashBank)
-                                                        {
-                                                            <tr>
-                                                                <td>@lst.AccountTitle</td>
-                                                                <td style="text-align:right">@lst.Balance</td>
-                                                            </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <h5><b>Top 10 Sale Aging Report</b></h5>
-                                            <a href="@Url.Action("New", "SWI")" class="btn btn-primary pull-right"> New Sale</a>
-                                            <table class="table table-bordered table-hover table-striped table-success">
-                                                <thead class="bordered-darkorange" style="background-color:#2196F3;color:white">
-                                                    <tr>
-                                                        <th>Inv No</th>
-                                                        <th>Date</th>
-                                                        <th>Customer</th>
-                                                        <th>Net Total</th>
-                                                        <th>Day</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var lst in Model.TopSale)
-                                                    {
-
-                                                        <tr>
-                                                            <td>@lst.Invid</td>
-                                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                                            <td>@lst.Name</td>
-                                                            <td>@lst.NetTotal</td>
-                                                            <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                            <a href="@Url.Action("Index", "SWI")" class="btn btn-primary pull-right">View All</a>
-                                        </div>
-                                        <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <h5><b>Top 10 Purchase Aging Report</b></h5>
-                                            <a href="@Url.Action("New", "PurchaseVehicle")" class="btn btn-primary pull-right"> New Purchase</a>
-                                            <table class="table table-bordered table-hover table-striped table-success">
-                                                <thead class="bordered-darkorange" style="background-color:#2196F3;color:white">
-                                                    <tr>
-                                                        <th>Inv No</th>
-                                                        <th>Date</th>
-                                                        <th>Supplier</th>
-                                                        <th>Net Total</th>
-                                                        <th>Day</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="abc">
-                                                    @foreach (var lst in Model.TopPurchase)
-                                                    {
-
-                                                        <tr>
-                                                            <td>@lst.Invid</td>
-                                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                                            <td>@lst.Name</td>
-                                                            <td>@lst.NetAmount</td>
-                                                            <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                            <a href="@Url.Action("Index", "PurchaseVehicle")" class="btn btn-primary pull-right">View All</a>
-                                        </div>
-                                </div>
-                                <div class="tab-pane  fade" id="menu1">
-                                   
-                                        <div class="col-xl-6" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Monthly Sale Vehicle</h5>
-                                                <div id="chartdiv33"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-6" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Sale Payment Analysis</h5>
-                                                <div id="chartdiv44"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
-
-                                            <h5><b>Top 10 Sale Aging Report</b></h5>
-                                            <a href="@Url.Action("New", "SWI")" class="btn btn-primary pull-right">Place New Sale</a>
-                                            <table class="table table-bordered table-hover table-striped table-success">
-                                                <thead class="bordered-darkorange" style="background-color:#2196F3;color:white">
-                                                    <tr>
-                                                        <th>Inv No</th>
-                                                        <th>Date</th>
-                                                        <th>Customer</th>
-                                                        <th>Net Total</th>
-                                                        <th>Day</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var lst in Model.TopSale)
-                                                    {
-
-                                                        <tr>
-                                                            <td>@lst.Invid</td>
-                                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                                            <td>@lst.Name</td>
-                                                            <td>@lst.NetTotal</td>
-                                                            <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                            <a href="@Url.Action("Index", "SWI")" class="btn btn-primary pull-right">View All</a>
-
-                                        </div>
-                                </div>
-                                <div class="tab-pane  fade" id="menu2">
-                                        <div class="col-xl-6" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Monthly Purchase Vehicle</h5>
-                                                <div id="chartdiv55"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-6" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <div class="card-block">
-                                                <h5 class="">Purchase Payment Analysis</h5>
-                                                <div id="chartdiv66"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
-                                            <h5><b>Top 10 Purchase Aging Report</b></h5>
-                                            <a href="@Url.Action("New", "PurchaseVehicle")" class="btn btn-primary pull-right">Place New Purchase</a>
-                                            <table class="table table-bordered table-hover table-striped table-success">
-                                                <thead class="bordered-darkorange" style="background-color:#2196F3;color:white">
-                                                    <tr>
-                                                        <th>Inv No</th>
-                                                        <th>Date</th>
-                                                        <th>Supplier</th>
-                                                        <th>Net Total</th>
-                                                        <th>Day</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="abc">
-                                                    @foreach (var lst in Model.TopPurchase)
-                                                    {
-
-                                                        <tr>
-                                                            <td>@lst.Invid</td>
-                                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                                            <td>@lst.Name</td>
-                                                            <td>@lst.NetAmount</td>
-                                                            <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                            <a href="@Url.Action("Index", "PurchaseVehicle")" class="btn btn-primary pull-right">View All</a>
-                                        </div>
-                                </div>
-                                <div class="tab-pane  fade" id="menu3">
-                                    <div class="col-md-6" style="border: 1px solid #CCCCCC;padding: 2px">
-                                        <center>
-                                            <p><b>Payables</b></p>
-                                        </center>
-                                        <table class="table table-bordered table-hover table-striped table-success">
-                                            <thead class="bordered-darkorange" style="background-color:#2196F3;color:white">
-                                                <tr>
-                                                    <th>Suppliers Name</th>
-                                                    <th>Balance</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var lst in Model.Payable)
-                                                {
-                                                    <tr>
-                                                        <td>@lst.AccountTitle</td>
-                                                        <td>@lst.Balance.ToString("#,##0")</td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
                                     </div>
-                                    <div class="col-md-6" style="border: 1px solid #CCCCCC;padding: 2px">
-                                        <center><p><b>Receivables</b></p></center>
-                                        <table class="table table-bordered table-hover table-striped table-success">
-                                            <thead class="bordered-darkorange" style="background-color:#2196F3;color:white">
-                                                <tr>
-                                                    <th>Customer Name</th>
-                                                    <th>Balance</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                                @foreach (var lst in Model.Receivable)
-                                                {
-                                                    <tr>
-                                                        <td>@lst.AccountTitle</td>
-                                                        <td>@lst.Balance.ToString("#,##0")</td>
-                                                    </tr>
-                                                }
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="card weather-card">
                                         <div class="card-block">
-                                            <h5 class="">Sales/Expenses</h5>
-                                            <div id="chartdivexpense"></div>
+                                            <ul class="nav nav-tabs">
+                                                <li class="nav-item" style="width: 250px;">
+                                                    <a class="nav-link tab active" aria-expanded="true" data-toggle="tab" href="#home">Summary</a>
+                                                </li>
+                                                <li class="nav-item " style="width: 250px ">
+                                                    <a class="nav-link tab" data-toggle="tab" href="#menu1">Sale </a>
+                                                </li>
+                                                <li class="nav-item " style="width: 250px ">
+                                                    <a class="nav-link tab" data-toggle="tab" href="#menu2">Purchase</a>
+                                                </li>
+                                                <li class="nav-item  " style="width: 289px ">
+                                                    <a class="nav-link tab" data-toggle="tab" href="#menu3">Account </a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content" style="display:block">
+                                                <div class="tab-pane active" id="home">
+                                                    <div class="col-md-4" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Customers Balances</h5>
+                                                            <div id="chartdiv11"></div>
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr class="text-primary">
+                                                                        <th scope="col">Name</th>
+                                                                        <th style="text-align:right">Balances</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var lst in Model.Receivable)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@lst.AccountTitle</td>
+                                                                            <td style="text-align:right">@lst.Balance.ToString("#,##0")</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Suppliers Balances</h5>
+                                                            <div id="chartdiv22"></div>
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr class="text-primary">
+                                                                        <th scope="col">Name</th>
+                                                                        <th style="text-align:right">Balances</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var lst in Model.Payable)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@lst.AccountTitle</td>
+                                                                            <td style="text-align:right">@lst.Balance.ToString("#,##0")</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Cash & Bank Status</h5>
+                                                            <div id="chartdiv88"></div>
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr class="text-primary">
+                                                                        <th scope="col">Name</th>
+                                                                        <th style="text-align:right">Balances</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var lst in Model.CashBank)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@lst.AccountTitle</td>
+                                                                            <td style="text-align:right">@lst.Balance.ToString("#,##0")</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Vehicle Purchase Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "PurchaseVehicle")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Purchase</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Supplier </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="abc">
+                                                                @foreach (var lst in Model.TopVehiclePurchase)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetAmount.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "PurchaseVehicle")" class="btn btn-primary pull-right"><i class="fa fa-list"></i>View All</a>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Parts Purchase Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "PurchaseWTC")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Purchase</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Supplier </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="abc">
+                                                                @foreach (var lst in Model.TopPartsPurchase)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetAmount.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "PurchaseWTC")" class="btn btn-primary pull-right"><i class="fa fa-list"></i>View All</a>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Vehicle Sale Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "SWI")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  New Sale</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Customer </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var lst in Model.TopVehicleSale)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetTotal.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "SWI")" class="btn btn-primary pull-right"><i class="fa fa-list"></i> View All</a>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Parts Sale Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "SaleWTC")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  New Sale</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Customer </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var lst in Model.TopPartsSale)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetAmount.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "SaleWTC")" class="btn btn-primary pull-right"><i class="fa fa-list"></i> View All</a>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane  fade" id="menu1">
+
+                                                    <div class="col-xl-5" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Monthly Sale Vehicle</h5>
+                                                            <div id="chartdiv33"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-7" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Sale Payment Analysis</h5>
+                                                            <div id="chartdiv44"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+
+                                                        <h5 class="text-primary"><b>Top 10 Vehicle Sale Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "SWI")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Sale</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Customer </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var lst in Model.TopVehicleSale)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetTotal.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "SWI")" class="btn btn-primary pull-right"><i class="fa fa-list"></i>View All</a>
+
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Parts Sale Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "SaleWTC")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>  New Sale</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Customer </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var lst in Model.TopPartsSale)
+                                                                {
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetAmount.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "SaleWTC")" class="btn btn-primary pull-right"><i class="fa fa-list"></i> View All</a>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane  fade" id="menu2">
+                                                    <div class="col-xl-5" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Monthly Purchase Vehicle</h5>
+                                                            <div id="chartdiv55"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-7" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Purchase Payment Analysis</h5>
+                                                            <div id="chartdiv66"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Vehicle Purchase Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "PurchaseVehicle")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Purchase</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Supplier </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="abc">
+                                                                @foreach (var lst in Model.TopVehiclePurchase)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetAmount.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "PurchaseVehicle")" class="btn btn-primary pull-right"><i class="fa fa-list"></i>View All</a>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <h5 class="text-primary"><b>Top 10 Parts Purchase Aging Report</b></h5>
+                                                        <a href="@Url.Action("New", "PurchaseWTC")" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Purchase</a>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th>Inv No</th>
+                                                                    <th><i class="fa fa-calendar"></i>Date </th>
+                                                                    <th><i class="fa fa-user"></i>Supplier </th>
+                                                                    <th>Net Total</th>
+                                                                    <th>Day</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="abc">
+                                                                @foreach (var lst in Model.TopPartsPurchase)
+                                                                {
+
+                                                                    <tr>
+                                                                        <td> <label class="badge badge-inverse-default">@lst.Invid</label> </td>
+                                                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                                                        <td>@lst.Name</td>
+                                                                        <td>@lst.NetAmount.ToString("#,##0")</td>
+                                                                        <td>@DateTime.Now.Subtract(Convert.ToDateTime(lst.Date)).Days</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        <a href="@Url.Action("Index", "PurchaseWTC")" class="btn btn-primary pull-right"><i class="fa fa-list"></i>View All</a>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane  fade" id="menu3">
+                                                    <div class="col-md-6" style="border: 1px solid #CCCCCC;padding: 2px">
+                                                        <center>
+                                                            <p class="text-primary"><b>Payables</b></p>
+                                                        </center>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th><i class="fa fa-user"></i>Suppliers</th>
+                                                                    <th>Balance</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var lst in Model.Payable)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@lst.AccountTitle</td>
+                                                                        <td>@lst.Balance.ToString("#,##0")</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-md-6" style="border: 1px solid #CCCCCC;padding: 2px">
+                                                        <center><p class="text-primary"><b>Receivables</b></p></center>
+                                                        <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                            <thead class="bordered-darkorange">
+                                                                <tr class="text-primary">
+                                                                    <th><i class="fa fa-user"></i>Customers</th>
+                                                                    <th>Balance</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+
+                                                                @foreach (var lst in Model.Receivable)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@lst.AccountTitle</td>
+                                                                        <td>@lst.Balance.ToString("#,##0")</td>
+                                                                    </tr>
+                                                                }
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-xl-12" style="border:1px solid #CCCCCC;padding:5px;">
+                                                        <div class="card-block">
+                                                            <h5 class="text-primary">Sales/Expenses</h5>
+                                                            <div id="chartdivexpense"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <br />
+                    @if (Convert.ToString(Session["SuperAdmin"]) == "SuperAdmin")
+                    {
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card dashboard-card-sm">
+                                    <div class="card-block">
+                                        <div class="media d-flex">
+                                            <div class="media-left media-middle">
+                                                <div class="new-orders">
+                                                    <i class="icofont icofont-users bg-primary"></i>
+                                                </div>
+                                            </div>
+                                            <div class="media-body">
+                                                <span class="counter-txt f-w-600 f-20">
+                                                    <span class=" ">@Model.Total</span>
+                                                </span>
+                                                <h6> <label class="label label-lg label-primary">Total Users</label> </h6>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <div class="media d-flex order-">
+                                            <div class="media-left media-middle">
+                                                <div class="new-orders">
+                                                    <i class="icofont icofont-users bg-success"></i>
+                                                </div>
+                                            </div>
+                                            <div class="media-body">
+                                                <span class="counter-txt f-w-600 f-20">
+                                                    <span class="">@Model.Active</span>
+                                                </span>
+                                                <h6> <label class="label label-lg label-success"> Active</label> </h6>
+                                            </div>
+                                        </div>
+                                        <ul>
+                                            <li class="new-users">
+
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <div class="media d-flex order-counter">
+                                            <div class="media-left media-middle">
+                                                <div class="new-orders">
+                                                    <i class="icofont icofont-users bg-danger"></i>
+                                                </div>
+                                            </div>
+                                            <div class="media-body">
+                                                <span class="counter-txt f-w-600 f-20">
+                                                    <span class="">@Model.InActive</span>
+                                                </span>
+                                                <h6> <label class="label label-lg label-danger">In Active</label> </h6>
+                                            </div>
+                                        </div>
+                                        <ul>
+                                            <li class="new-users"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card dashboard-card-sm">
+                                    <div class="card-block">
+                                        <h5 class="text-primary">User Status</h5>
+                                        <div id="user"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+
+                    <button onclick="topFunction()" class="btn btn-primary " id="myBtn" data-toggle="tooltip" data-placement="left" title="Go to top"><i class="fa fa-angle-double-up"></i></button>
+
+                    @*<div id="sidebar" class="p-fixed header-users showChat">
+            <div class="had-container">
+                <div class="card card_main header-users-main">
+                    <div class="card-content user-box">
+                        <div class="md-group-add-on p-20">
+                            <span class="md-add-on">
+                                <i class="icofont icofont-search-alt-2 chat-search"></i>
+                            </span>
+                            <div class="md-input-wrapper">
+                                <input type="text" class="md-form-control" autocomplete="off" name="username" id="search-friends">
+                                <label for="username">Search</label>
+                            </div>
+                        </div>
+                        <div class="media friendlist-main">
+                            <h6>Friend List</h6>
+                        </div>
+                        <div class="main-friend-list">
+                            <div class="media friendlist-box" data-id="1" data-status="online" data-username="Josephin Doe" data-toggle="tooltip" data-placement="left" title="Josephin Doe">
+
+                                <a class="media-left" >
+                                    <img class="media-object img-circle" src="~/Content/assets/images/avatar-1.png" alt="Generic placeholder image">
+                                    <div class="live-status bg-success"></div>
+                                </a>
+                                <div class="media-body">
+                                    <div class="friend-header">Josephin Doe</div>
+                                    <span>20min</span>
+                                </div>
+                            </div>
+                            <div class="media friendlist-box" data-id="2" data-status="online" data-username="Michael Scofield" data-toggle="tooltip" data-placement="left" title="Michael Scofield">
+                                <a class="media-left" href="#!">
+                                    <img class="media-object img-circle" src="~/Content/assets/images/avatar-3.png" alt="Generic placeholder image">
+                                    <div class="live-status bg-danger"></div>
+                                </a>
+                                <div class="media-body">
+                                    <div class="friend-header">Michael Scofield</div>
+                                    <span>3 hours ago</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <button onclick="topFunction()" class="btn btn-primary " id="myBtn" data-toggle="tooltip" data-placement="left" title="Go to top"><i class="fa fa-angle-double-up"></i></button>
         </div>
-    </div>
+        <div class="showChat_inner " >
+            <div class="media chat-inner-header" >
+                <a class="back_chatBox">
+                    <i class="icofont icofont-rounded-left"></i> Ali Raza
+                </a>
+            </div>
+            <div class="media chat-messages">
+                <a class="media-left photo-table" href="#!">
+                    <img class="media-object img-circle m-t-5" src="~/Content/assets/images/avatar-1.png" alt="Generic placeholder image">
+                    <div class="live-status bg-success"></div>
+                </a>
+                <div class="media-body chat-menu-content">
+                    <div class="">
+                        <p class="chat-cont">I'm just looking around</p>
+                        <p class="chat-time">8:20 a.m.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="media chat-messages">
+                <div class="media-body chat-menu-reply">
+                    <div class="">
+                        <p class="chat-cont">I'm just looking around.</p>
+                        <p class="chat-time">8:20 a.m.</p>
+                    </div>
+                </div>
+                <div class="media-right photo-table">
+                    <a href="#!">
+                        <img class="media-object img-circle m-t-5" src="~/Content/assets/images/avatar-2.png" alt="Generic placeholder image">
+                        <div class="live-status bg-success"></div>
+                    </a>
+                </div>
+            </div>
+            <div class="media chat-reply-box">
+                <div class="md-input-wrapper">
+                    <input type="text" class="md-form-control" autocomplete="off" id="inputEmail" name="inputEmail">
+                    <label>Share your thoughts</label>
+                    <span class="highlight"></span>
+                    <span class="bar"></span> <button type="button" class="chat-send waves-effect waves-light">
+                        <i class="icofont icofont-location-arrow f-20 "></i>
+                    </button>
+
+                    <button type="button" class="chat-send waves-effect waves-light">
+                        <i class="icofont icofont-location-arrow f-20 "></i>
+                    </button>
+                </div>
+            </div>
+        </div>*@
+                </div>
+            </div>
+       
+
 }
-    <script>
-        $(document).ready(function () {
-            // Add minus icon for collapse element which is open by default
-            $(".collapse.show").each(function () {
-                $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
-            });
+<script>
+    $(".tab").click(function () {
+        $(".tab").removeClass('selected')
+        $(this).addClass('selected')
+    });
+    function showDiv() {
+        document.getElementById('welcomeDiv').style.display = "block";
+    }
+</script>
 
-            // Toggle plus minus icon on show hide of collapse element
-            $(".collapse").on('show.bs.collapse', function () {
-                $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
-            }).on('hide.bs.collapse', function () {
-                $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
-            });
+<script>
+    $(document).ready(function () {
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function () {
+            $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
         });
-        //Get the button
-        var mybutton = document.getElementById("myBtn");
 
-        // When the user scrolls down 20px from the top of the document, show the button
-        window.onscroll = function () { scrollFunction() };
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function () {
+            $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+    //Get the button
+    var mybutton = document.getElementById("myBtn");
 
-        function scrollFunction() {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                mybutton.style.display = "block";
-            } else {
-                mybutton.style.display = "none";
-            }
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
         }
+    }
 
-        // When the user clicks on the button, scroll to the top of the document
-        function topFunction() {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-    </script>
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
 
-    <script src="~/Content/chart/core.js"></script>
-    <script src="~/Content/chart/charts.js"></script>
-    <script src="~/Content/chart/animated.js"></script>
-    <script src="~/Content/chart/kelly.js"></script>
-    <script src="~/Content/chart/dataviz.js"></script>
-    <script src="~/Content/chart/material.js"></script>
-    <div id="piechart1" class="asset"></div>
-    <div id="piechart2" class="asset"></div>
-    <div id="piechart3" class="asset"></div>
-    <script>
+<script src="~/Content/chart/core.js"></script>
+<script src="~/Content/chart/charts.js"></script>
+<script src="~/Content/chart/animated.js"></script>
+<script src="~/Content/chart/kelly.js"></script>
+<script src="~/Content/chart/dataviz.js"></script>
+<script src="~/Content/chart/material.js"></script>
+<div id="piechart1" class="asset"></div>
+<div id="piechart2" class="asset"></div>
+<div id="piechart3" class="asset"></div>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -590,8 +915,8 @@
         pieSeries.hiddenState.properties.startAngle = -90;
 
     }); // end am4core.ready()
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -632,8 +957,8 @@
         pieSeries.hiddenState.properties.startAngle = -90;
 
     }); // end am4core.ready()
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -674,8 +999,8 @@
         pieSeries.hiddenState.properties.startAngle = -90;
 
     }); // end am4core.ready()
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -780,8 +1105,8 @@
 
 }); // end am4core.ready()
 
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -968,8 +1293,8 @@
         })
 
     }); // end am4core.ready()
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -1074,8 +1399,8 @@
 
 }); // end am4core.ready()
 
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -1262,8 +1587,8 @@
         })
 
     }); // end am4core.ready()
-    </script>
-    <script>
+</script>
+<script>
     am4core.ready(function () {
 
         // Themes begin
@@ -1326,7 +1651,109 @@
         chart.legend = new am4charts.Legend();
 
     }); // end am4core.ready()
-    </script>
+</script>
+<script>
+    am4core.ready(function () {
+
+        // Themes begin
+        am4core.useTheme(am4themes_kelly);
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+
+
+        var chart = am4core.create('user', am4charts.XYChart)
+        chart.colors.step = 2;
+
+        chart.legend = new am4charts.Legend()
+        chart.legend.position = 'top'
+        chart.legend.paddingBottom = 20
+        chart.legend.labels.template.maxWidth = 95
+
+        var xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+        xAxis.dataFields.category = 'category'
+        xAxis.renderer.cellStartLocation = 0.1
+        xAxis.renderer.cellEndLocation = 0.9
+        xAxis.renderer.grid.template.location = 0;
+
+        var yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        yAxis.min = 0;
+
+        function createSeries(value, name) {
+            var series = chart.series.push(new am4charts.ColumnSeries())
+            series.dataFields.valueY = value
+            series.dataFields.categoryX = 'category'
+            series.name = name
+
+            series.events.on("hidden", arrangeColumns);
+            series.events.on("shown", arrangeColumns);
+
+            var bullet = series.bullets.push(new am4charts.LabelBullet())
+            bullet.interactionsEnabled = false
+            bullet.dy = 30;
+            bullet.label.text = '{valueY}'
+            bullet.label.fill = am4core.color('#ffffff')
+
+            return series;
+        }
+
+        chart.data = [
+            {
+                category: 'User Status',
+                first: @Model.InActive,
+                second: @Model.Active,
+                third: @Model.Total,
+            },
+
+
+
+        ]
+
+
+        createSeries('first', 'Inactive  User');
+        createSeries('second', 'Active User');
+        createSeries('third', 'Total User');
+
+        function arrangeColumns() {
+
+            var series = chart.series.getIndex(0);
+
+            var w = 1 - xAxis.renderer.cellStartLocation - (1 - xAxis.renderer.cellEndLocation);
+            if (series.dataItems.length > 1) {
+                var x0 = xAxis.getX(series.dataItems.getIndex(0), "categoryX");
+                var x1 = xAxis.getX(series.dataItems.getIndex(1), "categoryX");
+                var delta = ((x1 - x0) / chart.series.length) * w;
+                if (am4core.isNumber(delta)) {
+                    var middle = chart.series.length / 2;
+
+                    var newIndex = 0;
+                    chart.series.each(function (series) {
+                        if (!series.isHidden && !series.isHiding) {
+                            series.dummyData = newIndex;
+                            newIndex++;
+                        }
+                        else {
+                            series.dummyData = chart.series.indexOf(series);
+                        }
+                    })
+                    var visibleCount = newIndex;
+                    var newMiddle = visibleCount / 2;
+
+                    chart.series.each(function (series) {
+                        var trueIndex = chart.series.indexOf(series);
+                        var newIndex = series.dummyData;
+
+                        var dx = (newIndex - trueIndex + middle - newMiddle) * delta
+
+                        series.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+                        series.bulletsContainer.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+                    })
+                }
+            }
+        }
+
+    }); // end am4core.ready()
+</script>
 
 
 

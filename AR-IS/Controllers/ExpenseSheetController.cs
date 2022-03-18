@@ -52,7 +52,7 @@ namespace AR_IS.Controllers
                         _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid,TransDate,TransDes,AccountNo,Dr,Cr,Invid,Vtype,V_No,Comid) VALUES (" + Trans_id + ",'" + date + "',N'" + Narr + "','1100001','0','" + amount[i] + "',0,'ESV','" + V_No + "','" + Session["Company"] + "')");
                     }
                 }
-            TempData["Reg"] = "Data Submitted Successfully";
+            TempData["Reg"] = "Expense Sheet Created Successfully";
             return RedirectToAction("New", "ExpenseSheet");
         }
         public ActionResult Update(TranscationDetail TranscationDetail, int accountno, decimal amount, string remarks, string date , int id)
@@ -67,7 +67,7 @@ namespace AR_IS.Controllers
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid,TransDate,TransDes,AccountNo,Dr,Cr,Invid,Vtype,V_No,Comid) VALUES (" + Trans_id + ",'" + date + "',N'" + Narr + "'," + accountno + "," + amount + ",0,0,'ESV','" + V_No + "','" + Session["Company"] + "')");
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid,TransDate,TransDes,AccountNo,Dr,Cr,Invid,Vtype,V_No,Comid) VALUES (" + Trans_id + ",'" + date + "',N'" + Narr + "','1100001','0','" + amount + "',0,'ESV','" + V_No + "','" + Session["Company"] + "')");
                 }
-            TempData["Reg"] = "Data Update Successfully";
+            TempData["Reg"] = "Expense Sheet Updated Successfully";
             return RedirectToAction("Index", "ExpenseSheet");
         }
         public ActionResult Edit(int V_No , TranscationDetail  TranscationDetail)
@@ -83,7 +83,7 @@ namespace AR_IS.Controllers
         public ActionResult Delete(int V_No)
         {
             _context.Database.ExecuteSqlCommand("DELETE  FROM    TranscationDetails  WHERE    (Comid = '" + Session["Company"] + "') AND (Vtype = 'ESV') AND (V_No = '" + V_No + "')");
-            TempData["Reg1"] = "Data Update Successfully";
+            TempData["Reg1"] = "Expense Sheet Deleted Successfully";
             return RedirectToAction("Index");
 
         }

@@ -22,6 +22,34 @@
                                 <h5 class="card-header-text"><u>Cash Receipt Voucher</u></h5>
                             </div>
                             <div class="card-block">
+                                @if (TempData["Reg"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (TempData["Reg1"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-danger alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg1"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead>
                                         <tr>
@@ -69,3 +97,8 @@
     <!-- Main content ends -->
     <!-- Container-fluid ends -->
 </div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>

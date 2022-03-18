@@ -25,10 +25,15 @@ namespace AR_IS.Controllers
             _context.Dispose();
         }
         // GET: Product
-        public ActionResult Index()
+        public ActionResult Index(Product Product)
         {
-            return View(_context.Database.SqlQuery<ProductVMQ>("SELECT Products.Id, Products.Shelfnumber, Products.Iname, Products.Cprice, Products.Sprice, Products.Itemunit, Products.Openingstock, Products.Barcode, Products.Reorderlevel, Products.Image, Products.Comid, Brands.Name AS Brand, Categories.Name AS Category, MeasuringUnits.Name AS UnitName FROM Products INNER JOIN Brands ON Products.Bid = Brands.Id INNER JOIN Categories ON Products.Cid = Categories.Id INNER JOIN MeasuringUnits ON Products.MeasuringUnit = MeasuringUnits.Id WHERE (Products.Comid = '" + Session["Company"] + "') AND (Categories.Comid = '" + Session["Company"] + "') AND (Brands.Comid = '" + Session["Company"] + "') AND (MeasuringUnits.Comid = '" + Session["Company"] + "')").ToList());
+           
+            var products = _context.Database.SqlQuery<ProductVMQ>("SELECT Products.Id, Products.Status, Products.Shelfnumber, Products.Iname, Products.Cprice, Products.Sprice, Products.Itemunit, Products.Openingstock, Products.Barcode, Products.Reorderlevel, Products.Image, Products.Comid, Brands.Name AS Brand, Categories.Name AS Category FROM Products INNER JOIN Brands ON Products.Bid = Brands.Id INNER JOIN Categories ON Products.Cid = Categories.Id WHERE (Products.Comid = '" + Session["Company"] + "') AND (Categories.Comid = '" + Session["Company"] + "') AND (Brands.Comid = '" + Session["Company"] + "') ").ToList();
+           
+            
+            return View(products);
         }
+        
         public ActionResult New(Product Product)
         {
             var Categories = _context.Database.SqlQuery<Category>("SELECT  * FROM   Categories WHERE (Comid = '" + Session["Company"] + "')").ToList();
@@ -44,7 +49,7 @@ namespace AR_IS.Controllers
             return View(ViewModel);
         }
         [HttpPost]
-        public ActionResult Save(HttpPostedFileBase[] file, Product Product, string[] IName, decimal[] cprice,decimal[] Itemunit, string [] shelfnumber, decimal[] sprice, int[] unitid, decimal[] openingstock, string[] barcode, string[] reorderlevel, string I_Names, HttpPostedFileBase img_1, string c_prices, string s_prices, string unitids, string opening_stocks, string barcodes, string reorder_levels, string Shelfnumbers,string Itemunits)
+        public ActionResult Save(HttpPostedFileBase[] file, Product Product, string[] IName, decimal[] cprice,decimal[] Itemunit, string [] shelfnumber, decimal[] sprice, int[] unitid, decimal[] openingstock, string[] barcode, string[] reorderlevel,  string I_Names, HttpPostedFileBase img_1, string c_prices, string s_prices, string unitids, string opening_stocks, string barcodes, string reorder_levels, string Shelfnumbers,string Itemunits)
         {
             string vardirection = "";
             Random r = new Random();
@@ -67,10 +72,10 @@ namespace AR_IS.Controllers
                         physicalPath = Server.MapPath("~/uploads/" + img);
                         file[i].SaveAs(physicalPath);
                     }
-                    _context.Database.ExecuteSqlCommand("INSERT INTO  Products( Bid, Cid, Iname, Cprice, Sprice,Itemunit ,Openingstock, MeasuringUnit, Barcode, Reorderlevel, Image,Shelfnumber ,Comid) VALUES ('" + Product.Bid+ "','" + Product.Cid + "','" + IName[i] + "','" + cprice[i] + "','" + sprice[i] + "','" + Itemunit[i] + "','" + openingstock[i] + "','" + unitid[i] + "','" + barcode[i] + "','" + reorderlevel[i] + "','" + img + "','"+ shelfnumber [i]+ "','" + Session["Company"] + "')");
+                    _context.Database.ExecuteSqlCommand("INSERT INTO  Products( Bid, Cid, Iname, Cprice, Sprice,Itemunit ,Openingstock, MeasuringUnit, Barcode, Reorderlevel, Image,Shelfnumber ,Comid,Status) VALUES ('" + Product.Bid+ "','" + Product.Cid + "','" + IName[i] + "','" + cprice[i] + "','" + sprice[i] + "','" + Itemunit[i] + "','" + openingstock[i] + "','" + unitid[i] + "','" + barcode[i] + "','" + reorderlevel[i] + "','" + img + "','"+ shelfnumber [i]+ "','" + Session["Company"] + "','Active')");
                 }
                 vardirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else if (img_1 != null)
             {
@@ -78,17 +83,17 @@ namespace AR_IS.Controllers
                 img = num + ImageName;
                 physicalPath = Server.MapPath("~/uploads/" + img);
                 img_1.SaveAs(physicalPath);
-                _context.Database.ExecuteSqlCommand("UPDATE  Products SET  Bid ='" + Product.Bid + "', Cid ='" + Product.Cid + "', Iname ='" + I_Names + "', Cprice ='" + c_prices + "', Sprice ='" + s_prices + "',Itemunit='"+ Itemunits + "' ,Openingstock ='" + opening_stocks + "', MeasuringUnit ='" + Product.MeasuringUnit + "', Barcode ='" + barcodes + "', Reorderlevel ='" + reorder_levels + "', Image ='" + img + "', Shelfnumber ='"+Shelfnumbers+"' where (Id='" + Product.Id + "')");
+                _context.Database.ExecuteSqlCommand("UPDATE  Products SET  Bid ='" + Product.Bid + "', Cid ='" + Product.Cid + "', Iname ='" + I_Names + "', Cprice ='" + c_prices + "', Sprice ='" + s_prices + "',Itemunit='"+ Itemunits + "' ,Openingstock ='" + opening_stocks + "', MeasuringUnit ='" + Product.MeasuringUnit + "', Barcode ='" + barcodes + "', Reorderlevel ='" + reorder_levels + "', Image ='" + img + "', Shelfnumber ='"+Shelfnumbers+ "' where (Id='" + Product.Id + "')");
                 _context.SaveChanges();
                 vardirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             else
             {
                 _context.Database.ExecuteSqlCommand("UPDATE  Products SET  Bid ='" + Product.Bid + "', Cid ='" + Product.Cid + "', Iname ='" + I_Names + "', Cprice ='" + c_prices + "', Sprice ='" + s_prices + "',Itemunit='"+ Itemunits +"', Openingstock ='" + opening_stocks + "', MeasuringUnit ='" + Product.MeasuringUnit + "', Barcode ='" + barcodes + "', Reorderlevel ='" + reorder_levels + "' ,Shelfnumber ='" + Shelfnumbers + "' where (Id='" + Product.Id + "')");
                 _context.SaveChanges();
                 vardirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
 
             _context.SaveChanges();
@@ -109,23 +114,21 @@ namespace AR_IS.Controllers
                 Category_list = Categories,
                 Brand_list = Brands,
                 Product_list = Product_list,
-                Unit_list= Units,
+                Unit_list= Units, 
                 Product = Product
                
             };
 
             return View("New", ViewModel);
         }
-        public ActionResult Delete(int id)
+        public ActionResult Status(int? id ,string Status)
         {
-            var Product = _context.tbl_Product.SingleOrDefault(b => b.Id == id );
-            _context.tbl_Product.Remove(Product);
-            _context.SaveChanges();
-            TempData["Reg1"] = "Data Delete Successfully";
+            _context.Database.ExecuteSqlCommand(" UPDATE   Products   SET   Status ='"+ Status+ "' where Id='"+id+"' ");
             return RedirectToAction("Index", "Product");
         }
 
-        
+
+
 
     }
 }

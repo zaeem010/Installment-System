@@ -1,0 +1,77 @@
+﻿@model AR_IS.ViewModel.LedgerVM
+@{
+    ViewBag.Title = "Indexx";
+}
+<div class="content-wrapper">
+
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        @*<div class="row">
+                <div class="main-header">
+                    <h4>First Level Form</h4>
+                </div>
+            </div>*@
+        <div class="col-lg-12">
+
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Detail Ledger</u></h5>
+                            </div>
+                            <div class="card-block">
+                                @using (Html.BeginForm("DetailLedgerSearch", "Ledger", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <label><b>Select Account</b></label>
+                                            @Html.DropDownListFor(m => m.ThirdLevel.AccountNo, new SelectList(Model.ThirdList, "AccountNo", "AccountTitle"), "Select Account", htmlAttributes: new { @class = "chosen-select form-control" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label> Date From</label>
+                                            <input type="date" name="s_date" value="" class="form-control" id="date_st" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label> Date To</label>
+                                            <input type="date" name="e_date" value="" class="form-control" id="date_end" />
+                                        </div>
+                                        <br />
+                                        <div class="col-md-3 offset-sm-10">
+                                            <button type="submit" class="btn btn-primary " style="margin-top:30px"><i class="fa fa-search"></i>&nbsp; Search</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+
+<script>
+    $('.chosen-select').chosen();
+    $(document).ready(function () {
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        $('#date_st').val(today);
+        $('#date_end').val(today);
+    });
+</script>
+
+

@@ -31,6 +31,7 @@ namespace AR_IS.Controllers
             base.OnActionExecuting(filterContext);
         }
     }
+   
     public class HomeController : Controller
     {
         private ApplicationDbContext _context;
@@ -93,6 +94,10 @@ namespace AR_IS.Controllers
                 _context.Database.ExecuteSqlCommand("INSERT  INTO   Secondlevels( Headid, SubHeadid, AccountNo, AccountTitle, Comid)  VALUES (5,5001,5000004,'MISC','" + Comid + "')");
                 //Third Level
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (1100001,1,1001,1000001,'Cash','Cash',0,0,'" + Comid + "') ");
+                _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (1100003,1,1001,1000002,'General Customer','Customer',0,0,'" + Comid + "') ");
+                _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (2100001,2,2001,2000001,'General Supplier','Supplier',0,0,'" + Comid + "') ");
+                _context.Database.ExecuteSqlCommand("INSERT INTO  Customers( Name,AccountNo, Comid ,SpecialDiscount,PromptPaymentDiscount,CreditLimit)  VALUES  ('General Customer',1100003,'" + Comid+"',0,0,0)");
+                _context.Database.ExecuteSqlCommand("INSERT INTO  Suppliers(Name,AccountNo, Comid,SpecialDiscount,PromptPaymentDiscount,CreditLimit)  VALUES  ('General Supplier',2100001,'" + Comid + "',0,0,0)");
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (4400001,4,4001,4000001,'Sales','Sale',0,0,'" + Comid + "') ");
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (5500001,5,5001,5000001,'CGS','CGS',0,0,'" + Comid + "') ");
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (5500002,5,5001,5000002,'Discount','Discount',0,0,'" + Comid + "') ");
@@ -100,25 +105,12 @@ namespace AR_IS.Controllers
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (5500003,5,5002,5000003,'Food','Kitchen',0,0,'" + Comid + "') ");
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (5500004,5,5002,5000004,'Guests','MISC',0,0,'" + Comid + "') ");
                 _context.Database.ExecuteSqlCommand("INSERT INTO  ThirdLevels( AccountNo, HeadId, FirstLevelId, SecondLevelId, AccountTitle, AccountType, Cr, Dr, Comid)  VALUES  (5500005,5,5002,5000003,'Tea','Kitchen',0,0,'" + Comid + "') ");
-                //string ab = "";
-                //string dsa = GeneralUser.Password;
-                //using (SHA1Managed sha1 = new SHA1Managed())
-                //{
-                //    var hashSh1 = sha1.ComputeHash(Encoding.UTF8.GetBytes(dsa));
-                //    // declare stringbuilder
-                //    var sb = new StringBuilder(hashSh1.Length * 2);
-
-                //    // computing hashSh1
-                //    foreach (byte b in hashSh1)
-                //    {
-                //        // "x2"
-                //        sb.Append(b.ToString("X2").ToLower());
-                //    }
-
-                //    // final output
-                //    Console.WriteLine(string.Format("The SHA1 hash of {0} is: {1}", dsa, sb.ToString()));
-                //    ab = sb.ToString();
-                //}
+                //user acccesss
+                var useraccess = _context.tbl_UserAccessCopy.ToList();
+                foreach (var item in useraccess)
+                {
+                    _context.Database.ExecuteSqlCommand("INSERT     INTO     UserAccesses(Form_id, SubForm_id, SuperForm_id, Comid, Username)VALUES   ('" + item.Form_id + "','" + item.SubForm_id + "','" + item.SuperForm_id + "','" + Comid + "','" + GeneralUser.UserName + "')");
+                }
                 GeneralUser.Password = GeneralUser.Password;
                 DateTime now = DateTime.Now;
                 GeneralUser.RegDate = now;
@@ -129,7 +121,12 @@ namespace AR_IS.Controllers
                 return RedirectToAction("Login", "Home");
             }
         }
-       
+        public JsonResult getChat()
+        {
+            
+           var students = _context.tbl_Chat.ToList();
+            return Json(students, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Login(GeneralUser GeneralUser)
         {
             var Companies = _context.tbl_Company.ToList();
@@ -181,6 +178,18 @@ namespace AR_IS.Controllers
                     Session["UserName"] = obj.UserName.ToString();
                     Session["SuperAdmin"] = obj.UserName.ToString();
                     Session["Company"] = obj.Comid.ToString();
+                    //Head
+                    Session["DashBoard"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '1') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Reg"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '2') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Purchase"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '3') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Sale"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '4') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Reports"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '5') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["PaymenentRecovery"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '6') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Vouchers"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '7') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Accounts"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '8') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["Financial"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '9') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["User"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '10') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
+                    Session["setting"] = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM   UserAccesses INNER JOIN GeneralUsers ON UserAccesses.username = GeneralUsers.UserName WHERE (GeneralUsers.UserName = '" + Session["UserName"] + "') AND (UserAccesses.Form_id = '11') AND (GeneralUsers.Comid = '" + Session["Company"] + "')").FirstOrDefault<int>();
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -254,69 +263,86 @@ namespace AR_IS.Controllers
         }
         public ActionResult Index()
         {
-            int MonthPurchase = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS MonthPurchase FROM PurDetailVehicles where   (DATEPART(MONTH, PurDetailVehicles.Date) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, PurDetailVehicles.Date) = DATEPART(YEAR, GETDATE())) and Comid='" + Session["Company"] + "'").FirstOrDefault();
-            int TodayPurchase = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS TodayPurchase FROM PurDetailVehicles where (DATEPART(DAY, PurDetailVehicles.Date) = DATEPART(DAY, GETDATE())) and (DATEPART(MONTH, PurDetailVehicles.Date) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, PurDetailVehicles.Date) = DATEPART(YEAR, GETDATE())) and Comid='" + Session["Company"] + "'").FirstOrDefault();
-            int TodaySale = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS TodaySale FROM SWIs where (DATEPART(DAY, SWIs.Date) = DATEPART(DAY, GETDATE())) and (DATEPART(MONTH, SWIs.Date) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, SWIs.Date) = DATEPART(YEAR, GETDATE())) and Comid='" + Session["Company"] + "'").FirstOrDefault();
-            int MonthSale = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS MonthSale FROM SWIs where  (DATEPART(MONTH, SWIs.Date) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, SWIs.Date) = DATEPART(YEAR, GETDATE())) and Comid='" + Session["Company"] + "'").FirstOrDefault();
-            decimal DailyRecovery = _context.Database.SqlQuery<decimal>("SELECT isnull(sum(TranscationDetails.Cr),0) DailyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 1) AND (ThirdLevels.SecondLevelId = 1000002) and TransDate= CONVERT (date, GETDATE()) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "'").FirstOrDefault();
-            decimal MonthlyRecovery = _context.Database.SqlQuery<decimal>(" SELECT isnull(sum(TranscationDetails.Cr),0) MonthlyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 1) AND (ThirdLevels.SecondLevelId = 1000002) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "' and (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE()))").FirstOrDefault();
-            decimal DailyPayment = _context.Database.SqlQuery<decimal>("SELECT isnull(sum(TranscationDetails.Dr),0) DailyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 2) AND (ThirdLevels.SecondLevelId = 2000001) and TransDate= CONVERT (date, GETDATE()) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "'").FirstOrDefault();
-            decimal MonthlyPayment = _context.Database.SqlQuery<decimal>(" SELECT isnull(sum(TranscationDetails.Dr),0) MonthlyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 2) AND (ThirdLevels.SecondLevelId = 2000001) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "' and (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE()))").FirstOrDefault();
-            decimal DailyDiscount = _context.Database.SqlQuery<decimal>("SELECT ISNULL(SUM(TranscationDetails.Dr), 0) AS DailyDiscount FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.AccountNo = 5500002) AND (TranscationDetails.TransDate = CONVERT(date, GETDATE())) AND (TranscationDetails.Comid = '" + Session["Company"] + "') ").FirstOrDefault();
-            decimal MonthlyDiscount = _context.Database.SqlQuery<decimal>("SELECT ISNULL(SUM(TranscationDetails.Dr), 0) AS MonthlyExpense  FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.AccountNo = 5500002) AND (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE())) AND (TranscationDetails.Comid = '" + Session["Company"] + "')").FirstOrDefault();
-            decimal DailyExpense = _context.Database.SqlQuery<decimal>("SELECT isnull(SUM(TranscationDetails.Dr),0) AS DailyExpense FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.FirstLevelId = 5002) AND (ThirdLevels.Comid = '" + Session["Company"] + "') AND (TranscationDetails.Comid = '" + Session["Company"] + "') and TranscationDetails.TransDate = CONVERT(date, GETDATE()) ").FirstOrDefault();
-            decimal MonthlyExpense = _context.Database.SqlQuery<decimal>("SELECT isnull(SUM(TranscationDetails.Dr),0) AS DailyExpense FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.FirstLevelId = 5002) AND (ThirdLevels.Comid = '" + Session["Company"] + "') AND (TranscationDetails.Comid = '" + Session["Company"] + "')  AND (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE())) ").FirstOrDefault();
-            var Sales = _context.Database.SqlQuery<decimal>("SELECT (select isnull(sum(TranscationDetails.Cr) ,0)from TranscationDetails where ThirdLevels.AccountNo=TranscationDetails.AccountNo and Comid=TranscationDetails.Comid) as Sales FROM ThirdLevels WHERE (AccountNo = 4400001) and (Comid='" + Session["Company"] + "')").FirstOrDefault();
-            var Expenses = _context.Database.SqlQuery<decimal>("SELECT ISNULL(SUM(ex), 0) AS Expenses FROM (SELECT AccountNo, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (ThirdLevels.AccountNo = AccountNo) AND (Comid = Comid)) AS ex FROM ThirdLevels WHERE (HeadId = 5) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1").FirstOrDefault();
-            var Receivable = _context.Database.SqlQuery<ReceivableVMQ>("SELECT TOP (10) AccountTitle, openBal + Transbal AS Balance FROM (SELECT AccountTitle, openBal, ddr, ccr, ddr - ccr AS Transbal FROM (SELECT TOP (10) AccountTitle, Cr, Dr, Dr - Cr AS openBal, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ddr, (SELECT ISNULL(SUM(Cr), 0) AS Expr1 FROM TranscationDetails AS TranscationDetails_1 WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ccr FROM ThirdLevels WHERE (SecondLevelId IN (1000002)) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1) AS derivedtbl_2").ToList();
-            var Payable = _context.Database.SqlQuery<PayableVMQ>("SELECT TOP (10) AccountTitle, openBal + Transbal AS Balance FROM (SELECT AccountTitle, openBal, ddr, ccr, ccr - ddr AS Transbal FROM (SELECT TOP (10) AccountTitle, Cr, Dr, Cr - Dr AS openBal, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ddr, (SELECT ISNULL(SUM(Cr), 0) AS Expr1 FROM TranscationDetails AS TranscationDetails_1 WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ccr FROM ThirdLevels WHERE (SecondLevelId IN (2000001)) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1) AS derivedtbl_2").ToList();
-            var CashBank = _context.Database.SqlQuery<CashBankVMQ>("SELECT TOP (10) AccountTitle, openBal + Transbal AS Balance FROM (SELECT AccountTitle, openBal, ddr, ccr, ddr - ccr AS Transbal FROM (SELECT TOP (10) AccountTitle, Cr, Dr, Dr - Cr AS openBal, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ddr, (SELECT ISNULL(SUM(Cr), 0) AS Expr1 FROM TranscationDetails AS TranscationDetails_1 WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ccr FROM ThirdLevels WHERE (SecondLevelId IN (1000001,1000003)) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1) AS derivedtbl_2").ToList();
-            var MonthlyVehicleSale = _context.Database.SqlQuery<MonthlyVehichleSaleVMQ>("SELECT COUNT(*) AS Vehicle,LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4) AS Month FROM SWIs where YEAR(Date)=YEAR(GETDATE()) and (Comid = '" + Session["Company"] + "') GROUP BY LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4)").ToList();
-            var SaleAnalysis = _context.Database.SqlQuery<SaleAnalysisVMQ>("SELECT TotalAmount, TotalReceived, TotalAmount - TotalReceived AS TotalBalance FROM (SELECT ISNULL(SUM(TranscationDetails.Dr), 0) AS TotalAmount, ISNULL(SUM(TranscationDetails.Cr), 0) AS TotalReceived   FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.SecondLevelId = 1000002) AND (TranscationDetails.Comid = '" + Session["Company"] + "')) AS derivedtbl_1").FirstOrDefault();
-            var MonthlyVehichlePurchase = _context.Database.SqlQuery<MonthlyVehichlePurchaseVMQ>("SELECT COUNT(*) AS Vehicle,LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4) AS Month FROM PurDetailVehicles where YEAR(Date)=YEAR(GETDATE()) and (Comid = '" + Session["Company"] + "') GROUP BY LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4)").ToList();
-            var PurchaseAnalysis = _context.Database.SqlQuery<PurchaseAnalysisVMQ>("SELECT TotalAmount, Totalpaid, TotalAmount - Totalpaid AS TotalBalance FROM (SELECT ISNULL(SUM(TranscationDetails.Cr), 0) AS TotalAmount, ISNULL(SUM(TranscationDetails.Dr), 0) AS Totalpaid FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.SecondLevelId = 2000001) AND (TranscationDetails.Comid = '" + Session["Company"] + "')) AS derivedtbl_1 ").FirstOrDefault();
-            var TopPurchases = _context.Database.SqlQuery<PurchaseWVehicleVMQ>("SELECT TOP (10) PurMasterVehicles.Id, PurMasterVehicles.Invid, PurMasterVehicles.Address, PurMasterVehicles.Phone, PurMasterVehicles.Date, PurMasterVehicles.AdditionalCharges, PurMasterVehicles.NetAmount, PurMasterVehicles.GrandTotal, PurMasterVehicles.Total, PurMasterVehicles.Ptotal, PurMasterVehicles.BTotal, PurMasterVehicles.Vtype, PurMasterVehicles.Comid, Suppliers.Name, PurMasterVehicles.AccountNo FROM PurMasterVehicles INNER JOIN Suppliers ON PurMasterVehicles.AccountNo = Suppliers.AccountNo WHERE (PurMasterVehicles.Vtype = 'PINVV') AND (PurMasterVehicles.Comid = '" + Session["Company"] + "') ORDER BY PurMasterVehicles.Invid DESC").ToList();
-            var TopSale = _context.Database.SqlQuery<SWIVMQ>("SELECT TOP (10) derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal - (derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "') ORDER BY derivedtbl_1.Invid DESC").ToList();
-            var viewmodel = new DashBoardVM
+            if (Session["UserID"] == null)
             {
-                //vehicle Purchase
-                MonthPurchase = MonthPurchase,
-                TodayPurchase = TodayPurchase,
-                //vehicle Sale
-                TodaySale = TodaySale,
-                MonthSale = MonthSale,
-                //Recovery
-                DailyRecovery = DailyRecovery,
-                MonthlyRecovery = MonthlyRecovery,
-                //Payment
-                DailyPayment = DailyPayment,
-                MonthlyPayment = MonthlyPayment,
-                //Discunt
-                DailyDiscount = DailyDiscount,
-                MonthlyDiscount = MonthlyDiscount,
-                //Expense
-                DailyExpense = DailyExpense,
-                MonthlyExpense = MonthlyExpense,
-                //Customer Receivable
-                Receivable = Receivable,
-                //supplier payable
-                Payable = Payable,
-                //cash and Bank 
-                CashBank=CashBank,
-                //sale expenses
-                Sales = Sales,
-                Expenses=Expenses,
-                //Graph
-                MonthlyVehicleSale = MonthlyVehicleSale,
-                SaleAnalysis = SaleAnalysis,
-                MonthlyVehichlePurchase = MonthlyVehichlePurchase,
-                PurchaseAnalysis = PurchaseAnalysis,
-                // Top Purchase
-                TopPurchase = TopPurchases,
-                // Top Saale
-                TopSale = TopSale,
-            };
-            return View(viewmodel);
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                var userlist = _context.Database.SqlQuery<GeneralUser>("SELECT  Id, Email, Password, Phone, Comid, [Plan], RegDate, ExpDate, UserName  FROM    GeneralUsers").ToList();
+                decimal TodayPurchase = _context.Database.SqlQuery<decimal>("SELECT (select isnull(sum( Dr),0) from TranscationDetails where AccountNo=ThirdLevels.AccountNo and (Comid=ThirdLevels.Comid) and (DATEPART(DAY, TranscationDetails.TransDate) = DATEPART(DAY, GETDATE())) and (DATEPART(MONTH, TranscationDetails.TransDate) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, TranscationDetails.TransDate) = DATEPART(YEAR, GETDATE())) ) as TodayPurchase FROM ThirdLevels WHERE (AccountNo = 1100002) AND (Comid = '" + Session["Company"] + "')").FirstOrDefault();
+                decimal MonthPurchase = _context.Database.SqlQuery<decimal>("SELECT (select isnull(sum( Dr),0) from TranscationDetails where AccountNo=ThirdLevels.AccountNo and (Comid=ThirdLevels.Comid) and (DATEPART(MONTH, TranscationDetails.TransDate) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, TranscationDetails.TransDate) = DATEPART(YEAR, GETDATE())) ) as MonthPurchase FROM ThirdLevels WHERE (AccountNo = 1100002) AND (Comid = '" + Session["Company"] + "')").FirstOrDefault();
+                decimal TodaySale = _context.Database.SqlQuery<decimal>("SELECT (select isnull(sum( Cr),0) from TranscationDetails where AccountNo=ThirdLevels.AccountNo  and (Comid=ThirdLevels.Comid) and (DATEPART(DAY, TranscationDetails.TransDate) = DATEPART(DAY, GETDATE())) and (DATEPART(MONTH, TranscationDetails.TransDate) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, TranscationDetails.TransDate) = DATEPART(YEAR, GETDATE())) ) as TodaySale FROM ThirdLevels WHERE (AccountNo = 4400001) AND (Comid = '" + Session["Company"] + "')").FirstOrDefault();
+                decimal MonthSale = _context.Database.SqlQuery<decimal>("SELECT (select isnull(sum( Cr),0) from TranscationDetails where AccountNo=ThirdLevels.AccountNo and (Comid=ThirdLevels.Comid) and (DATEPART(MONTH, TranscationDetails.TransDate) = DATEPART(MONTH, GETDATE())) and (DATEPART(YEAR, TranscationDetails.TransDate) = DATEPART(YEAR, GETDATE())) ) as MonthSale FROM ThirdLevels WHERE (AccountNo = 4400001) AND (Comid = '" + Session["Company"] + "')").FirstOrDefault();
+                decimal DailyRecovery = _context.Database.SqlQuery<decimal>("SELECT isnull(sum(TranscationDetails.Cr),0) DailyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 1) AND (ThirdLevels.SecondLevelId = 1000002) and TransDate= CONVERT (date, GETDATE()) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "'").FirstOrDefault();
+                decimal MonthlyRecovery = _context.Database.SqlQuery<decimal>(" SELECT isnull(sum(TranscationDetails.Cr),0) MonthlyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 1) AND (ThirdLevels.SecondLevelId = 1000002) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "' and (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE()))").FirstOrDefault();
+                decimal DailyPayment = _context.Database.SqlQuery<decimal>("SELECT isnull(sum(TranscationDetails.Dr),0) DailyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 2) AND (ThirdLevels.SecondLevelId = 2000001) and TransDate= CONVERT (date, GETDATE()) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "'").FirstOrDefault();
+                decimal MonthlyPayment = _context.Database.SqlQuery<decimal>(" SELECT isnull(sum(TranscationDetails.Dr),0) MonthlyRecovery FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.HeadId = 2) AND (ThirdLevels.SecondLevelId = 2000001) and ThirdLevels.Comid='" + Session["Company"] + "' and TranscationDetails.Comid='" + Session["Company"] + "' and (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE()))").FirstOrDefault();
+                decimal DailyDiscount = _context.Database.SqlQuery<decimal>("SELECT ISNULL(SUM(TranscationDetails.Dr), 0) AS DailyDiscount FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.AccountNo = 5500002) AND (TranscationDetails.TransDate = CONVERT(date, GETDATE())) AND (TranscationDetails.Comid = '" + Session["Company"] + "') ").FirstOrDefault();
+                decimal MonthlyDiscount = _context.Database.SqlQuery<decimal>("SELECT ISNULL(SUM(TranscationDetails.Dr), 0) AS MonthlyExpense  FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.AccountNo = 5500002) AND (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE())) AND (TranscationDetails.Comid = '" + Session["Company"] + "')").FirstOrDefault();
+                decimal DailyExpense = _context.Database.SqlQuery<decimal>("SELECT isnull(SUM(TranscationDetails.Dr),0) AS DailyExpense FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.FirstLevelId = 5002) AND (ThirdLevels.Comid = '" + Session["Company"] + "') AND (TranscationDetails.Comid = '" + Session["Company"] + "') and TranscationDetails.TransDate = CONVERT(date, GETDATE()) ").FirstOrDefault();
+                decimal MonthlyExpense = _context.Database.SqlQuery<decimal>("SELECT isnull(SUM(TranscationDetails.Dr),0) AS DailyExpense FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.FirstLevelId = 5002) AND (ThirdLevels.Comid = '" + Session["Company"] + "') AND (TranscationDetails.Comid = '" + Session["Company"] + "')  AND (MONTH(TranscationDetails.TransDate) = MONTH(GETDATE())) ").FirstOrDefault();
+                var Sales = _context.Database.SqlQuery<decimal>("SELECT (select isnull(sum(TranscationDetails.Cr) ,0)from TranscationDetails where ThirdLevels.AccountNo=TranscationDetails.AccountNo and Comid=TranscationDetails.Comid) as Sales FROM ThirdLevels WHERE (AccountNo = 4400001) and (Comid='" + Session["Company"] + "')").FirstOrDefault();
+                var Expenses = _context.Database.SqlQuery<decimal>("SELECT ISNULL(SUM(ex), 0) AS Expenses FROM (SELECT AccountNo, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (ThirdLevels.AccountNo = AccountNo) AND (Comid = Comid)) AS ex FROM ThirdLevels WHERE (HeadId = 5) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1").FirstOrDefault();
+                var Receivable = _context.Database.SqlQuery<ReceivableVMQ>("SELECT TOP (10) AccountTitle, openBal + Transbal AS Balance FROM (SELECT AccountTitle, openBal, ddr, ccr, ddr - ccr AS Transbal FROM (SELECT TOP (10) AccountTitle, Cr, Dr, Dr - Cr AS openBal, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ddr, (SELECT ISNULL(SUM(Cr), 0) AS Expr1 FROM TranscationDetails AS TranscationDetails_1 WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ccr FROM ThirdLevels WHERE (SecondLevelId IN (1000002)) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1) AS derivedtbl_2").ToList();
+                var Payable = _context.Database.SqlQuery<PayableVMQ>("SELECT TOP (10) AccountTitle, openBal + Transbal AS Balance FROM (SELECT AccountTitle, openBal, ddr, ccr, ccr - ddr AS Transbal FROM (SELECT TOP (10) AccountTitle, Cr, Dr, Cr - Dr AS openBal, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ddr, (SELECT ISNULL(SUM(Cr), 0) AS Expr1 FROM TranscationDetails AS TranscationDetails_1 WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ccr FROM ThirdLevels WHERE (SecondLevelId IN (2000001)) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1) AS derivedtbl_2").ToList();
+                var CashBank = _context.Database.SqlQuery<CashBankVMQ>("SELECT TOP (10) AccountTitle, openBal + Transbal AS Balance FROM (SELECT AccountTitle, openBal, ddr, ccr, ddr - ccr AS Transbal FROM (SELECT TOP (10) AccountTitle, Cr, Dr, Dr - Cr AS openBal, (SELECT ISNULL(SUM(Dr), 0) AS Expr1 FROM TranscationDetails WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ddr, (SELECT ISNULL(SUM(Cr), 0) AS Expr1 FROM TranscationDetails AS TranscationDetails_1 WHERE (AccountNo = ThirdLevels.AccountNo) AND (Comid = ThirdLevels.Comid)) AS ccr FROM ThirdLevels WHERE (SecondLevelId IN (1000001,1000003)) AND (Comid = '" + Session["Company"] + "')) AS derivedtbl_1) AS derivedtbl_2").ToList();
+                var MonthlyVehicleSale = _context.Database.SqlQuery<MonthlyVehichleSaleVMQ>("SELECT COUNT(*) AS Vehicle,LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4) AS Month FROM SWIs where YEAR(Date)=YEAR(GETDATE()) and (Comid = '" + Session["Company"] + "') GROUP BY LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4)").ToList();
+                var SaleAnalysis = _context.Database.SqlQuery<SaleAnalysisVMQ>("SELECT TotalAmount, TotalReceived, TotalAmount - TotalReceived AS TotalBalance FROM (SELECT ISNULL(SUM(TranscationDetails.Dr), 0) AS TotalAmount, ISNULL(SUM(TranscationDetails.Cr), 0) AS TotalReceived   FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.SecondLevelId = 1000002) AND (TranscationDetails.Comid = '" + Session["Company"] + "')) AS derivedtbl_1").FirstOrDefault();
+                var MonthlyVehichlePurchase = _context.Database.SqlQuery<MonthlyVehichlePurchaseVMQ>("SELECT COUNT(*) AS Vehicle,LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4) AS Month FROM PurDetailVehicles where YEAR(Date)=YEAR(GETDATE()) and (Comid = '" + Session["Company"] + "') GROUP BY LEFT(DATENAME(MONTH, Date), 3) + '-' + RIGHT('00' + CAST(YEAR(Date) AS VARCHAR), 4)").ToList();
+                var PurchaseAnalysis = _context.Database.SqlQuery<PurchaseAnalysisVMQ>("SELECT TotalAmount, Totalpaid, TotalAmount - Totalpaid AS TotalBalance FROM (SELECT ISNULL(SUM(TranscationDetails.Cr), 0) AS TotalAmount, ISNULL(SUM(TranscationDetails.Dr), 0) AS Totalpaid FROM ThirdLevels INNER JOIN TranscationDetails ON ThirdLevels.AccountNo = TranscationDetails.AccountNo WHERE (ThirdLevels.Comid = '" + Session["Company"] + "') AND (ThirdLevels.SecondLevelId = 2000001) AND (TranscationDetails.Comid = '" + Session["Company"] + "')) AS derivedtbl_1 ").FirstOrDefault();
+                var TopVehiclePurchase = _context.Database.SqlQuery<PurchaseWVehicleVMQ>("SELECT TOP (10) PurMasterVehicles.Id, PurMasterVehicles.Invid, PurMasterVehicles.Address, PurMasterVehicles.Phone, PurMasterVehicles.Date, PurMasterVehicles.CargoCharges, PurMasterVehicles.NetAmount, PurMasterVehicles.GrandTotal, PurMasterVehicles.Total, PurMasterVehicles.Ptotal, PurMasterVehicles.BTotal, PurMasterVehicles.Vtype, PurMasterVehicles.Comid, Suppliers.Name, PurMasterVehicles.AccountNo FROM PurMasterVehicles INNER JOIN Suppliers ON PurMasterVehicles.AccountNo = Suppliers.AccountNo WHERE (PurMasterVehicles.Vtype = 'PINVV') AND (PurMasterVehicles.Comid = '" + Session["Company"] + "') AND (Suppliers.Comid = '" + Session["Company"] + "')  ORDER BY PurMasterVehicles.Invid DESC").ToList();
+                var TopVehicleSale = _context.Database.SqlQuery<SWIVMQ>("SELECT TOP (10) derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal - (derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')  AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY derivedtbl_1.Invid DESC").ToList();
+                var TopPartsPurchase = _context.Database.SqlQuery<PurchaseWTCVMQ>("SELECT TOP (10) PurMasters.Id, PurMasters.Invid, PurMasters.Address, PurMasters.Phone, PurMasters.Date, PurMasters.CargoId, PurMasters.CargoCharges, PurMasters.NetAmount, PurMasters.DiscountAmount, PurMasters.GrandTotal, PurMasters.Total, PurMasters.BTotal, PurMasters.Vtype, PurMasters.Comid, PurMasters.AccountNo, PurMasters.Ptotal, Suppliers.Name FROM PurMasters INNER JOIN Suppliers ON PurMasters.AccountNo = Suppliers.AccountNo WHERE(PurMasters.Comid = '" + Session["Company"] + "') AND (PurMasters.Vtype = 'PINVWTC') AND (Suppliers.Comid = '" + Session["Company"] + "') ORDER BY PurMasters.Invid").ToList();
+                var TopPartsSale = _context.Database.SqlQuery<SaleWTCVMQ>("SELECT SaleMasters.Id, SaleMasters.Invid, SaleMasters.Address, SaleMasters.Phone, SaleMasters.Date, SaleMasters.CargoId, SaleMasters.CargoCharges, SaleMasters.NetAmount, SaleMasters.DiscountAmount, SaleMasters.GrandTotal, SaleMasters.Total, SaleMasters.BTotal, SaleMasters.Vtype, SaleMasters.Comid, SaleMasters.AccountNo, SaleMasters.Rtotal, Customers.Name FROM SaleMasters INNER JOIN Customers ON SaleMasters.AccountNo = Customers.AccountNo WHERE(SaleMasters.Comid = '" + Session["Company"] + "') AND (SaleMasters.Vtype = 'SINVWTC') AND (Customers.Comid = '" + Session["Company"] + "') ORDER BY SaleMasters.Invid").ToList();
+                var viewmodel = new DashBoardVM
+                {
+                    Userlist = userlist,
+                    //vehicle Purchase
+                    MonthPurchase = MonthPurchase,
+                    TodayPurchase = TodayPurchase,
+                    //vehicle Sale
+                    TodaySale = TodaySale,
+                    MonthSale = MonthSale,
+                    //Recovery
+                    DailyRecovery = DailyRecovery,
+                    MonthlyRecovery = MonthlyRecovery,
+                    //Payment
+                    DailyPayment = DailyPayment,
+                    MonthlyPayment = MonthlyPayment,
+                    //Discunt
+                    DailyDiscount = DailyDiscount,
+                    MonthlyDiscount = MonthlyDiscount,
+                    //Expense
+                    DailyExpense = DailyExpense,
+                    MonthlyExpense = MonthlyExpense,
+                    //Customer Receivable
+                    Receivable = Receivable,
+                    //supplier payable
+                    Payable = Payable,
+                    //cash and Bank 
+                    CashBank = CashBank,
+                    //sale expenses
+                    Sales = Sales,
+                    Expenses = Expenses,
+                    //Graph
+                    MonthlyVehicleSale = MonthlyVehicleSale,
+                    SaleAnalysis = SaleAnalysis,
+                    MonthlyVehichlePurchase = MonthlyVehichlePurchase,
+                    PurchaseAnalysis = PurchaseAnalysis,
+                    // Top Vehicle Purchase
+                    TopVehiclePurchase = TopVehiclePurchase,
+                    // Top Vehicle Sale
+                    TopVehicleSale = TopVehicleSale,
+                    // Top Parts Purchase
+                    TopPartsPurchase = TopPartsPurchase,
+                    // Top Parts Sale
+                    TopPartsSale = TopPartsSale,
+                };
+
+                return View("Index", viewmodel);
+            }
+           
         }
         public ActionResult About()
         {

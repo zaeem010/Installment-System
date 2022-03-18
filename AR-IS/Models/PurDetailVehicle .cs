@@ -31,6 +31,8 @@ namespace AR_IS.Models
         public decimal AdvancePayment { get; set; }
         public int AccountNo { get; set; }
         public decimal BalanceTotal { get; set; }
+        public int Vid { get; set; }
+        public String MergingId { get; set; }
 
     }
 }

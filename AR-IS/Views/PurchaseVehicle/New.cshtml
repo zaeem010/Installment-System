@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "New";
 }
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <style>
     hr.new2 {
         color: #2196F3;
@@ -13,7 +14,7 @@
         opacity: 0 !important;
         position: absolute !important;
         display: flex !important;
-        width: 200px;
+        width: 400px;
     }
 
         select:invalid[multiple] {
@@ -26,18 +27,42 @@
     <div class="container-fluid">
         <div class="col-lg-12">
             <br />
-            
             <a href="@Url.Action("Index","PurchaseVehicle")" class="btn btn-primary pull-right" data-toggle="tooltip" style="margin-left:20px"><i class="fa fa-list"></i> Invoice List</a>
             <button class="btn btn-primary pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent1"><i class="fa fa-list"></i> Recent Invoice List</button>
             <br />
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
             <div class="card" style="margin-top:20px">
                 <div class="card-header text-center">
-                    <h3 class=""><u><b>Vehicle Purchase Invoice</b></u></h3>
+                    <h3 class="text-primary-color"><u><b>Vehicle Purchase Invoice</b></u></h3>
                 </div>
                 <div class="card-block">
+                    @if (TempData["Reg"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (TempData["Reg1"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg1"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @using (Html.BeginForm("Save", "PurchaseVehicle", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
@@ -48,76 +73,91 @@
                             <label>Inv No </label>
                             @Html.TextBoxFor(m => m.PurMasterVehicle.Invid, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off" })
                         </div>
-                        <div class="col-md-3">
-                            <label>Inv Date </label>
+                        <div class="col-md-5">
+                            <label>Inv Date </label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             @Html.TextBoxFor(m => m.PurMasterVehicle.Date, new { @class = "form-control thresold-i", @placeholder = "", @type = "date", id = "Date" })
                         </div>
-                        <div class="col-md-3">
-                            <label><b>Select Supplier</b> &nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addCustomer"><i class="fa fa-plus" style="color:white"></i></a></label>
-                            @Html.DropDownListFor(m => m.PurMasterVehicle.AccountNo, new SelectList(Model.Supp_list, "AccountNo", "Name"), "Select Supplier", htmlAttributes: new { @class = "form-control input-xs chosen-select", @required = "true" })
+                        <div class="col-md-5">
+                            <label><b>Select Supplier</b> &nbsp;</label><i class="fa fa-asterisk text-danger"></i>&nbsp;&nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" href="#addCustomer" @*data-target="#addCustomer"*@><i class="fa fa-plus" style="color:white"></i></a>
+                            @Html.DropDownListFor(m => m.PurMasterVehicle.AccountNo, new SelectList(Model.Supp_list, "AccountNo", "Name"), "Select Supplier", htmlAttributes: new { @class = "form-control input-xs chosen-select", @required = "True" })
                         </div>
                         <div class="col-md-4">
+                            <br />
                             <label>Remarks For Related Invoice </label>
-                            @Html.TextAreaFor(m => m.TranscationDetail.Remarks, new { @class = "form-control thresold-i", rows = 2, columns = 5 })
+                            @Html.TextAreaFor(m => m.PurMasterVehicle.Address, new { @class = "form-control thresold-i", rows = 2, columns = 5 })
+                        </div>
+                        <div class="col-md-4">
+                            <br />
+                            <label>Cargo  &nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addCargo"><i class="fa fa-plus" style="color:white"></i></a> </label>
+                            @Html.DropDownListFor(m => m.PurMasterVehicle.CargoId, new SelectList(Model.Cargo_list, "Id", "Name"), "Select Cargo", htmlAttributes: new { @class = "form-control input-xs chosen-select" })
+                        </div>
+                        <div class="col-md-4">
+                            <br />
+                            <label>Cargo Number </label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.Phone, new { @class = "form-control thresold-i", @type = "number", @autocomplete = "off" })
                         </div>
 
                         <div class="col-md-12">
                             <hr class="new2">
                         </div>
-                        <div class="card-header">
-                            <h5 class="card-header-text text-primary-color"><b><u class="size">Vehicle Info</u></b></h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card-header">
+                                    <h5 class="card-header-text text-primary-color"><b><u class="size">Vehicle Info</u></b></h5>
+                                </div>
+                            </div>
                         </div>
-                        <span id="uname_response"></span>
                         <div class="col-md-4">
-                            <label>Vehicle Name:</label>
+                            <label>Vehicle Name:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             <input class="form-control" autocomplete="off" id="vname" type="text">
                         </div>
                         <div class="col-md-2">
-                            <label>Model No:</label>
+                            <label>Model No:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             <input class="form-control" autocomplete="off" id="modelno" value="" type="text">
                         </div>
                         <div class="col-md-2">
-                            <label>Chassis No:</label>
+                            <label>Chassis No:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             <input class="form-control" autocomplete="off" id="Chassisno" type="text">
                         </div>
                         <div class="col-md-2">
-                            <label>Engine No:</label>
-                            <input class="form-control" autocomplete="off"  id="engineno" type="text">
+                            <label>Engine No:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            <input class="form-control" autocomplete="off" id="engineno" type="text">
                         </div>
                         <div class="col-md-2">
-                            <label>Key No:</label>
+                            <label>Key No:</label>&nbsp;
                             <input class="form-control" autocomplete="off" id="KeyNo" type="text">
                         </div>
-                        <div class="col-md-2" style="margin-top: 12px" >
-                           
-                            <label>Color:</label>
-                            <select class="form-control"   id="vcolor" style="height:32px">
+                        <div class="col-md-2" style="margin-top: 12px">
+
+                            <label>Color:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            <select class="form-control" id="vcolor" style="height:32px">
                                 <option value="Red">Red</option>
                                 <option value="White">White</option>
+                                <option value="Black">Black</option>
                             </select>
                         </div>
                         <div class="col-md-2" style="margin-top:12px">
-                            
-                            <label>Remarks:</label>
-                            <select class="form-control"  id="Remarks" style="height:32px">
+
+                            <label>Remarks:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            <select class="form-control" id="Remarks" style="height:32px">
                                 <option value="New">New</option>
                                 <option value="Old">Old</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <br />
-                            <label>Rate:</label>
-                            <input class="form-control" autocomplete="off" id="vrate" onkeyup="getPrice()" type="number">
+                            <label>Rate:</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            <input class="form-control" autocomplete="off" id="vrate" value="0" onkeyup="getPrice()" type="number">
                         </div>
                         <div class="col-md-2">
                             <br />
                             <label>Discount:</label>
-                            <input class="form-control" autocomplete="off" id="Discount" onkeyup="getPrice()" type="number">
+                            <input class="form-control" autocomplete="off" id="Discount" value="0" onkeyup="getPrice()" type="number">
                         </div>
                         <div class="col-md-4">
                             <br />
                             <label>Without Tax Total:</label>
-                            <input class="form-control" readonly autocomplete="off" id="withoutgst" type="number">
+                            <input class="form-control" readonly autocomplete="off" value="0" id="withoutgst" type="number">
                         </div>
                         <div class="col-md-2">
                             <br />
@@ -127,10 +167,10 @@
                         <div class="col-md-2">
                             <br />
                             <label>With Tax  Total</label>
-                            <input class="form-control" readonly autocomplete="off" id="withgst" type="number">
+                            <input class="form-control" readonly autocomplete="off" id="withgst" value="0" type="number">
                         </div>
                         <div class="col-md-2  ">
-                            <button style="margin-top:42px ;background-color:#4cff00"  type="button" onclick='abcd()' class="btn "><i class="fa fa-plus"></i>Add</button>
+                            <button style="margin-top: 42px; background-color: yellowgreen" type="button" onclick='abcd()' class="btn "><i class="fa fa-plus"></i></button>
                         </div>
                         <br />
                         <div class="col-md-12">
@@ -148,7 +188,7 @@
                                     <th>Rate</th>
                                     <th>Discount</th>
                                     <th>Wihout Txt Total</th>
-                                    <th>Txt</th>
+                                    <th>Txt %</th>
                                     <th>With Txt Total</th>
                                 </tr>
                                 @if (Model.PurMasterVehicle.Id == 0)
@@ -197,44 +237,41 @@
                         <div class="col-md-12">
                             <hr class="new2">
                         </div>
-
                         <div class="row">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="card-header">
-                                        <h5 class="card-header-text"><b><u class="size text-primary-color">Payment Info</u></b></h5>
-                                    </div>
+                            <div class="col-md-3">
+                                <div class="card-header">
+                                    <h5 class="card-header-text"><b><u class="size text-primary-color">Payment Info</u></b></h5>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <label>Total </label>
-                                @Html.TextBoxFor(m => m.PurMasterVehicle.Total, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "total" })
-                            </div>
-                            <div class="col-md-4 ">
-                                <label>Additional Charges </label>
-                                @Html.TextBoxFor(m => m.PurMasterVehicle.AdditionalCharges, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "gt()", @type = "number", id = "Additional", @autocomplete = "off" })
-                            </div>
-                            <div class="col-md-4">
-
-                                <label>Grand Total</label>
-                                @Html.TextBoxFor(m => m.PurMasterVehicle.GrandTotal, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "granttotal" })
-                            </div>
-
-                            <div class="col-md-4 top">
-
-                                <label>Net Total</label>
-                                @Html.TextBoxFor(m => m.PurMasterVehicle.NetAmount, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "grantnettotal" })
-                            </div>
-                            <div class="col-md-4 top">
-                                <label>Paid Amount</label>
-                                @Html.TextBoxFor(m => m.PurMasterVehicle.Ptotal, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "gt()", id = "Paidtotal", @type = "number", @autocomplete = "off" })
-                            </div>
-                            <div class="col-md-4 top">
-                                <label>Balance Total</label>
-                                @Html.TextBoxFor(m => m.PurMasterVehicle.BTotal, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "BalanceTotal" })
-                            </div>
                         </div>
-                        <div class="col-md-10" style="margin-left:330px;margin-top:20px">
+                        <div class="col-md-4">
+                            <label>Total </label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.Total, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "total" })
+                        </div>
+                        <div class="col-md-4 ">
+                            <label>Cargo Charges </label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.CargoCharges, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "gt()", @type = "number", id = "Additional", @autocomplete = "off" })
+                        </div>
+                        <div class="col-md-4">
+
+                            <label>Grand Total</label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.GrandTotal, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "granttotal" })
+                        </div>
+
+                        <div class="col-md-4 top">
+
+                            <label>Net Total</label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.NetAmount, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "grantnettotal" })
+                        </div>
+                        <div class="col-md-4 top">
+                            <label>Paid Amount</label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.Ptotal, new { @class = "form-control thresold-i", @placeholder = "", onkeyup = "gt()", id = "Paidtotal", @type = "number", @autocomplete = "off" })
+                        </div>
+                        <div class="col-md-4 top">
+                            <label>Balance Total</label>
+                            @Html.TextBoxFor(m => m.PurMasterVehicle.BTotal, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "only", id = "BalanceTotal" })
+                        </div>
+                        <div class="col-md-10" style="margin-left:370px;margin-top:20px">
                             @if (Model.PurMasterVehicle.Id == 0)
                             {
                                 <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-paste f-20"></i> &nbsp; Save Invoice</button>
@@ -259,6 +296,9 @@
 
             <!-- Modal Header -->
             <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
                 <h4 class="modal-title text-center" style="color:white">Recent Invoices</h4>
             </div>
             <!-- Modal body -->
@@ -294,7 +334,7 @@
                             {
                             <tr>
                                 <td>
-                                    @lst.Invid
+                                    <label class="badge badge-inverse-default"> @lst.Invid</label>
 
                                 </td>
                                 <td>
@@ -306,29 +346,28 @@
 
                                 </td>
                                 <td>
-                                    @lst.NetAmount
+                                    @lst.NetAmount.ToString("#,##0")
 
                                 </td>
                                 <td>
-                                    @lst.Ptotal
+                                    @lst.Ptotal.ToString("#,##0")
 
                                 </td>
-                                @if (@lst.NetAmount == @lst.Ptotal)
-
-
+                                @if (lst.NetAmount == lst.Ptotal)
                                 {
                                     <td>
-                                        <span class="badge badge-success"> @lst.BTotal</span>
+                                        <label class="label label-lg label-success" style="font-size: 15px"> @lst.BTotal.ToString("#,##0")</label>
 
                                     </td>
                                 }
                                 else
                                 {
                                     <td>
-                                        <span class="badge badge-danger"> @lst.BTotal</span>
+                                        <label class="label label-lg label-danger" style="font-size: 15px"> @lst.BTotal.ToString("#,##0")</label>
 
                                     </td>
                                 }
+
 
                                 <td>
                                     <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
@@ -345,119 +384,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="addCustomer">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header" style="background-color:#2196F3">
-                <h4 class="modal-title text-center" style="color:white">Register Supplier</h4>
-            </div>
-            <!-- Modal body -->
-            <div class="modal-body">
-                @using (Html.BeginForm("Save_sup", "PurchaseVehicle", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-                    <span id="uname_response"></span>
-                    @Html.AntiForgeryToken()
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-8">
-                                @if (Model.Supplier.Id == 0)
-                                {
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Name Supplier</label>
-                                        <br />
-                                        @Html.TextBoxFor(m => m.Supplier.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="col-md-6">
-                                        <br />
-                                        <label>Name Supplier</label>
-                                        <br />
-                                        @Html.TextBoxFor(m => m.Supplier.Name, new { @class = "form-control thresold-i ", @required = "required", @readonly = "true", autocomplete = "off" })
-                                    </div>
-                                }
-                                <div class="col-md-6">
-                                    <br />
-                                    <label>Name Company </label>
-                                    <br />
-                                    @Html.TextBoxFor(m => m.Supplier.Comname, new { @class = "form-control thresold-i ", @required = "required", autocomplete = "off" })
-                                </div>
-                                <div class="col-md-6">
-                                    <br />
-                                    <label>CNIC</label>
-                                    <br />
-                                    @Html.TextBoxFor(m => m.Supplier.CNIC, new { @class = "form-control thresold-i ", @type = "", @placeholder = "", autocomplete = "off", @id = "cnic", @maxlength = "15" })
-                                </div>
-                                <div class="col-md-6">
-                                    <br />
-                                    <label>Phone</label>
-                                    <br />
-                                    @Html.TextBoxFor(m => m.Supplier.Phone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
-                                </div>
-                                <div class="col-md-6">
-                                    <br />
-                                    <label>Telephone</label>
-                                    <br />
-                                    @Html.TextBoxFor(m => m.Supplier.Telephone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
-                                </div>
-                                <div class="col-md-6">
-                                    <br />
-                                    <label>Email</label>
-                                    <br />
-                                    @Html.TextBoxFor(m => m.Supplier.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
-                                </div>
-                                <div class="col-md-6">
-                                    <br />
-                                    <label><b>Select Town</b></label>
-                                    @Html.DropDownListFor(m => m.Supplier.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select", onchange = "Action(this.value)" })
-                                </div>
 
-                                <div class="col-md-6">
-                                    <br />
-                                    <label>Address</label>
-                                    <br />
-                                    @Html.TextAreaFor(m => m.Supplier.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "30", rows = "3" })
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="col-md-12">
-                                    <label><b>Photo</b></label>
-                                    @if (Model.Supplier.Image == "" || Model.Supplier.Image == null)
-                                    {
-                                        <div>
-                                            <img id="user_img" height="97" src="~/Content/Image/Demo.png" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
-                                        </div>
-                                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            <img id="user_img" height="97" src="~/uploads/@Model.Supplier.Image" width="97" style="border:thin;margin-left:0px;margin-top:0px" class="img-fluid" />
-                                        </div>
-                                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control input-xs" , style="width:250px" />
-                                    }
-                                </div>
-                                <div class="col-md-12">
-                                    <br />
-                                    <label><b>Select Province</b></label>
-                                    @Html.DropDownListFor(m => m.Supplier.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select", onchange = "Action(this.value)" })
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
-                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Supplier?');"><i class="icofont icofont-ui-check"></i>  Save </button>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</div>
 <script type="text/javascript">
     function getPrice() {
         var numval1 = parseFloat(document.getElementById("vrate").value || 0);
@@ -679,29 +606,186 @@
     setTimeout(function () {
         $('#mydiv').fadeOut('fast');
     }, 3000);
-    $('#cnic').keydown(function () {
-        if (event.keyCode == 8 || event.keyCode == 9
-            || event.keyCode == 27 || event.keyCode == 13
-            || (event.keyCode == 65 && event.ctrlKey === true))
-            return;
-        if ((event.keyCode < 48 || event.keyCode > 57))
-            event.preventDefault();
-
-        var length = $(this).val().length;
-
-        if (length == 5 || length == 13)
-            $(this).val($(this).val() + '-');
-    });
-   
-    function preview_image(event) {
-        var reader = new FileReader();
-        reader.onload = function () {
-            var output = document.getElementById('user_img');
-            output.src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
-    };
+    
 
 </script>
+<div class="modal fade" id="addCustomer" aria-labelledby="modal-large-label">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title text-center" style="color:white">Register Supplier</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_sup", "PurchaseVehicle", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
 
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="card-header  ">
+                            <h5 class=" text-primary "><u><b>Personal Information</b></u></h5>
+                        </div>
+                        <div class="col-md-3">
+                            <label> Supplier Name(Ledger)</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            @Html.TextBoxFor(m => m.Supplier.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <label> Company Name</label>
+                            @Html.TextBoxFor(m => m.Supplier.Comname, new { @class = "form-control thresold-i ", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <label> Enter Description</label>
+                            @Html.TextBoxFor(m => m.Supplier.Description, new { @class = "form-control thresold-i ", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <label>Enter CNIC Number</label>
+
+                            <input type="text" data-inputmask="'mask': '99999-9999999-9'" placeholder="XXXXX-XXXXXXX-X" name="CNIC" id="CNIC" class="form-control input-xs">
+                        </div>
+                        <script>
+                            $(":input").inputmask();
+
+                        </script>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Email</label>
+                            @Html.TextBoxFor(m => m.Supplier.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label><b>Select Town</b></label>
+                            @Html.DropDownListFor(m => m.Supplier.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select", onchange = "Action(this.value)" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Select Province</label>
+                            @Html.DropDownListFor(m => m.Supplier.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs select", onchange = "Action(this.value)" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Address</label>
+
+                            @Html.TextAreaFor(m => m.Supplier.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Phone</label>
+
+                            @Html.TextBoxFor(m => m.Supplier.Phone, new { @class = "form-control thresold-i ", @type = "text", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Telephone</label>
+                            @Html.TextBoxFor(m => m.Supplier.Telephone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Photo</label>
+                            @if (Model.Supplier.Image == "" || Model.Supplier.Image == null)
+                            {
+
+                                <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control thresold-i" />
+                            }
+                            else
+                            {
+
+                                <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control thresold-i" />
+                            }
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Bank Details</label>
+
+                            @Html.TextAreaFor(m => m.Supplier.BankDetail, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                        </div>
+                        <div class="col-md-12">
+                            <hr class="new2">
+                        </div>
+                        <div class="card-header  ">
+                            <h5 class=" text-primary "><u><b>Financial Information</b></u></h5>
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>NTN</label>
+                            @Html.TextBoxFor(m => m.Supplier.NTN, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>GST</label>
+                            @Html.TextBoxFor(m => m.Supplier.GST, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>Special Discount</label>
+                            @Html.TextBoxFor(m => m.Supplier.SpecialDiscount, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>Prompt Payment Discount</label>
+                            @Html.TextBoxFor(m => m.Supplier.PromptPaymentDiscount, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Payment Conditions</label>
+                            @Html.TextBoxFor(m => m.Supplier.PaymentConditions, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Days of payment</label>
+                            @Html.TextBoxFor(m => m.Supplier.Daysofpayment, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Credit Limit</label>
+                            @Html.TextBoxFor(m => m.Supplier.CreditLimit, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i>Close</button>
+                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Supplier?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addCargo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title text-center" style="color:white">Register Cargo</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_cargo", "PurchaseVehicle", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <br />
+                            <label>Name </label>
+                            <br />
+                            @Html.TextBoxFor(m => m.Cargo.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:200px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Cargo?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
 

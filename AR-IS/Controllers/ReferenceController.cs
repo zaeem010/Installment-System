@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace AR_IS.Controllers
 {
+    [SessionTimeout]
     public class ReferenceController : Controller
     {
         private ApplicationDbContext _context;
@@ -38,7 +39,7 @@ namespace AR_IS.Controllers
             };
             return View(viewModel);
         }
-        public ActionResult Save(References References, ThirdLevel Thirdlevel, HttpPostedFileBase img)
+        public ActionResult Save(References References,string CNIC, ThirdLevel Thirdlevel, HttpPostedFileBase img)
         {
             string vardirection = "";
             string ImageName = "";
@@ -53,6 +54,7 @@ namespace AR_IS.Controllers
             if (References.id == 0)
             {
                 References.Image = ImageName;
+                References.CNIC = CNIC;
                 _context.tbl_References.Add(References);
                 References.Comid = Convert.ToInt32(Session["Company"]);
                 _context.SaveChanges();
@@ -77,7 +79,7 @@ namespace AR_IS.Controllers
                 Referencesdb.Address = References.Address;
                 Referencesdb.Town = References.Town;
                 Referencesdb.Province = References.Province;
-                Referencesdb.CNIC = References.CNIC;
+                Referencesdb.CNIC = CNIC;
                 _context.SaveChanges();
                 _context.Database.ExecuteSqlCommand("update Referencess set Image='" + ImageName2 + "' where id='" + References.id + "'  AND Comid='" + Session["Company"] + "'");
                 vardirection = "Index";

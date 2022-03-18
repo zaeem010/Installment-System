@@ -38,7 +38,7 @@ namespace AR_IS.Controllers
                 _context.tbl_InstallmentPlan.Add(InstallmentPlan);
                 InstallmentPlan.Comid = Convert.ToInt32(Session["Company"]);
                 varDirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
@@ -48,7 +48,7 @@ namespace AR_IS.Controllers
                 InstallmentPlandb.Detail = InstallmentPlan.Detail;
 
                 varDirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             _context.SaveChanges();
             return RedirectToAction(varDirection, "InstallmentPlan");

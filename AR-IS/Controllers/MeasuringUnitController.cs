@@ -34,14 +34,14 @@ namespace AR_IS.Controllers
                 _context.tbl_MeasuringUnit.Add(MeasuringUnit);
                 MeasuringUnit.Comid = Convert.ToInt32(Session["Company"]);
                 varDirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
                 var MeasuringUnitdb = _context.tbl_MeasuringUnit.Single(c => c.Id == MeasuringUnit.Id);
                 MeasuringUnitdb.Name = MeasuringUnit.Name;
                 varDirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             _context.SaveChanges();
             return RedirectToAction(varDirection, "MeasuringUnit");

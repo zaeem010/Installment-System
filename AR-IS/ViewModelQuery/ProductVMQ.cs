@@ -22,5 +22,7 @@ namespace AR_IS.ViewModelQuery
         public string Image { get; set; }
         public string Shelfnumber { get; set; }
         public int Comid { get; set; }
+
+        public string Status { get; set; }
     }
 }

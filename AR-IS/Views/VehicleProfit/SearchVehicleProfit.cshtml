@@ -1,6 +1,9 @@
 ﻿@model AR_IS.ViewModel.ReportsVM
 @{
     ViewBag.Title = "SearchVehicleProfit";
+    double sum_TotalCostPrice = 0;
+    double sum_TotalSalePrice = 0;
+    double sum_TotalProfit = 0;
 }
 <div class="content-wrapper">
     <!-- Container-fluid starts -->
@@ -51,8 +54,8 @@
                                 <table id="" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead class="bordered-darkorange">
                                         <tr style="background-color:#2196F3;color:white">
-                                            <th>Date </th>
-                                            <th>Vehicle </th>
+                                            <th><i class="fa fa-calendar"></i>Date </th>
+                                            <th><i class="fa fa-motorcycle"></i>Vehicle </th>
                                             <th>Engine No </th>
                                             <th>Cost Price</th>
                                             <th>Sale Price </th>
@@ -64,33 +67,41 @@
                                     <tbody>
                                         @foreach (var lst in Model.VehicleProfit)
                                         {
+                                            sum_TotalCostPrice += Convert.ToDouble(lst.CostPrice);
+                                            sum_TotalSalePrice += Convert.ToDouble(lst.SalePrice);
+                                            sum_TotalProfit += Convert.ToDouble(lst.Profit);
                                             <tr>
-                                                <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
+                                                <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
                                                 <td>@lst.VehicleName</td>
                                                 <td>@lst.EngineNo</td>
-                                                <td>@lst.CostPrice</td>
-                                                <td>@lst.SalePrice</td>
+                                                <td>@lst.CostPrice.ToString("#,##0")</td>
+                                                <td>@lst.SalePrice.ToString("#,##0")</td>
 
                                                 @if (lst.Profit > 0)
                                                 {
-                                                    <td style="width:30px; text-align:center;"><span class="badge badge-success">@lst.Profit</span></td>
+                                                    <td style="width:30px; text-align:center;"><label class="label label-lg label-success" style="font-size: 15px">@lst.Profit.ToString("#,##0")</label></td>
 
                                                 }
                                                 else
                                                 {
-                                                    <td style="width:30px; text-align:center;"><span class="badge badge-danger">@lst.Profit</span></td>
+                                                    <td style="width:30px; text-align:center;"><label class="label label-lg label-danger" style="font-size: 15px">@lst.Profit.ToString("#,##0")</label></td>
                                                 }
                                             </tr>
                                         }
                                     </tbody>
                                     <tfoot>
-                                        <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th>Final Total</th>
-                                            <th> <button type="submit" class="btn btn-primary ">@Model.FinalProfit.TotalCostPrice</button></th>
-                                            <th><button type="submit" class="btn btn-danger ">@Model.FinalProfit.TotalSalePrice</button></th>
-                                            <th><button type="submit" class="btn btn-success ">@Model.FinalProfit.TotalProfit</button></th>
+                                        <tr style="border:2px solid #CCCCCC">
+                                            <th style="text-align:center;" colspan="3"><label class="label label-lg label-default" style="font-size: 15px">Amount Rs:</label></th>
+                                            <th style="border:2px solid #CCCCCC"><label class="label label-lg label-info" style="font-size: 15px">@sum_TotalCostPrice.ToString("#,##0")</label></th>
+                                            <th style="border:2px solid #CCCCCC"><label class="label label-lg label-warning" style="font-size: 15px">@sum_TotalSalePrice.ToString("#,##0")</label></th>
+                                            @if (sum_TotalProfit > 0)
+                                            {
+                                                <th style="border:2px solid #CCCCCC"><label class="label label-lg label-success" style="font-size: 15px">@sum_TotalProfit.ToString("#,##0")</label></th>
+                                            }
+                                            else
+                                            {
+                                                <th style="border:2px solid #CCCCCC"><label class="label label-lg label-danger" style="font-size:15px">@sum_TotalProfit.ToString("#,##0")</label></th>
+                                            }
                                         </tr>
                                     </tfoot>
                                 </table>

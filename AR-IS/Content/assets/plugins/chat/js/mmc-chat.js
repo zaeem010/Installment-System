@@ -164,48 +164,89 @@ $(document).on('click', '#main-chat .chat-single-box .close', function () {
 });
 
 /*Click on username*/
-$(document).on('click', '#main-chat #sidebar .user-box .userlist-box', function () {
+//$(document).on('click', '#main-chat #sidebar .user-box .userlist-box', function () {
 
-    var dataId = $(this).attr('data-id');
-    var dataStatus = $(this).data('status');
-    var dataUserName = $(this).attr('data-username');
-    var _return = false;
-
-    $('#main-chat .chat-box .boxs .chat-single-box').each(function (index) {
-    
-        if ($(this).attr('data-id') == dataId) {
-        
-            removeBoxCollapseClass(this);
-            ActiveChatBox(this);
-            _return = true;
-        }
-    });
+//    var dataId = $(this).attr('data-id');
+//    var dataStatus = $(this).data('status');
+//    var dataUserName = $(this).attr('data-username');
+//    var _return = false;
+//    //alert(dataId);
+//    $('#main-chat .chat-box .boxs .chat-single-box').each(function (index) {
+//        if ($(this).attr('data-id') == dataId) {
+//            removeBoxCollapseClass(this);
+//            ActiveChatBox(this);
+//            _return = true;
+//        }
+//    });
   
 
-    if (_return) {
+//    if (_return) {
         
-        return;
-    }
-    if(dataStatus == "online"){
-    
-    var newBox = '<li class="chat-single-box card-shadow bg-white active" data-id="{0}"><div class="had-container"><div class="chat-header p-10 bg-gray"><div class="user-info d-inline-block f-left"><div class="box-live-status bg-danger  d-inline-block m-r-10"></div><a href="#">{1}</a></div><div class="box-tools d-inline-block"><a href="#" class="mini"><i class="icofont icofont-minus f-20 m-r-10"></i></a><a class="close" href="#"><i class="icofont icofont-close f-20"></i></a></div></div><div class="chat-body p-10"><div class="message-scrooler"><div class="messages"></div></div></div><div class="chat-footer b-t-muted"><div class="input-group write-msg"><input type="text" class="form-control input-value" placeholder="Type a Message"><span class="input-group-btn"><button  id="paper-btn" class="btn btn-secondary "  type="button"><i class="fa fa-paper-plane"></i></button></span></div></div></div></li>';
-    }
-    else{
+//        return;
+//    }
+//    if (dataStatus == "online" && dataId ==2) {
+//        //alert("dsadasd");
+//        var newBox = `
+//<li class="chat-single-box card-shadow bg-white active" data-id="2">
+//<div class="had-container">
+//<div class="chat-header p-10 bg-gray">
+//<div class="user-info d-inline-block f-left">
+//<div class="box-live-status bg-danger  d-inline-block m-r-10">
+//</div>
+//<a href="#">{1}</a>
+//</div>
+//<div class="box-tools d-inline-block">
+//<a href="#" class="mini">
+//<i class="icofont icofont-minus f-20 m-r-10"></i></a>
+//<a class="close" href="#"><i class="icofont icofont-close f-20"></i></a>
+//</div>
+//</div>
+//<div class="chat-body p-10">
+//<div class="message-scrooler">
+//<div class="messages">
+//<div class="message out no-avatar  media m-b-20">
+//                                            <div class="body media-body text-right p-l-50">
+//                                                <div class="content msg-reply p-5 f-12 bg-primary d-inline-block">
+//                                                    Hisa
+//                                                </div>
+//                                                <div class="seen">
+//                                                    <i class="icon-clock f-12 m-r-5 txt-muted d-inline-block"></i>
+//                                                    <p class="d-inline-block">a few seconds ago </p>
+//                                                    <div class="clear"></div>
+//                                                </div>
 
-        var newBox = '<li class="chat-single-box card-shadow bg-white active" data-id="{0}"><div class="had-container"><div class="chat-header p-10 bg-gray"><div class="user-info d-inline-block f-left"><div class="box-live-status bg-danger  d-inline-block m-r-10"></div><a href="#">{1}</a></div><div class="box-tools d-inline-block"><a href="#" class="mini"><i class="icofont icofont-minus f-20 m-r-10"></i></a><a class="close" href="#"><i class="icofont icofont-close f-20"></i></a></div></div><div class="chat-body p-10"><div class="message-scrooler"><div class="messages"></div></div></div><div class="chat-footer b-t-muted"><div class="input-group write-msg"><input type="text" class="form-control input-value" placeholder="Type a Message"><span class="input-group-btn"><button  id="paper-btn" class="btn btn-secondary "  type="button"><i class="fa fa-paper-plane"></i></button></span></div></div></div></li>';
-    }
+//                                            </div>
+//                                        </div>
+//</div>
+//</div>
+//</div>
+//<div class="chat-footer b-t-muted">
+//<div class="input-group write-msg">
+//<input type="text" class="form-control input-value" placeholder="Type a Message">
+//<span class="input-group-btn"><button  id="paper-btn" class="btn btn-secondary "  type="button">
+//<i class="fa fa-paper-plane"></i></button></span>
+//</div>
+//</div>
+//</div>
+//</li>
+//`;
+//    }
+//    else{
 
-    $('#main-chat .chat-single-box').removeClass('active');
-    $('#main-chat .chat-box .boxs').append(newBox.format(dataId, dataUserName, dataStatus));
-    generatePlaceholder();
-    messageScroll();
-    boxMinimized();
-    initialTooltip();
+//        var newBox = '<li class="chat-single-box card-shadow bg-white active" data-id="{0}"><div class="had-container"><div class="chat-header p-10 bg-gray"><div class="user-info d-inline-block f-left"><div class="box-live-status bg-danger  d-inline-block m-r-10"></div><a href="#">{1}</a></div><div class="box-tools d-inline-block"><a href="#" class="mini"><i class="icofont icofont-minus f-20 m-r-10"></i></a><a class="close" href="#"><i class="icofont icofont-close f-20"></i></a></div></div><div class="chat-body p-10"><div class="message-scrooler"><div class="messages"></div></div></div><div class="chat-footer b-t-muted"><div class="input-group write-msg"><input type="text" class="form-control input-value" placeholder="Type a Message"><span class="input-group-btn"><button  id="paper-btn" class="btn btn-secondary "  type="button"><i class="fa fa-paper-plane"></i></button></span></div></div></div></li>';
+//    }
+
+//    $('#main-chat .chat-single-box').removeClass('active');
+//    $('#main-chat .chat-box .boxs').append(newBox.format(dataId, dataUserName, dataStatus));
+//    generatePlaceholder();
+//    messageScroll();
+//    boxMinimized();
+//    initialTooltip();
 
 
 
 
-});
+//});
 
 $(document).on('focus', '#main-chat .textarea', function () {
     

@@ -26,10 +26,9 @@
                             <div class="card-block">
                                 <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead>
-                                        <tr style="background-color:#2196F3;color:white">
+                                        <tr >
                                             <th>Account No</th>
-                                            <th>Image</th>
-                                            <th>Customer Name</th>
+                                            <th>Customer Name(Ledger)</th>
                                             <th>CNIC</th>
                                             <th>Phone1</th>
 
@@ -39,8 +38,8 @@
                                     <tfoot>
                                         <tr>
                                             <th>Account No</th>
-                                            <th>Image</th>
-                                            <th>Customer Name</th>
+                                           
+                                            <th>Customer Name(Ledger)</th>
                                             <th>CNIC</th>
                                             <th>Phone1</th>
                                             <th>Action</th>
@@ -51,21 +50,21 @@
                                         {
                                         <tr>
                                             <td>@lst_Customer.AccountNo</td>
-                                            @if (lst_Customer.Image == null || lst_Customer.Image == "'NULL'" || lst_Customer.Image == "")
-                                            {
-                                                <td style="width:30px; text-align:center;"><img src="~/Content/Image/Demo.png" width="50" height="50" class="img-thumbnail" /></td>
-                                            }
-                                            else
-                                            {
-                                                <td style="width:30px; text-align:center;"><img src="~/uploads/@lst_Customer.Image" width="50" height="50" class="img-thumbnail" /></td>
-                                            }
                                             <td>@lst_Customer.Name</td>
                                             <td>@lst_Customer.CNIC</td>
                                             <td>@lst_Customer.Phone1</td>
-                                            <td>
-                                                <a href="@Url.Action("Edit", new { id = lst_Customer.AccountNo })" new { onclick="return confirm('Are you sure you want to Edit this Customer?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
-                                                <a href="@Url.Action("Delete", new {id = lst_Customer.AccountNo} )" new { onclick="return confirm('Are you sure you want to Delete this Customer?');" data-toggle="tooltip" data-placement="left" title="Click Me To Delete" class="badge badge-danger b-rounded"><i class="fa fa-trash-o"></i></a>
-                                            </td>
+                                            @if (lst_Customer.AccountNo == 1100003)
+                                            {
+                                                <td></td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <a href="@Url.Action("Edit", new { id = lst_Customer.AccountNo })" new { onclick="return confirm('Are you sure you want to Edit this Customer?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+
+                                                </td>
+                                            }
+
                                         </tr>
 
                                         }

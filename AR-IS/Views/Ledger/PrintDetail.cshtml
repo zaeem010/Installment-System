@@ -1,0 +1,334 @@
+﻿@model AR_IS.ViewModel.LedgerVM
+@{
+    Layout = null;
+    double bal = 0.00;
+    double sum_cr = 0.00;
+    double sum_dr = 0.00;
+    var i = 0;
+    var count = Model.trans_list.Count();
+    double balance = 0.00;
+    
+}
+<html lang="en">
+<head>
+    <style>
+        #invoice {
+            padding: 30px;
+        }
+
+        hr.new2 {
+            color: #2196F3;
+            border-top: 4px dotted;
+        }
+
+        .invoice {
+            position: relative;
+            background-color: #FFF;
+            min-height: 680px;
+            padding: 15px
+        }
+
+            .invoice header {
+                padding: 10px 0;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #3989c6
+            }
+
+            .invoice .company-details {
+                text-align: right
+            }
+
+                .invoice .company-details .name {
+                    margin-top: 0;
+                    margin-bottom: 0
+                }
+
+
+            .invoice .contacts {
+                margin-bottom: 20px
+            }
+
+            .invoice .invoice-to {
+                text-align: left
+            }
+
+                .invoice .invoice-to .to {
+                    margin-top: 0;
+                    margin-bottom: 0
+                }
+
+
+            .invoice .invoice-details {
+                text-align: right
+            }
+
+                .invoice .invoice-details .invoice-id {
+                    margin-top: 0;
+                    color: #3989c6
+                }
+
+
+            .invoice main {
+                padding-bottom: 50px
+            }
+
+                .invoice main .thanks {
+                    margin-top: -100px;
+                    font-size: 2em;
+                    margin-bottom: 50px
+                }
+
+                .invoice main .notices {
+                    padding-left: 6px;
+                    border-left: 6px solid #3989c6
+                }
+
+                    .invoice main .notices .notice {
+                        font-size: 1.2em
+                    }
+
+            .invoice table tfoot td {
+                background: 0 0;
+                border-bottom: none;
+                white-space: nowrap;
+                text-align: right;
+                padding: 10px 20px;
+                font-size: 1.2em;
+                border-top: 1px solid #aaa
+            }
+
+            .invoice table tfoot tr:first-child td {
+                border-top: none
+            }
+
+            .invoice table tfoot tr:last-child td {
+                color: #3989c6;
+                font-size: 1.4em;
+                border-top: 1px solid #3989c6
+            }
+
+            .invoice table tfoot tr td:first-child {
+                border: none
+            }
+
+            .invoice footer {
+                width: 100%;
+                text-align: center;
+                color: #777;
+                border-top: 1px solid #aaa;
+                padding: 8px 0
+            }
+    </style>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="invoice">
+
+        <div class="toolbar hidden-print">
+            <div class="text-right">
+                <button class="btn btn-info pull-right" id="printInvoice" style="margin-top:-10px"><i class="fa fa-print"></i> Print</button>
+            </div>
+            <hr>
+        </div>
+        <div class="invoice overflow-auto" style="margin-top:-30px">
+            <div style="min-width: 600px">
+
+                <div class="row">
+                    <div class="col">
+                        <a>
+                            <img src="~/uploads/@Model.Setting.Logo" style="width:80px;height:80px;margin-left:20px" data-holder-rendered="true" />
+                        </a>
+                    </div>
+                    <div class="col company-details" style="padding:10px">
+                        <h2 class="name">
+                            @Model.Setting.Companyname
+                        </h2>
+                        <div>@Model.Setting.Address</div>
+                        <div>@Model.Setting.Email</div>
+                        <div>@Model.Setting.Phone</div>
+                    </div>
+                </div>
+
+                <main>
+                    <h3 class=" text-center">Detail Ledger:</h3>
+                    <h4 class=" text-center">@Convert.ToDateTime(Model.s_date).ToString("dd-MMM-yyyy") To @Convert.ToDateTime(Model.e_date).ToString("dd-MMM-yyyy")</h4>
+                    <br />
+                    <table border="0" cellspacing="0" cellpadding="0" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="4">(Account Holder Name : <u>@Model.ThirdLevel.AccountTitle</u>)</th>
+                                <th colspan="3">( Opening Balance Pkr : <u>@Model.ThirdLevel.Cr.ToString("#,##0"))</u></th>
+
+                            </tr>
+                            <tr>
+                                <th style="width:130px">Trans Id</th>
+                                <th style="width:130px">Date</th>
+                                <th>Vtype</th>
+                                <th style="width:530px">Description</th>
+                                <th>DEBIT</th>
+                                <th>CREDIT</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.trans_list.OrderBy(c => c.Transid))
+                            {
+                                bal = Convert.ToDouble(Model.ThirdLevel.Cr);
+                                sum_cr += Convert.ToDouble(item.Cr);
+                                sum_dr += Convert.ToDouble(item.Dr);
+                                if (item.HeadId == 1 || item.HeadId == 5)
+                                {
+                                    bal = (bal + (sum_dr - sum_cr));
+                                }
+                                else
+                                {
+                                    bal = (bal + (sum_cr - sum_dr));
+                                }
+                            <tr>
+                                <td>@item.Transid</td>
+                                <td style="width:50px">@Convert.ToDateTime(item.TransDate).ToString("dd-MMM-yyyy")</td>
+                                @if (item.Vtype == "PINVV" || item.Vtype == "PINVWTC")
+                                {
+                                    <td>PV</td>
+                                }
+                                else if (item.Vtype == "RPINVWTC")
+                                {
+                                    <td>PVRT</td>
+                                }
+                                else if (item.Vtype == "RSINVWTC")
+                                {
+                                    <td>SVRT</td>
+                                }
+                                else if (item.Vtype == "SINVWI" || item.Vtype == "SINVWTC")
+                                {
+                                    <td>SV</td>
+                                }
+                                else if (item.Vtype == "CPVPINVV" || item.Vtype == "CPVPINVWTC")
+                                {
+                                    <td>CPV</td>
+                                }
+                                else if (item.Vtype == "CRVSINVWI" || item.Vtype == "CRVSINVWTC")
+                                {
+                                    <td>CRV</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Vtype</td>
+                                }
+                                <td>
+                                    @item.TransDes&nbsp;&nbsp;&nbsp;
+                                    @foreach (var PurDetail in Model.PurDetail.Where(z => z.Invid == item.Invid && z.Vtype == item.Vtype))
+                                    {
+
+                                        <p>
+                                            <b>@PurDetail.ItemName</b>&nbsp;&nbsp;&nbsp;
+                                            @(Convert.ToInt32(PurDetail.ItemUnit) * Convert.ToInt32(PurDetail.CTN) + Convert.ToInt32(PurDetail.Qty))&nbsp; x
+                                            @PurDetail.CP.ToString("#,##0")&nbsp; =
+                                            @PurDetail.NetTotal.ToString("#,##0")
+                                        </p>
+
+                                    }
+
+                                    @foreach (var PurDetailVehicle in Model.PurDetailVehicle.Where(z => z.Invid == item.Invid && z.Vtype == item.Vtype))
+                                    {
+                                        <p>
+                                            <b>@PurDetailVehicle.VehicleName</b>&nbsp;&nbsp;&nbsp;
+                                            @(PurDetailVehicle.EngineNo)&nbsp;
+                                            @PurDetailVehicle.WithGSTTotal.ToString("#,##0")
+                                        </p>
+
+                                    }
+                                    @foreach (var PurDetailReturn in Model.PurDetailReturn.Where(z => z.Invid == item.Invid && z.Vtype == item.Vtype))
+                                    {
+
+                                        <p>
+                                            <b>@PurDetailReturn.ItemName</b>&nbsp;&nbsp;&nbsp;
+                                            @(Convert.ToInt32(PurDetailReturn.ItemUnit) * Convert.ToInt32(PurDetailReturn.CTN) + Convert.ToInt32(PurDetailReturn.Qty))&nbsp;  x
+                                            @PurDetailReturn.CP.ToString("#,##0")&nbsp; =
+                                            @PurDetailReturn.NetTotal.ToString("#,##0")
+                                        </p>
+
+                                    }
+                                    @foreach (var SalDetail in Model.SaleDetail.Where(z => z.Invid == item.Invid && z.Vtype == item.Vtype))
+                                    {
+                                        <p>
+                                            <b>@SalDetail.ItemName</b>&nbsp;&nbsp;&nbsp;
+                                            @(Convert.ToInt32(SalDetail.ItemUnit) * Convert.ToInt32(SalDetail.CTN) + Convert.ToInt32(SalDetail.Qty))&nbsp; x
+                                            @SalDetail.SP.ToString("#,##0")&nbsp; =
+                                            @SalDetail.NetTotal.ToString("#,##0")
+                                        </p>
+                                    }
+                                    @foreach (var SWI in Model.SWI.Where(z => z.Invid == item.Invid && z.Vtype == item.Vtype))
+                                    {
+
+                                        <p>
+                                            <b>@SWI.VehicleName</b>&nbsp;&nbsp;&nbsp;
+                                            @(SWI.EngineNo)&nbsp;
+                                            @SWI.NetTotal.ToString("#,##0")
+                                        </p>
+                                    }
+                                    @foreach (var SaleDetailReturn in Model.SaleDetailReturn.Where(z => z.Invid == item.Invid && z.Vtype == item.Vtype))
+                                    {
+                                        <p>
+                                            <b>@SaleDetailReturn.ItemName</b>&nbsp;&nbsp;&nbsp;
+                                            @(Convert.ToInt32(SaleDetailReturn.ItemUnit) * Convert.ToInt32(SaleDetailReturn.CTN) + Convert.ToInt32(SaleDetailReturn.Qty))&nbsp; x
+                                            @SaleDetailReturn.SP.ToString("#,##0")&nbsp; =
+                                            @SaleDetailReturn.NetTotal.ToString("#,##0")
+                                        </p>
+                                    }
+                                </td>
+                                <td>@item.Dr.ToString("#,##0")</td>
+                                <td>@item.Cr.ToString("#,##0")</td>
+                                @if (++i != count)
+                                {
+                                    <td>@bal.ToString("#,##0")</td>
+                                }
+                                else
+                                {
+                                    <td> @(balance = bal) </td>
+                                }
+                            </tr>
+                                
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th style="width:50px"></th>
+                                <th class="pull-right">Grand Total</th>
+                                <th> @sum_dr.ToString("#,##0") </th>
+                                <th>@sum_cr.ToString("#,##0")</th>
+                                <th>@balance.ToString("#,##0")</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </main>
+            </div>
+
+            <div></div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+    $('#printInvoice').click(function () {
+        Popup($('.invoice')[0].outerHTML);
+        function Popup(data) {
+            window.print();
+            return true;
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+

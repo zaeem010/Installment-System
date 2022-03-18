@@ -9,12 +9,6 @@
         <div class="col-lg-12">
             <br />
             <a href="@Url.Action("New","MeasuringUnit")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
-            <div id="mydiv1" class="col-md-3">
-                <p class="text-center bg-danger">@TempData["Reg1"]</p>
-            </div>
             <div class="card" style="margin-top:20px">
                 <div class="row">
                     <div class="col-sm-12">
@@ -24,6 +18,20 @@
                                 <h5 class="card-header-text"><u>Measuring Unit Tables</u></h5>
                             </div>
                             <div class="card-block">
+                                @if (TempData["Reg"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead>
                                         <tr>
@@ -44,7 +52,7 @@
                                                 <td>@lst.Name</td>
                                                 <td>
                                                     <a href="@Url.Action("Edit", new { id = lst.Id })" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
-                                                    <a href="@Url.Action("Delete", new { id = lst.Id })" class="badge badge-danger" data-toggle="tooltip" data-placement="left" title="Click Me To Delete"><i class="fa fa-trash"></i></a>
+                                                    
                                                 </td>
                                             </tr>
                                         }
@@ -65,11 +73,6 @@
 <script>
     setTimeout(function () {
         $('#mydiv').fadeOut('fast');
-    }, 3000); // <-- time in milliseconds
-</script>
-<script>
-    setTimeout(function () {
-        $('#mydiv1').fadeOut('fast');
-    }, 3000); // <-- time in milliseconds
+    }, 3000); 
 </script>
 

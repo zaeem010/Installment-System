@@ -25,6 +25,20 @@
                     <h5 class="card-header-text"><u>Cash Payment Voucher</u></h5>
                 </div>
                 <div class="card-block">
+                    @if (TempData["Reg"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @using (Html.BeginForm("Save", "CashPayment", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
@@ -153,6 +167,10 @@
 </div>
 <script>
     $('.chosen-select').chosen();
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+
     function add() {
 
         var selObj = document.getElementById("account_name");

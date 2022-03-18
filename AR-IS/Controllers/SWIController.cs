@@ -27,9 +27,9 @@ namespace AR_IS.Controllers
         // GET: SWI
         public ActionResult Index()
         {
-            return View(_context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')").ToList());
+            return View(_context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "') and (Customers.Comid='" + Session["Company"] + "') ").ToList());
         }
-        public ActionResult New(SWI SWI ,TranscationDetail TranscationDetail,Customer Customer ,References References ,InstallmentPlan Plan)
+        public ActionResult New(SWI SWI ,Customer Customer ,References References ,InstallmentPlan Plan)
         {
             var Customers = _context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE (Comid = '" + Session["Company"] + "')").ToList();
             foreach (var item in Customers)
@@ -49,13 +49,12 @@ namespace AR_IS.Controllers
                 InstallmentPlans = InstallmentPlan,
                 InstallmentPlan = Plan,
                 References = References,
-                TranscationDetail = TranscationDetail,
                 Province_list = _context.Database.SqlQuery<Province>("SELECT * FROM   Provinces").ToList(),
                 Town_list = _context.Database.SqlQuery<Town>("SELECT * FROM   Towns  ").ToList(),
-                Vehiclelist =_context.Database.SqlQuery<GetVehicleVMQ>("SELECT ISNULL(VehicleName, '') + '-' + ISNULL(EngineNo, '') AS VehicleName, EngineNo, Invid FROM PurDetailVehicles WHERE(Comid = '" + Session["Company"] + "') AND (EngineNo NOT IN (SELECT SWIs.EngineNo FROM SWIs WHERE (Comid = '" + Session["Company"] + "')))").ToList(),
+                Vehiclelist =_context.Database.SqlQuery<GetVehicleVMQ>("SELECT ISNULL(VehicleName, '') + '-' + ISNULL(EngineNo, '') AS VehicleName, MergingId FROM PurDetailVehicles WHERE (Comid = '" + Session["Company"] + "') AND (MergingId NOT IN (SELECT MergingId FROM SWIs WHERE (Comid = '" + Session["Company"] + "')))").ToList(),
                 Cus_list = Customers,
                 Ref_list = _context.Database.SqlQuery<References>("SELECT * FROM  [References] WHERE (Comid = '" + Session["Company"] + "')").ToList(),
-                RecentSaleInstallement = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')").ToList(),
+                RecentSaleInstallement = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')  and (Customers.Comid='" + Session["Company"] + "')  ").ToList(),
                 
             };
             return View(ViewModel);
@@ -63,6 +62,12 @@ namespace AR_IS.Controllers
         public ActionResult Save(SWI SWI, TranscationDetail TranscationDetail,SaleVehicleInstallment SaleVehicleInstallment)
         {
             string varDirection = "";
+
+            string AccountName = _context.Database.SqlQuery<string>("SELECT  AccountTitle  FROM ThirdLevels WHERE     (AccountNo = '" + SWI.AccountNo + "') and Comid= '" + Session["Company"] + "'").FirstOrDefault();
+            string InvoiceMake = " Sale To " + AccountName + "   Against this Sale Installment Invoice No:" + SWI.Invid + "";
+            string Sale = " Sale To " + AccountName + " Against this Sale Installment Invoice No:" + SWI.Invid + "";
+            string Stock = "Stock Out : Sale Installment  For  " + AccountName + "  Invoice No: " + SWI.Invid + "    ";
+            string Received = " Received To " + AccountName + " Against this Sale Installment Invoice No :" + SWI.Invid + "";
             decimal Balance;
             string year = _context.Database.SqlQuery<string>("SELECT year FROM   InstallmentPlans  WHERE   (Id = '"+SWI.PlanId + "') AND (Comid = '" + Session["Company"] + "')").FirstOrDefault();
             decimal Years =Convert.ToDecimal(year) * 12;
@@ -88,7 +93,7 @@ namespace AR_IS.Controllers
                 Balance = SWI.BalanceTotal / numberOfInstallment;
             }
             DateTime date = Convert.ToDateTime(SWI.Installmentdate).AddMonths(1);
-            string Description = "" + SWI.VehicleName + " - " + SWI.EngineNo + " Against this  Invoice No " + SWI.Invid + "  ";
+           
             if (SWI.Id == 0)
             {
                 SWI.Vtype = "SINVWI";
@@ -99,7 +104,7 @@ namespace AR_IS.Controllers
                     if (SWI.FirstInstallment != 0)
                     {
                         SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.FirstInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.ToString("yyyy-MM") + "')");
+                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.FirstInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.ToString("yyyy-MM") + "')");
 
                     }
                     for (int i = 0; i < numberOfInstallment; i++)
@@ -107,12 +112,12 @@ namespace AR_IS.Controllers
                         if (SWI.FirstInstallment != 0)
                         {
                             SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i+1).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance+ "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i+1).ToString("yyyy-MM") + "')");
+                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i+1).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance+ "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i+1).ToString("yyyy-MM") + "')");
                         }
                         else
                         {
                             SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i).ToString("yyyy-MM") + "')");
+                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i).ToString("yyyy-MM") + "')");
                         }
 
                     }
@@ -120,7 +125,7 @@ namespace AR_IS.Controllers
                     {
                         int last = Convert.ToInt32(Years) - 1;
                         SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(last).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.LastInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(last).ToString("yyyy-MM") + "')");
+                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(last).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.LastInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(last).ToString("yyyy-MM") + "')");
                     }
                 }
                 TranscationDetail.Transid = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(Transid AS int)), 0) + 1 AS Transid  FROM   TranscationDetails  WHERE (Comid = '" + Session["Company"] + "')").FirstOrDefault();
@@ -128,53 +133,60 @@ namespace AR_IS.Controllers
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','"+Description+ "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
 
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
                "('" + TranscationDetail.Transid + "','CGS','" + SWI.Date + "','5500001','" + SWI.TotalRate + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //5
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                 }
                 else
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','" + Description + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
                "('" + TranscationDetail.Transid + "','CGS','" + SWI.Date + "','5500001','" + SWI.TotalRate + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //5
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //6
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','Cash','" + SWI.Date + "','1100001','" + SWI.AdvancePayment + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','" + Received + "','" + SWI.Date + "','1100001','" + SWI.AdvancePayment + "','0','" + SWI.Invid + "','CRVSINVWI','" + Session["Company"] + "','0')");
                     //7
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','" + Description + "','" + SWI.Date + "','" + SWI.AccountNo + "','0','" + SWI.AdvancePayment + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Received + "','" + SWI.Date + "','" + SWI.AccountNo + "','0','" + SWI.AdvancePayment + "','" + SWI.Invid + "','CRVSINVWI','" + Session["Company"] + "','0')");
                 }
                 varDirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Invoice Created Successfully";
             }
             else
             {
                 _context.Database.ExecuteSqlCommand("DELETE FROM SaleVehicleInstallments  WHERE  (Invid = '" + SWI.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
-                _context.Database.ExecuteSqlCommand("DELETE FROM TranscationDetails  WHERE (Vtype = 'SINVWI') AND (Invid = '" + SWI.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
-                _context.Database.ExecuteSqlCommand("UPDATE SWIs SET AccountNo ='"+SWI.AccountNo+ "', Invid ='" + SWI.Invid + "', Date ='" + SWI.Date + "', Comid ='" + Session["Company"] + "', Vtype ='SINVWI', VehicleName ='" + SWI.VehicleName + "', ModelNo ='" + SWI.ModelNo + "', KeyNo ='" + SWI.KeyNo + "', Color ='" + SWI.Color + "', Remarks ='" + SWI.Remarks + "', ChassiNo ='" + SWI.ChassiNo + "', EngineNo ='" + SWI.EngineNo + "', PlanId ='" + SWI.PlanId + "', TotalRate ='" + SWI.TotalRate + "', Interests ='" + SWI.Interests + "', AdvancePayment ='" + SWI.AdvancePayment + "', Discount ='" + SWI.Discount + "', BalanceTotal ='" + SWI.BalanceTotal + "', NetTotal =  '" + SWI.NetTotal + "'  where  (Vtype = 'SINVWI') AND (Invid = '" + SWI.Invid + "') AND (Comid = '" + Session["Company"] + "')   ");
+                _context.Database.ExecuteSqlCommand("DELETE FROM TranscationDetails  WHERE (Vtype in ('SINVWI','CRVSINVWI')) AND (Invid = '" + SWI.Invid + "') AND (Comid = '" + Session["Company"] + "') ");
+                if (SWI.MergingId == null)
+                {
+                    _context.Database.ExecuteSqlCommand("UPDATE SWIs SET AccountNo ='" + SWI.AccountNo + "', Invid ='" + SWI.Invid + "', Date ='" + SWI.Date + "', Comid ='" + Session["Company"] + "', Vtype ='SINVWI', VehicleName ='" + SWI.VehicleName + "', ModelNo ='" + SWI.ModelNo + "', KeyNo ='" + SWI.KeyNo + "', Color ='" + SWI.Color + "', Remarks ='" + SWI.Remarks + "', ChassiNo ='" + SWI.ChassiNo + "', EngineNo ='" + SWI.EngineNo + "', TotalRate ='" + SWI.TotalRate + "', Interests ='" + SWI.Interests + "', AdvancePayment ='" + SWI.AdvancePayment + "', Discount ='" + SWI.Discount + "', BalanceTotal ='" + SWI.BalanceTotal + "', NetTotal =  '" + SWI.NetTotal + "' , PlanId ='" + SWI.PlanId + "',MarkUp='"+SWI.MarkUp+ "',Rid='" + SWI.Rid + "',Status='"+SWI.Status+ "',FirstInstallment='" + SWI.FirstInstallment + "', LastInstallment='" + SWI.LastInstallment + "', Installmentdate='" + SWI.Installmentdate + "' where  (Vtype = 'SINVWI') AND (Invid = '" + SWI.Invid + "') AND (Comid = '" + Session["Company"] + "')   ");
+                }
+                else
+                {
+                    _context.Database.ExecuteSqlCommand("UPDATE SWIs SET AccountNo ='" + SWI.AccountNo + "', Invid ='" + SWI.Invid + "', Date ='" + SWI.Date + "', Comid ='" + Session["Company"] + "', Vtype ='SINVWI', VehicleName ='" + SWI.VehicleName + "', ModelNo ='" + SWI.ModelNo + "', KeyNo ='" + SWI.KeyNo + "', Color ='" + SWI.Color + "', Remarks ='" + SWI.Remarks + "', ChassiNo ='" + SWI.ChassiNo + "', EngineNo ='" + SWI.EngineNo + "', TotalRate ='" + SWI.TotalRate + "', Interests ='" + SWI.Interests + "', AdvancePayment ='" + SWI.AdvancePayment + "', Discount ='" + SWI.Discount + "', BalanceTotal ='" + SWI.BalanceTotal + "', NetTotal =  '" + SWI.NetTotal + "' , PlanId ='" + SWI.PlanId + "',MarkUp='" + SWI.MarkUp + "',Rid='" + SWI.Rid + "',Status='" + SWI.Status + "',FirstInstallment='" + SWI.FirstInstallment + "', LastInstallment='" + SWI.LastInstallment + "', Installmentdate='" + SWI.Installmentdate + "' , MergingId='"+SWI.MergingId+"'   where  (Vtype = 'SINVWI') AND (Invid = '" + SWI.Invid + "') AND (Comid = '" + Session["Company"] + "')   ");
+                }
                 if (SWI.AdvancePayment != SWI.NetTotal)
                 {
                     if (SWI.FirstInstallment != 0)
                     {
                         SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.FirstInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.ToString("yyyy-MM") + "')");
+                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.FirstInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.ToString("yyyy-MM") + "')");
 
                     }
                     for (int i = 0; i < numberOfInstallment; i++)
@@ -182,12 +194,12 @@ namespace AR_IS.Controllers
                         if (SWI.FirstInstallment != 0)
                         {
                             SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i + 1).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i + 1).ToString("yyyy-MM") + "')");
+                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i + 1).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i + 1).ToString("yyyy-MM") + "')");
                         }
                         else
                         {
                             SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i).ToString("yyyy-MM") + "')");
+                            _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(i).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + Balance + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(i).ToString("yyyy-MM") + "')");
                         }
 
                     }
@@ -195,7 +207,7 @@ namespace AR_IS.Controllers
                     {
                         int last = Convert.ToInt32(Years) - 1;
                         SaleVehicleInstallment.InsId = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(InsId AS int)), 0) + 1 AS InsId FROM   SaleVehicleInstallments  WHERE (Comid = '" + Session["Company"] + "')  and Invid='" + SWI.Invid + "'").FirstOrDefault();
-                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, Date, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(last).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.LastInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(last).ToString("yyyy-MM") + "')");
+                        _context.Database.ExecuteSqlCommand("INSERT INTO  SaleVehicleInstallments(AccountNo, Comid, DueDate, Invid, PerMonthAmount,Status, ReceivedAmount ,Discounts,InsId,VehicleName, EngineNo, KeyNo,InstallmentMonths ) VALUES ('" + SWI.AccountNo + "','" + Session["Company"] + "','" + date.AddMonths(last).ToString("yyyy-MM-dd") + "','" + SWI.Invid + "','" + SWI.LastInstallment + "','Pending','0','0','" + SaleVehicleInstallment.InsId + "','" + SWI.VehicleName + "','" + SWI.EngineNo + "','" + SWI.KeyNo + "','" + date.AddMonths(last).ToString("yyyy-MM") + "')");
                     }
                 }
                 TranscationDetail.Transid = _context.Database.SqlQuery<int>("SELECT ISNULL(MAX(CAST(Transid AS int)), 0) + 1 AS Transid  FROM   TranscationDetails  WHERE (Comid = '" + Session["Company"] + "')").FirstOrDefault();
@@ -203,50 +215,60 @@ namespace AR_IS.Controllers
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','" + Description + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
 
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
                "('" + TranscationDetail.Transid + "','CGS','" + SWI.Date + "','5500001','" + SWI.TotalRate + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //5
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                 }
                 else
                 {
                     //1
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid, Remarks ,V_No) VALUES " +
-                "('" + TranscationDetail.Transid + "','" + Description + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
-
+                "('" + TranscationDetail.Transid + "','" + InvoiceMake + "','" + SWI.Date + "','" + SWI.AccountNo + "','" + SWI.NetTotal + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','" + TranscationDetail.Remarks + "','0')");
                     //3
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Sales','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Sale + "','" + SWI.Date + "',4400001,'0','" + SWI.NetTotal + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //4
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
                "('" + TranscationDetail.Transid + "','CGS','" + SWI.Date + "','5500001','" + SWI.TotalRate + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //5
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','Stock','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Stock + "','" + SWI.Date + "',1100002,'0','" + SWI.TotalRate + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
                     //6
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid ,V_No) VALUES " +
-               "('" + TranscationDetail.Transid + "','Cash','" + SWI.Date + "','1100001','" + SWI.AdvancePayment + "','0','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+               "('" + TranscationDetail.Transid + "','" + Received + "','" + SWI.Date + "','1100001','" + SWI.AdvancePayment + "','0','" + SWI.Invid + "','CRVSINVWI','" + Session["Company"] + "','0')");
                     //7
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails (Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype, Comid,V_No) VALUES " +
-                    "('" + TranscationDetail.Transid + "','" + Description + "','" + SWI.Date + "','" + SWI.AccountNo + "','0','" + SWI.AdvancePayment + "','" + SWI.Invid + "','SINVWI','" + Session["Company"] + "','0')");
+                    "('" + TranscationDetail.Transid + "','" + Received + "','" + SWI.Date + "','" + SWI.AccountNo + "','0','" + SWI.AdvancePayment + "','" + SWI.Invid + "','CRVSINVWI','" + Session["Company"] + "','0')");
                 }
                 varDirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = "Invoice Updated Successfully";
             }
             _context.SaveChanges();
             return RedirectToAction(varDirection, "SWI");
         }
-       
-        public ActionResult SaveInstallment(string [] checkeds, string[] Status, int[] InsId, string[] date, decimal [] ReceivedAmount,int Invid, TranscationDetail TranscationDetail,int AccountNo, decimal [] Dis ,SWI SWI)
+        public ActionResult InstallmentDetail(int Invid)
         {
-            
+
+            var ViewModel = new SWIVM
+            {
+                status = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Status = 'Pending')").FirstOrDefault(),
+                SaleVehicleInstallment = _context.Database.SqlQuery<SaleVehicleInstallment>("SELECT * FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')  ").ToList(),
+                Vehicleinfo = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '" + Invid + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "') and (Customers.Comid='" + Session["Company"] + "') ").FirstOrDefault(),
+            };
+            return View("InstallmentDetail", ViewModel);
+        }
+       [HttpPost]
+        public ActionResult InstallmentDetail(string [] checkeds, string[] Status, int[] InsId, string[] date, decimal [] ReceivedAmount,int Invid, TranscationDetail TranscationDetail,int AccountNo, decimal [] Dis ,SWI SWI)
+        {
+           
             string VehicleName= _context.Database.SqlQuery<string>("SELECT ISNULL(VehicleName, '') + '-' + ISNULL(EngineNo, '') AS VehicleName FROM SWIs WHERE(Comid = '" + Session["Company"] + "') and Invid='" + Invid+"'").FirstOrDefault();
             TranscationDetail.Transid = _context.Database.SqlQuery<int>("select ISNULL(Max(TranscationDetails.Transid),0)+1 from TranscationDetails WHERE (Comid = '" + Session["Company"] + "')").FirstOrDefault();
             for (int i = 0; i < Status.Count(); i++)
@@ -255,7 +277,7 @@ namespace AR_IS.Controllers
                 {
                      decimal actual  = ReceivedAmount[i] - Dis[i];
                      string Description = "Received  Installment No " + InsId[i] + " Against this  " + VehicleName + "    ";
-                    _context.Database.ExecuteSqlCommand("UPDATE  SaleVehicleInstallments SET   Date ='" + date[i] + "', Status ='Cleared', ReceivedAmount ='" + actual + "' ,  Discounts='"+Dis[i]+ "'   where  InsId ='" + InsId[i] + "' AND Comid='" + Session["Company"] + "'  AND (Invid = '" + Invid + "')  ");
+                    _context.Database.ExecuteSqlCommand("UPDATE  SaleVehicleInstallments SET   ReceivedDate ='" + date[i] + "', Status ='Cleared', ReceivedAmount ='" + actual + "' ,  Discounts='"+Dis[i]+ "'   where  InsId ='" + InsId[i] + "' AND Comid='" + Session["Company"] + "'  AND (Invid = '" + Invid + "')  ");
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails(Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype,V_No, Comid) VALUES ('" + TranscationDetail.Transid + "','Cash','" + date[i] + "','1100001','" + ReceivedAmount[i] + "',0,'0','SIV','0','" + Session["Company"] + "')");
                     _context.Database.ExecuteSqlCommand("INSERT INTO TranscationDetails(Transid, TransDes, TransDate, AccountNo, Dr, Cr, Invid, Vtype,V_No, Comid) VALUES ('" + TranscationDetail.Transid + "',N'"+ Description + "','" + date[i] + "','" + AccountNo + "','0','" + ReceivedAmount[i] + "','0','SIV','0','" + Session["Company"] + "')");
                     if (Dis[i] != 0)
@@ -269,23 +291,13 @@ namespace AR_IS.Controllers
             {
                 status = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Status = 'Pending')").FirstOrDefault(),
                 SaleVehicleInstallment = _context.Database.SqlQuery<SaleVehicleInstallment>("  SELECT * FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')  ").ToList(),
-                Vehicleinfo = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, NumberOfInstallment, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '" + Invid + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')").FirstOrDefault(),
+                Vehicleinfo = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal - (derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '"+Invid+"')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')  and (Customers.Comid='" + Session["Company"] + "')").FirstOrDefault(),
             };
-            return View("InstallmentDetail", ViewModel);
-
-        }
-        public ActionResult InstallmentDetail(int Invid)
-        {
-            
-            var ViewModel = new SWIVM
-            {
-                status= _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Status = 'Pending')").FirstOrDefault(),
-                SaleVehicleInstallment = _context.Database.SqlQuery<SaleVehicleInstallment>("SELECT * FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')  ").ToList(),
-                Vehicleinfo = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '"+Invid+"')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')").FirstOrDefault(),
-            };
+            TempData["Reg"] = "Installment  Cleared  Successfully";
             return View("InstallmentDetail", ViewModel);
         }
-        public ActionResult Edit(int Invid, TranscationDetail TranscationDetail,Customer Customer)
+       
+        public ActionResult Edit(int Invid, References References, Customer Customer)
         {
 
             int status = _context.Database.SqlQuery<int>("SELECT COUNT(*) AS Expr1 FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Status = 'Cleared')").FirstOrDefault();
@@ -306,17 +318,19 @@ namespace AR_IS.Controllers
                     InstallmentPlans= InstallmentPlan,
                     Province_list = _context.Database.SqlQuery<Province>("SELECT * FROM   Provinces").ToList(),
                     Town_list = _context.Database.SqlQuery<Town>("SELECT * FROM   Towns  ").ToList(),
-                    Vehiclelist = _context.Database.SqlQuery<GetVehicleVMQ>("SELECT ISNULL(VehicleName, '') + '-' + ISNULL(EngineNo, '') AS VehicleName, EngineNo, Invid FROM PurDetailVehicles WHERE(Comid = '" + Session["Company"] + "') AND (EngineNo NOT IN (SELECT SWIs.EngineNo FROM SWIs WHERE (Comid = '" + Session["Company"] + "'))) AND (Vtype = 'PINVV')").ToList(),
+                    Vehiclelist = _context.Database.SqlQuery<GetVehicleVMQ>("SELECT ISNULL(VehicleName, '') + '-' + ISNULL(EngineNo, '') AS VehicleName, MergingId FROM PurDetailVehicles WHERE (Comid = '" + Session["Company"] + "') AND (MergingId NOT IN (SELECT MergingId FROM SWIs WHERE (Comid = '" + Session["Company"] + "')))").ToList(),
                     Cus_list = Customers,
+                    Ref_list = _context.Database.SqlQuery<References>("SELECT * FROM  [References] WHERE (Comid = '" + Session["Company"] + "')").ToList(),
                     SWI = _context.Database.SqlQuery<SWI>("SELECT * FROM   SWIs WHERE (Vtype = 'SINVWI') AND (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')").FirstOrDefault(),
-                    RecentSaleInstallement = _context.Database.SqlQuery<SWIVMQ>("SELECT SWIs.Id, SWIs.AccountNo, SWIs.Invid, SWIs.Date, SWIs.Comid, SWIs.Vtype, SWIs.VehicleName, SWIs.ModelNo, SWIs.KeyNo, SWIs.Color, SWIs.Remarks, SWIs.ChassiNo, SWIs.EngineNo, SWIs.PlanId, SWIs.TotalRate, SWIs.Interests, SWIs.AdvancePayment, SWIs.Discount, SWIs.BalanceTotal, SWIs.NetTotal, Customers.Name FROM SWIs INNER JOIN Customers ON SWIs.AccountNo = Customers.AccountNo WHERE(SWIs.Comid = '" + Session["Company"] + "') AND (SWIs.Vtype = 'SINVWI') AND (Customers.Comid = '" + Session["Company"] + "')").ToList(),
+                    RecentSaleInstallement = _context.Database.SqlQuery<SWIVMQ>("SELECT SWIs.Id, SWIs.AccountNo, SWIs.Invid, SWIs.Date, SWIs.Comid, SWIs.Vtype, SWIs.VehicleName, SWIs.ModelNo, SWIs.KeyNo, SWIs.Color, SWIs.Remarks, SWIs.ChassiNo, SWIs.EngineNo, SWIs.PlanId, SWIs.TotalRate, SWIs.Interests, SWIs.AdvancePayment, SWIs.Discount, SWIs.BalanceTotal, SWIs.NetTotal, Customers.Name FROM SWIs INNER JOIN Customers ON SWIs.AccountNo = Customers.AccountNo WHERE(SWIs.Comid = '" + Session["Company"] + "') AND (SWIs.Vtype = 'SINVWI') AND (Customers.Comid = '" + Session["Company"] + "')  ").ToList(),
                     Customer= Customer,
+                    References = References,
                 };
                 return View("New", ViewModel);
             }
             else
             {
-                var Saleinvoicelist = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')").ToList();
+                var Saleinvoicelist = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "') and (Customers.Comid='" + Session["Company"] + "') ").ToList();
                 TempData["Reg1"] = "You Can't Edit this Invoice because First Installment has Paid";
                 return View("Index", Saleinvoicelist);
             }
@@ -345,20 +359,31 @@ namespace AR_IS.Controllers
         }
         public ActionResult Print(int Invid)
         {
-            decimal NetAmount = _context.Database.SqlQuery<decimal>("SELECT NetTotal  FROM   SWIs  WHERE (Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "') AND (Vtype = 'SINVWI')").SingleOrDefault();
+            decimal NetAmount = _context.Database.SqlQuery<decimal>("SELECT RemainingBalance FROM (SELECT Received + Discounts + AdvancePayment AS ReceivedTotal, NetTotal - (Received + Discounts + AdvancePayment) AS RemainingBalance FROM (SELECT TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '"+Invid+"')) AS derivedtbl_1) AS derivedtbl_2").SingleOrDefault();
             var wordsinum = NumberToWords(Decimal.ToInt32(NetAmount));
             var ViewModel = new SWIVM
             {
                 wordsinum = wordsinum,
-                Vehicleinfo = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name, Customers.Phone2, Customers.Phone1, Customers.Email, Customers.CNIC FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '" + Invid+"')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')").FirstOrDefault(),
+                Vehicleinfo = _context.Database.SqlQuery<SWIVMQ>("SELECT derivedtbl_1.Id, derivedtbl_1.AccountNo, derivedtbl_1.Invid, derivedtbl_1.Date, derivedtbl_1.Comid, derivedtbl_1.Vtype, derivedtbl_1.KeyNo, derivedtbl_1.Color, derivedtbl_1.Remarks, derivedtbl_1.VehicleName, derivedtbl_1.ModelNo, derivedtbl_1.ChassiNo, derivedtbl_1.EngineNo, derivedtbl_1.PlanId, derivedtbl_1.TotalRate, derivedtbl_1.Interests, derivedtbl_1.AdvancePayment, derivedtbl_1.Discount, derivedtbl_1.BalanceTotal, derivedtbl_1.NetTotal, derivedtbl_1.Installmentdate, derivedtbl_1.FirstInstallment, derivedtbl_1.LastInstallment, derivedtbl_1.Received, derivedtbl_1.Discounts, derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment AS ReceivedTotal, derivedtbl_1.NetTotal -(derivedtbl_1.Received + derivedtbl_1.Discounts + derivedtbl_1.AdvancePayment) AS RemainingBalance, Customers.Name, Customers.Phone2, Customers.Phone1, Customers.Email, Customers.CNIC FROM (SELECT Id, AccountNo, Invid, Date, Comid, Vtype, KeyNo, Color, Remarks, VehicleName, ModelNo, ChassiNo, EngineNo, PlanId, TotalRate, Interests, AdvancePayment, Discount, BalanceTotal, NetTotal, Installmentdate, FirstInstallment, LastInstallment, (SELECT ISNULL(SUM(ReceivedAmount), 0) AS Expr1 FROM SaleVehicleInstallments WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Received, (SELECT ISNULL(SUM(Discounts), 0) AS Expr1 FROM SaleVehicleInstallments AS SaleVehicleInstallments_1 WHERE (Invid = SWIs.Invid) AND (Comid = '" + Session["Company"] + "')) AS Discounts FROM SWIs WHERE (Comid = '" + Session["Company"] + "') AND (Invid = '" + Invid+"')) AS derivedtbl_1 INNER JOIN Customers ON derivedtbl_1.AccountNo = Customers.AccountNo WHERE (derivedtbl_1.Comid = '" + Session["Company"] + "')  and (Customers.Comid='" + Session["Company"] + "')").FirstOrDefault(),
                 SaleVehicleInstallment = _context.Database.SqlQuery<SaleVehicleInstallment>("  SELECT * FROM SaleVehicleInstallments WHERE(Invid = '" + Invid + "') AND (Comid = '" + Session["Company"] + "')  ").ToList(),
                 Setting = _context.Database.SqlQuery<Setting>("SELECT  *    FROM   Settings  WHERE  (Comid = '" + Session["Company"] + "') ").FirstOrDefault(),
             };
             return View("Print", ViewModel);
         }
+        public ActionResult Receipt(int insid ,int Invid)
+        {
+            var ViewModel = new SWIVM
+            {
+
+                ReceiptPrint = _context.Database.SqlQuery<ReceiptPrintVMQ>("SELECT SaleVehicleInstallments.Id, SaleVehicleInstallments.AccountNo, SaleVehicleInstallments.Comid, SaleVehicleInstallments.ReceivedDate, SaleVehicleInstallments.Invid, SaleVehicleInstallments.PerMonthAmount, SaleVehicleInstallments.Discounts, SaleVehicleInstallments.Status, SaleVehicleInstallments.ReceivedAmount, SaleVehicleInstallments.InsId, SaleVehicleInstallments.VehicleName, SaleVehicleInstallments.EngineNo, SaleVehicleInstallments.KeyNo, SaleVehicleInstallments.InstallmentMonths, Customers.Name FROM SaleVehicleInstallments INNER JOIN Customers ON SaleVehicleInstallments.AccountNo = Customers.AccountNo WHERE (SaleVehicleInstallments.Invid = '" + Invid+"') AND (SaleVehicleInstallments.InsId = '"+insid+ "') AND (SaleVehicleInstallments.Comid = '" + Session["Company"] + "') AND (Customers.Comid = '" + Session["Company"] + "')").FirstOrDefault(),
+                Setting = _context.Database.SqlQuery<Setting>("SELECT  *    FROM   Settings  WHERE  (Comid = '" + Session["Company"] + "') ").FirstOrDefault(),
+            };
+
+            return View(ViewModel);
+        }
         public ActionResult Action(string id)
         {
-            var getfees = _context.Database.SqlQuery<PurDetailVehicle>("SELECT *  FROM   PurDetailVehicles WHERE (Comid = '" + Session["Company"] + "')  AND (EngineNo = '"+id+"')").ToList();
+            var getfees = _context.Database.SqlQuery<PurDetailVehicle>("SELECT *  FROM   PurDetailVehicles WHERE (Comid = '" + Session["Company"] + "')  AND (MergingId = '" + id+"')").ToList();
             return Json(getfees, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Action1(int id)
@@ -419,7 +444,7 @@ namespace AR_IS.Controllers
             string new_word = Regex.Replace(words, @"(^\w)|(\s\w)", m => m.Value.ToUpper());
             return new_word;
         }
-        public ActionResult Save_cus(Customer Customer, ThirdLevel Thirdlevel, HttpPostedFileBase img)
+        public ActionResult Save_cus(Customer Customer,string CNIC, ThirdLevel Thirdlevel, HttpPostedFileBase img)
         {
             string vardirection = "";
             string ImageName = "";
@@ -443,6 +468,7 @@ namespace AR_IS.Controllers
                     account_no1 = Convert.ToInt32(Thirdlevel.AccountNo + 1);
                 }
                 Customer.AccountNo = account_no1;
+                Customer.CNIC = CNIC;
                 Customer.Image = ImageName;
                 _context.tbl_Customer.Add(Customer);
                 Customer.Comid = Convert.ToInt32(Session["Company"]);
@@ -454,7 +480,7 @@ namespace AR_IS.Controllers
             
             return RedirectToAction(vardirection, "SWI");
         }
-        public ActionResult Save_Ref(References References, ThirdLevel Thirdlevel, HttpPostedFileBase img)
+        public ActionResult Save_Ref(References References, string CNIC, ThirdLevel Thirdlevel, HttpPostedFileBase img)
         {
             string vardirection = "";
             string ImageName = "";
@@ -468,6 +494,7 @@ namespace AR_IS.Controllers
             }
             if (References.id == 0)
             {
+                References.CNIC = CNIC;
                 References.Image = ImageName;
                 _context.tbl_References.Add(References);
                 References.Comid = Convert.ToInt32(Session["Company"]);

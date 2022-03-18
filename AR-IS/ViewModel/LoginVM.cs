@@ -11,5 +11,9 @@ namespace AR_IS.ViewModel
         public Userlogin Userlogin { get; set; }
         public IEnumerable<Company> Companies { get; set; }
         public GeneralUser GeneralUser { get; set; }
+        public List<SideFirst> FormsMenus { get; set; }
+        public List<SideSecond> FormsSubMenus { get; set; }
+        public List<SideThird> FormsSuperSubMenus { get; set; }
+        public IEnumerable<GeneralUser> GeneralUser_list { get; set; }
     }
 }

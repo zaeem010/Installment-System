@@ -15,6 +15,7 @@ namespace AR_IS.Models
         public string Phone1 { get; set; }
         public string Phone2 { get; set; }
         public string Phone3 { get; set; }
+        public string Telephone { get; set; }
         public string Email { get; set; }
         public string NTN { get; set; }
         public string GST { get; set; }
@@ -25,5 +26,13 @@ namespace AR_IS.Models
         public int AccountNo { get; set; }
         public int Comid { get; set; }
         public string CNIC { get; set; }
+        public string BankDetail { get; set; }
+        public decimal SpecialDiscount { get; set; }
+        public decimal PromptPaymentDiscount { get; set; }
+        public string PaymentConditions { get; set; }
+        public string Daysofpayment { get; set; }
+        public decimal CreditLimit { get; set; }
+        public string Description { get; set; }
+        public string Comname { get; set; }
     }
 }

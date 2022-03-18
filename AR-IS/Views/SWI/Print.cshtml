@@ -220,7 +220,7 @@
                     <br />
                     <div class="thanks"></div>
                     <div class="notices">
-                        <div>Total In words :</div>
+                        <div>Remaining Balance In words :</div>
                         <div class="notice">
                             <b>
                                 @Model.wordsinum
@@ -252,7 +252,7 @@
                             <tr style="height:20px;">
                                 <td>@lst.InsId</td>
                                 <td >@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
-                                <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                <td>@Convert.ToDateTime(lst.ReceivedDate).ToString("dd-MMM-yyyy")</td>
                                 <td>@lst.Status</td>
                                 <td>@lst.ReceivedAmount.ToString("#,##0")</td>
                                 <td>@lst.Discounts.ToString("#,##0")</td>

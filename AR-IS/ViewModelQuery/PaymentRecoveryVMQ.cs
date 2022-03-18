@@ -9,7 +9,8 @@ namespace AR_IS.ViewModelQuery
     {
         public int AccountNo { get; set; }
         public int Comid { get; set; }
-        public string Date { get; set; }
+        public string DueDate { get; set; }
+        public string ReceivedDate { get; set; }
         public int Invid { get; set; }
         public decimal PerMonthAmount { get; set; }
         public decimal Discounts { get; set; }

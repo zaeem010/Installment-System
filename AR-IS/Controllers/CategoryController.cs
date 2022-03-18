@@ -38,14 +38,14 @@ namespace AR_IS.Controllers
                 _context.tbl_Category.Add(Category);
                 Category.Comid = Convert.ToInt32(Session["Company"]);
                 varDirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
                 var Categorydb = _context.tbl_Category.Single(c => c.Id == Category.Id);
                 Categorydb.Name = Category.Name;
                 varDirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             _context.SaveChanges();
             return RedirectToAction(varDirection, "Category");

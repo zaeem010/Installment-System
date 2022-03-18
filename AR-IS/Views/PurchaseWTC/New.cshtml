@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "New";
 }
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <style>
     hr.new2 {
         color: #2196F3;
@@ -13,7 +14,7 @@
         opacity: 0 !important;
         position: absolute !important;
         display: flex !important;
-        width: 300px;
+        width: 400px;
     }
 
         select:invalid[multiple] {
@@ -28,46 +29,71 @@
             <a href="@Url.Action("Index","PurchaseWTC")" class="btn btn-primary pull-right" data-toggle="tooltip" style="margin-left:20px"><i class="fa fa-list"></i> Invoice List</a>
             <button class="btn btn-primary pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent1"><i class="fa fa-list"></i> Recent Invoice List</button>
             <br />
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
             <div class="card" style="margin-top:20px">
                 <div class="card-header text-center">
                     <h3 class="text-primary-color"><u><b>Purchase Invoice</b></u></h3>
                 </div>
                 <div class="card-block">
-                    @using (Html.BeginForm("Save", "PurchaseWTC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @if (TempData["Reg"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (TempData["Reg1"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg1"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @using (Html.BeginForm("Save", "PurchaseWTC", FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <div class="card-header">
                             <h5 class="card-header-text text-primary-color"><b><u class="size">Invoice Info</u></b></h5>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label>Inv No </label>
                             @Html.TextBoxFor(m => m.PurMaster.Invid, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off" })
                         </div>
-                        <div class="col-md-4">
-                            <label>Inv Date </label>
+                        <div class="col-md-5">
+                            <label>Inv Date </label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             @Html.TextBoxFor(m => m.PurMaster.Date, new { @class = "form-control thresold-i", @placeholder = "", @type = "date", id = "Date" })
                         </div>
-                        <div class="col-md-4">
-                            <label><b>Select Supplier</b></label>
-                            @Html.DropDownListFor(m => m.PurMaster.AccountNo, new SelectList(Model.Supp_list, "AccountNo", "Name"), "Select Supplier", htmlAttributes: new { @class = "form-control input-xs chosen-select", @required = "true" })
+                        <div class="col-md-5">
+                            <label><b>Select Supplier</b> &nbsp;</label><i class="fa fa-asterisk text-danger"></i>&nbsp;&nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" href="#addCustomer" @*data-target="#addCustomer"*@><i class="fa fa-plus" style="color:white"></i></a>
+                            @Html.DropDownListFor(m => m.PurMaster.AccountNo, new SelectList(Model.Supp_list, "AccountNo", "Name"), "Select Supplier", htmlAttributes: new { @class = "form-control input-xs chosen-select", @required = "True" })
                         </div>
                         <div class="col-md-4">
                             <br />
                             <label>Remarks For Related Invoice </label>
-                            @Html.TextAreaFor(m => m.TranscationDetail.Remarks, new { @class = "form-control thresold-i", rows = 2, columns = 5 })
+                            @Html.TextAreaFor(m => m.PurMaster.Address, new { @class = "form-control thresold-i", rows = 2, columns = 5 })
+                        </div>
+                        <div class="col-md-4">
+                            <br />
+                            <label>Cargo  &nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addCargo"><i class="fa fa-plus" style="color:white"></i></a> </label>
+                            @Html.DropDownListFor(m => m.PurMaster.CargoId, new SelectList(Model.Cargo_list, "Id", "Name"), "Select Cargo", htmlAttributes: new { @class = "form-control input-xs chosen-select" })
                         </div>
                         <div class="col-md-4">
                             <br />
                             <label>Cargo Number </label>
                             @Html.TextBoxFor(m => m.PurMaster.Phone, new { @class = "form-control thresold-i", @type = "number", @autocomplete = "off" })
-                        </div>
-                        <div class="col-md-4">
-                            <br />
-                            <label>Cargo Name </label>
-                            @Html.TextBoxFor(m => m.PurMaster.CargoName, new { @class = "form-control thresold-i", @placeholder = "", @autocomplete = "off" })
                         </div>
                         <div class="col-md-12">
                             <hr class="new2">
@@ -80,33 +106,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <input class="form-control" autocomplete="off" id="ProductID" readonly type="hidden">
-                            <input class="form-control" autocomplete="off" id="Itemunit" value="0" type="hidden">
-                            <a class="btn btn-wide btn-danger pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent" style="margin-top:25px"><i class="fa fa-search-plus"></i></a>
+                            <input class="form-control" autocomplete="off" id="Itemunit" value="0" type="text">
+                            <a class="btn btn-wide btn-danger pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent" style="margin-top:25px"><i class="fa fa-search-plus"></i> </a>
                         </div>
-                        <div class="col-md-3">
-                            <label>Name</label>
+                        <div class="col-md-2">
+                            <label>Name</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             <input class="form-control" autocomplete="off" id="ProductName" readonly type="text">
                         </div>
-                        <div class="col-md-1">
+
+                        <div class="col-md-2">
                             <label>CTN</label>
-                            <input class="form-control" autocomplete="off" id="ctn" value="0" onkeyup="getPrice()" type="text">
+                            <input class="form-control" autocomplete="off" id="ctn" value="0" onkeyup="getPrice()" type="number" onkeypress="return /[0-9a-zA-Z]/i.test(event.key)">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label>Qty</label>
-                            <input class="form-control" autocomplete="off" id="qty" value="0" onkeyup="getPrice()" type="text">
+                            <input class="form-control" autocomplete="off" id="qty" value="0" onkeyup="getPrice()" type="number" onkeypress="return /[0-9a-zA-Z]/i.test(event.key)">
                         </div>
-                        <div class="col-md-1">
-                            <label>CP</label>
-                            <input class="form-control" autocomplete="off" id="cp" value="0" onkeyup="getPrice()" type="text">
+                        <div class="col-md-2">
+                            <label>CP</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            <input class="form-control" autocomplete="off" id="cp" value="0" onkeyup="getPrice()" type="number">
                         </div>
                         <div class="col-md-2">
                             <label>Net Total</label>
                             <input readonly class="form-control" autocomplete="off" type="text" id="nettotal">
                         </div>
-                        <div class="col-md-2 ">
-                            <button style="margin-top:28px ;background-color:#4cff00" type="button" onclick='abc()' class="btn"><i class="fa fa-plus"></i>Add Item</button>
+                        <div class="col-md-1 ">
+                            <button style="margin-top: 28px; background-color: yellowgreen" type="button" onclick='abc()' class="btn"><i class="fa fa-plus"></i></button>
                         </div>
                         <br />
                         <div class="col-md-12">
@@ -212,7 +239,7 @@
                             <label>Balance Total</label>
                             @Html.TextBoxFor(m => m.PurMaster.BTotal, new { @class = "form-control thresold-i", @placeholder = "", @type = "number", id = "BalanceTotal", @readonly = "true" })
                         </div>
-                        <div class="col-md-10" style="margin-left:330px;margin-top:20px">
+                        <div class="col-md-10" style="margin-left:370px;margin-top:20px">
                             @if (Model.PurMaster.Id == 0)
                             {
                                 <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-paste f-20"></i> &nbsp; Save Invoice</button>
@@ -221,7 +248,6 @@
                             {
                                 <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Update ..')"><i class="fa fa-paste f-20"></i> &nbsp; Update Invoice</button>
                             }
-
                         </div>
                         @Html.HiddenFor(m => m.PurMaster.Id)
                     }
@@ -236,6 +262,7 @@
         //Appending the Colums By Same Id
         var productid = document.getElementById("ProductID").value;
         var productname = document.getElementById("ProductName").value;
+        
         var itemunit = document.getElementById("Itemunit").value;
         var ctn = document.getElementById("ctn").value;
         var costprice = document.getElementById("cp").value;
@@ -247,10 +274,6 @@
         else if (costprice == "" || costprice == 0) {
 
             alert("Please Enter Cost Price");
-        }
-        else if (ctn == "" || ctn == 0) {
-
-            alert("Please Enter CTN");
         }
         else {
             var htmlrows = '';
@@ -341,17 +364,17 @@
         var col1 = $row.find("td:eq(8)").html();
         var col2 = $row.find("td:eq(9)").html();
         var col3 = $row.find("td:eq(10)").html();
-        var col5 = $row.find("td:eq(11)").html();
-        var col8 = $row.find("td:eq(12)").html();
-        var col9 = $row.find("td:eq(13)").html();
-        var col10 = $row.find("td:eq(14)").html();
+        var col4 = $row.find("td:eq(11)").html();
+        var col5 = $row.find("td:eq(12)").html();
+        var col6 = $row.find("td:eq(13)").html();
+        var col7 = $row.find("td:eq(14)").html();
         document.getElementById("ProductID").value = col1;
         document.getElementById("ProductName").value = col2;
         document.getElementById("Itemunit").value = col3;
-        document.getElementById("ctn").value = col5;
-        document.getElementById("qty").value = col8;
-        document.getElementById("cp").value = col9;
-        document.getElementById("nettotal").value = col10;
+        document.getElementById("ctn").value = col4;
+        document.getElementById("qty").value = col5;
+        document.getElementById("cp").value = col6;
+        document.getElementById("nettotal").value = col7;
         $(button).closest("tr").remove();
         var table = document.getElementById("invoiceItem"), sumVal = 0;
         for (var i = 1; i < table.rows.length; i++) {
@@ -393,8 +416,6 @@
         var bal = parseFloat(document.getElementById("Paidtotal").value || 0);
         var t_f2 = parseFloat(t_f1 - bal);
         document.getElementById("BalanceTotal").value = t_f2.toFixed(2);
-
-
     };
 </script>
 <script>
@@ -457,10 +478,193 @@
     }
 
 </script>
+<div class="modal fade" id="addCustomer" aria-labelledby="modal-large-label">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title text-center" style="color:white">Register Supplier</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_sup", "PurchaseWTC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="card-header  ">
+                            <h5 class=" text-primary "><u><b>Personal Information</b></u></h5>
+                        </div>
+                        <div class="col-md-3">
+                            <label> Supplier Name(Ledger)</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                            @Html.TextBoxFor(m => m.Supplier.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <label> Company Name</label>
+                            @Html.TextBoxFor(m => m.Supplier.Comname, new { @class = "form-control thresold-i ", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <label> Enter Description</label>
+                            @Html.TextBoxFor(m => m.Supplier.Description, new { @class = "form-control thresold-i ", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <label>Enter CNIC Number</label>
+
+                            <input type="text" data-inputmask="'mask': '99999-9999999-9'" placeholder="XXXXX-XXXXXXX-X" name="CNIC" id="CNIC" class="form-control input-xs">
+                        </div>
+                        <script>
+                            $(":input").inputmask();
+
+                        </script>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Email</label>
+                            @Html.TextBoxFor(m => m.Supplier.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label><b>Select Town</b></label>
+                            @Html.DropDownListFor(m => m.Supplier.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Select Province</label>
+                            @Html.DropDownListFor(m => m.Supplier.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Address</label>
+
+                            @Html.TextAreaFor(m => m.Supplier.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Phone</label>
+
+                            @Html.TextBoxFor(m => m.Supplier.Phone, new { @class = "form-control thresold-i ", @type = "text", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Telephone</label>
+                            @Html.TextBoxFor(m => m.Supplier.Telephone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Photo</label>
+                            @if (Model.Supplier.Image == "" || Model.Supplier.Image == null)
+                            {
+
+                                <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control thresold-i" />
+                            }
+                            else
+                            {
+
+                                <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control thresold-i" />
+                            }
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Bank Details</label>
+
+                            @Html.TextAreaFor(m => m.Supplier.BankDetail, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                        </div>
+                        <div class="col-md-12">
+                            <hr class="new2">
+                        </div>
+                        <div class="card-header  ">
+                            <h5 class=" text-primary "><u><b>Financial Information</b></u></h5>
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>NTN</label>
+                            @Html.TextBoxFor(m => m.Supplier.NTN, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>GST</label>
+                            @Html.TextBoxFor(m => m.Supplier.GST, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>Special Discount</label>
+                            @Html.TextBoxFor(m => m.Supplier.SpecialDiscount, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+
+                            <label>Prompt Payment Discount</label>
+                            @Html.TextBoxFor(m => m.Supplier.PromptPaymentDiscount, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Payment Conditions</label>
+                            @Html.TextBoxFor(m => m.Supplier.PaymentConditions, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Days of payment</label>
+                            @Html.TextBoxFor(m => m.Supplier.Daysofpayment, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <label>Credit Limit</label>
+                            @Html.TextBoxFor(m => m.Supplier.CreditLimit, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i>Close</button>
+                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Supplier?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addCargo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title text-center" style="color:white">Register Cargo</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_cargo", "PurchaseWTC", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <br />
+                            <label>Name </label>
+                            <br />
+                            @Html.TextBoxFor(m => m.Cargo.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:200px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Cargo?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="recent" aria-labelledby="modal-large-label">
     <div class="modal-dialog modal-lg  ">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
                 <h4 class="modal-title text-center" style="color:white"><i class="icofont icofont-cart-alt f-20" style="color: white;font-size:35px"></i>Item Details</h4>
             </div>
             <div style="overflow-x:auto">
@@ -473,39 +677,24 @@
                             <thead class="bordered-darkorange">
                                 <tr>
                                     <th>Action</th>
-                                    <th>ID</th>
-                                    <th>Name</th>
                                     <th>Cost Price</th>
                                     <th>Barcode</th>
-                                    <th>Shelf Number</th>
-                                    <th>Reorder level</th>
-                                    <th>Op Stock</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>Action</th>
-                                    <th>ID</th>
-                                    <th>Name</th>
                                     <th>Cost Price</th>
                                     <th>Barcode</th>
-                                    <th>Shelf Number</th>
-                                    <th>Reorder level</th>
-                                    <th>Op Stock</th>
                                 </tr>
                             </tfoot>
                             <tbody>
                                 @foreach (var item in Model.Prod_list)
                                 {
                                     <tr>
-                                        <td><button class="btn btn-primary btn-icon waves-effect waves-light" onclick="Action(this.value)" value="@item.Id" data-dismiss="modal"><i class="fa fa-check"></i></button></td>
-                                        <td>@item.Id</td>
-                                        <td>@item.Iname</td>
+                                        <td><button class="btn btn-success " onclick="Action(this.value)" value="@item.Id" data-dismiss="modal"><i class="fa fa-check"></i></button>&nbsp; @item.Iname</td>
                                         <td>@item.Cprice</td>
                                         <td>@item.Barcode</td>
-                                        <td>@item.Shelfnumber</td>
-                                        <td>@item.Reorderlevel</td>
-                                        <td>@item.Openingstock</td>
                                     </tr>
                                 }
                             </tbody>
@@ -525,6 +714,9 @@
 
             <!-- Modal Header -->
             <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
                 <h4 class="modal-title text-center" style="color:white">Recent Invoices</h4>
             </div>
             <!-- Modal body -->
@@ -558,36 +750,46 @@
                         <tbody>
                             @foreach (var lst in Model.PurchaseRecent)
                             {
-                                <tr>
+                            <tr>
+                                <td>
+
+                                    <label class="badge badge-inverse-default"> @lst.Invid</label>
+                                </td>
+                                <td>
+                                    @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
+
+                                </td>
+                                <td>
+                                    @lst.Name
+
+                                </td>
+                                <td>
+                                    @lst.NetAmount.ToString("#,##0")
+
+                                </td>
+                                <td>
+                                    @lst.Ptotal.ToString("#,##0")
+
+                                </td>
+                                @if (lst.NetAmount == lst.Ptotal)
+                                {
                                     <td>
-                                        @lst.Invid
+                                        <label class="label label-lg label-success" style="font-size: 15px"> @lst.BTotal.ToString("#,##0")</label>
 
                                     </td>
+                                }
+                                else
+                                {
                                     <td>
-                                        @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
+                                        <label class="label label-lg label-danger" style="font-size: 15px"> @lst.BTotal.ToString("#,##0")</label>
 
                                     </td>
-                                    <td>
-                                        @lst.Name
-
-                                    </td>
-                                    <td>
-                                        @lst.NetAmount
-
-                                    </td>
-                                    <td>
-                                        @lst.Ptotal
-
-                                    </td>
-                                    <td>
-                                        @lst.BTotal
-
-                                    </td>
-                                    <td>
-                                        <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
-                                        <a href="@Url.Action("Print", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i> </a>
-                                    </td>
-                                </tr>
+                                }
+                                <td>
+                                    <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                    <a href="@Url.Action("Print", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i> </a>
+                                </td>
+                            </tr>
 
                             }
                         </tbody>

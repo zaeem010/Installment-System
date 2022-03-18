@@ -51,10 +51,10 @@ namespace AR_IS.ViewModelQuery
         public int Invid { get; set; }
         public int AccountNo { get; set; }
         public string Address { get; set; }
-        public string Phone { get; set; }
+        public string Phone1 { get; set; }
         public string Email { get; set; }
         public string Date { get; set; }
-        public string CargoName { get; set; }
+        public int CargoId { get; set; }
         public decimal CargoCharges { get; set; }
         public decimal NetAmount { get; set; }
         public decimal DiscountAmount { get; set; }
@@ -69,7 +69,7 @@ namespace AR_IS.ViewModelQuery
     public class GetVehicleVMQ
     {
         public string VehicleName { get; set; }
-        public string EngineNo { get; set; }
+        public string MergingId { get; set; }
         
     }
     public class SWIVMQ
@@ -107,4 +107,23 @@ namespace AR_IS.ViewModelQuery
 
 
     }
+    public class ReceiptPrintVMQ
+    {
+        public int Id { get; set; }
+        public int AccountNo { get; set; }
+        public int Comid { get; set; }
+        public string ReceivedDate { get; set; }
+        public int Invid { get; set; }
+        public decimal PerMonthAmount { get; set; }
+        public decimal Discounts { get; set; }
+        public string Status { get; set; }
+        public decimal ReceivedAmount { get; set; }
+        public int InsId { get; set; }
+        public string VehicleName { get; set; }
+        public string EngineNo { get; set; }
+        public string KeyNo { get; set; }
+        public string InstallmentMonths { get; set; }
+        public string Name { get; set; }
+    }
+
 }

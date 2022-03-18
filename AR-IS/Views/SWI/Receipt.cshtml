@@ -1,0 +1,101 @@
+﻿@model AR_IS.ViewModel.SWIVM
+@{
+    Layout = null;
+
+    var Grand = @Model.ReceiptPrint.PerMonthAmount - @Model.ReceiptPrint.Discounts;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <style>
+     
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="well col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <address>
+                            <strong>@Model.Setting.Companyname</strong>
+                            <br>
+                            @Model.Setting.Phone
+                            <br>
+                            @Model.Setting.Email
+                            <br>
+                            @Model.Setting.Address
+                        </address>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                        <p>
+                            <em>Payment Date: @Convert.ToDateTime(Model.ReceiptPrint.ReceivedDate).ToString("dd,MMM,yyyy")</em>
+                        </p>
+                        <p>
+                            <em>Installment Month:  @Convert.ToDateTime(Model.ReceiptPrint.InstallmentMonths).ToString("MMM,yyyy")</em>
+                        </p>
+                        <p>
+                            <em>Receipt  No  #: @Model.ReceiptPrint.Invid</em>
+                        </p>
+                        <p>
+                            <em>Customer Name : @Model.ReceiptPrint.Name</em>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-center">
+                        <h2> Customer Receipt</h2>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th class="text-center">Engine No </th>
+                                <th class="text-center">Installment No#</th>
+                                <th class="text-center">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-md-3"><em>@Model.ReceiptPrint.VehicleName </em></td>
+                                <td class="col-md-3 text-center">@Model.ReceiptPrint.EngineNo</td>
+                                <td class="col-md-3 text-center"> @Model.ReceiptPrint.InsId </td>
+                                <td class="col-md-3 text-center">@Model.ReceiptPrint.PerMonthAmount.ToString("#,##0")</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+
+
+                                <td class="text-right">
+                                    <p>
+                                        <strong>Discount: </strong>
+                                    </p>
+                                </td>
+                                <td class="text-center">
+
+                                    <p>
+                                        <strong>@Model.ReceiptPrint.Discounts.ToString("#,##0")</strong>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><h4><b>GrandTotal</b>: </h4></td>
+                                <td class="text-center text-danger"><h4><strong>@Grand.ToString("#,##0")</strong></h4></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,6 +1,8 @@
 ﻿@model AR_IS.ViewModel.ReportsVM
 @{
     ViewBag.Title = "SearchSummary";
+    double sum_NetTotal = 0;
+    int sum_Qty = 0;
 }
 <div class="content-wrapper">
     <!-- Container-fluid starts -->
@@ -48,50 +50,42 @@
                             <div class="card-header">
                                 <h5 class="card-header-text"><u><b>Purchase Summary </b></u></h5>
                             </div>
-                            @*<a href="@Url.Action("Print", new {   } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>*@
+                            <a href="@Url.Action("Print", new { AccountNo = Model.Supplier.AccountNo , Sdate =Model.Sdate ,Edate=Model.Edate    } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>
                             <div class="card-block">
                                 <br />
                                 <br />
                                 <table id="" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead class="bordered-darkorange">
                                         <tr style="background-color:#2196F3;color:white">
-                                            <th>Invoice No  </th>
-                                            <th>Date </th>
-                                            <th>Supplier </th>
+                                            <th><i class="fa fa-calendar"></i>Date </th>
+                                            <th><i class="fa fa-user"></i>Supplier </th>
                                             <th>Vehicle </th>
                                             <th>Engine No </th>
+                                            <th>Quantity </th>
                                             <th>Rate</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var lst in Model.PurchaseSummary)
                                         {
-                                            <tr>
-                                                <td>@lst.Invid</td>
-                                                <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                                <td>@lst.Name</td>
-                                                <td>@lst.VehicleName</td>
-                                                <td>@lst.EngineNo</td>
-                                                <td>@lst.WithGSTTotal</td>
-                                            </tr>
+                                            sum_NetTotal += Convert.ToDouble(lst.WithGSTTotal);
+                                            sum_Qty += Convert.ToInt32(1);
+                                        <tr>
+                                            
+                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                            <td>@lst.Name</td>
+                                            <td>@lst.VehicleName</td>
+                                            <td>@lst.EngineNo</td>
+                                            <td>1</td>
+                                            <td>@lst.WithGSTTotal</td>
+                                        </tr>
                                         }
                                     </tbody>
-
                                     <tfoot>
-                                        <tr>
-                                            <th style="text-align:right;" colspan="5">Total</th>
-                                            <th><button type="submit" class="btn btn-primary ">@Model.SinglePurchaseSummary.TTotal </button></th>
-                                        </tr>
-                                        <tr>
-
-                                            <th style="text-align:right;" colspan="5">Additional Charges</th>
-                                            <
-                                            <th><button type="submit" class="btn btn-danger ">@Model.SinglePurchaseSummary.TAdditionalCharges </button></th>
-                                        </tr>
-                                        <tr>
-
-                                            <th style="text-align:right;" colspan="5">Net Total</th>
-                                            <th><button type="submit" class="btn btn-success ">@Model.SinglePurchaseSummary.TNetAmount </button></th>
+                                        <tr style="border:2px solid #CCCCCC;padding:5px;">
+                                            <th style="text-align:center;" colspan="4"><label class="label label-lg label-default" style="font-size: 15px">Total</label></th>
+                                            <th style="border:2px solid #CCCCCC;"><label class="label label-lg label-danger" style="font-size: 15px">@sum_Qty</label></th>
+                                            <th style="border:2px solid #CCCCCC;"><label class="label label-lg label-primary" style="font-size: 15px">@sum_NetTotal.ToString("#,##0")</label></th>
                                         </tr>
                                     </tfoot>
                                 </table>

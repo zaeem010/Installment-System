@@ -25,7 +25,7 @@ namespace AR_IS.Controllers
         // GET: Customer
         public ActionResult Index()
         {
-            return View(_context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE (Comid = '" + Session["Company"] + "') ").ToList());
+            return View(_context.Database.SqlQuery<Customer>("SELECT * FROM   Customers WHERE     (Comid = '" + Session["Company"] + "') ").ToList());
         }
         public ActionResult New(Customer Customer)
         {

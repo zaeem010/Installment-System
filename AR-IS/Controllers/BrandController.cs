@@ -40,14 +40,14 @@ namespace AR_IS.Controllers
                 _context.tbl_Brand.Add(Brand);
                 Brand.Comid = Convert.ToInt32(Session["Company"]);
                 varDirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
                 var Branddb = _context.tbl_Brand.Single(c => c.Id == Brand.Id);
                 Branddb.Name = Brand.Name;
                 varDirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             _context.SaveChanges();
             return RedirectToAction(varDirection, "Brand");

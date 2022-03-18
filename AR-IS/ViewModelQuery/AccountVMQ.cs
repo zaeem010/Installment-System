@@ -105,7 +105,8 @@ namespace AR_IS.ViewModelQuery
         public string AccountTitle { get; set; }
         public string AccountType { get; set; }
         public int Transid { get; set; }
-        public int AccountNo { get; set; }
+        public int AccountNo { get; set; } 
+        public int Invid { get; set; }
 
     }
     public class TrailVMQ
@@ -124,5 +125,15 @@ namespace AR_IS.ViewModelQuery
         public string AccountName { get; set; }
         public decimal Payable { get; set; }
         public decimal Receivable { get; set; }
+    }
+    public class BalanceSheetVMQ
+    {
+        public int AccountNo { get; set; }
+        public string AccountTitle { get; set; }
+        public decimal Dr { get; set; }
+        public decimal Cr { get; set; }
+        public decimal ccr { get; set; }
+        public decimal cdr { get; set; }
+        public decimal HeadId { get; set; }
     }
 }

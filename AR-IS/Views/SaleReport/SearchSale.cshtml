@@ -1,6 +1,10 @@
 ﻿@model AR_IS.ViewModel.ReportsVM
 @{
     ViewBag.Title = "SearchSale";
+    double sum_TotalRate = 0;
+    double sum_Interests = 0;
+    double sum_Discount = 0;
+    double sum_NetTotal = 0;
 }
 <div class="content-wrapper">
     <!-- Container-fluid starts -->
@@ -48,47 +52,98 @@
                             <div class="card-header">
                                 <h5 class="card-header-text"><u><b>Sale Report </b></u></h5>
                             </div>
-                            @*<a href="@Url.Action("Print", new {   } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>*@
+                            <a href="@Url.Action("Print", new { AccountNo = Model.Customer.AccountNo , Sdate =Model.Sdate ,Edate=Model.Edate  } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>
                             <div class="card-block">
                                 <br />
                                 <br />
                                 <table id="" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead class="bordered-darkorange">
                                         <tr style="background-color:#2196F3;color:white">
-                                            <th>Invoice No  </th>
-                                            <th>Date </th>
-                                            <th>Customer </th>
+                                            <th>Action </th>
+                                            <th><i class="fa fa-save"></i>Invoice No  </th>
+                                            <th><i class="fa fa-calendar"></i>Date </th>
+                                            <th><i class="fa fa-user"></i>Customer </th>
                                             <th>Total  Rate </th>
-                                            <th>Interests</th>
+                                            <th>Markup Amount</th>
                                             <th>Discount</th>
                                             <th>Net Total</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
-                                        @foreach (var lst in Model.SaleReport)
+                                        @foreach (var lst in Model.VehicleSaleReport)
                                         {
-                                        <tr>
-                                            <td>@lst.Invid</td>
-                                            <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                            <td>@lst.Name</td>
-                                            <td>@lst.TotalRate</td>
-                                            <td>@lst.Interests</td>
-                                            <td>@lst.Discount</td>
-                                            <td>@lst.NetTotal</td>
-                                        </tr>
+                                            sum_TotalRate += Convert.ToDouble(lst.TotalRate);
+                                            sum_Interests += Convert.ToDouble(lst.Interests);
+                                            sum_Discount += Convert.ToDouble(lst.Discount);
+                                            sum_NetTotal += Convert.ToDouble(lst.NetTotal);
+                                            <tr>
+                                                <td>
+                                                    <a class="accordion-msg badge badge-success" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo-@lst.Invid" aria-expanded="false" aria-controls="collapseTwo">
+                                                        <i onclick="myFunction(this)" class="fa fa-plus"></i>
+                                                    </a>
+                                                    <a href="@Url.Action("InstallmentDetail","SWI", new { Invid = lst.Invid })" class="badge badge-success" data-toggle="tooltip" data-placement="left" title="Click Me To Installment Detail"><i class="fa fa-bicycle"></i></a>
+                                                    <a href="@Url.Action("Print","SWI", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i></a>
+                                                </td>
+                                                <td><label class="badge badge-inverse-default">@lst.Invid</label></td>
+                                                <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
+                                                <td>@lst.Name</td>
+                                                <td>@lst.TotalRate.ToString("#,##0")</td>
+                                                <td>@lst.Interests.ToString("#,##0")</td>
+                                                <td>@lst.Discount.ToString("#,##0")</td>
+                                                <td>@lst.NetTotal.ToString("#,##0")</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="9">
+                                                    <div id="collapseTwo-@lst.Invid" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                                        <div class="accordion-content accordion-desc">
+
+                                                            <table class="table dt-responsive table-striped table-bordered nowrap">
+                                                                <thead class="bordered-darkorange">
+                                                                    <tr class="bg-info">
+                                                                        <th>Sr No</th>
+                                                                        <th><i class="fa fa-motorcycle"></i>Vehicle </th>
+                                                                        <th>chassis No</th>
+                                                                        <th>Engine No</th>
+                                                                        <th>Model No</th>
+                                                                        <th>Key No</th>
+                                                                        <th>Color</th>
+                                                                        <th>Doucment Handover</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @{ int i = 1; }
+                                                                    @foreach (var item in Model.DetailVehicleReport.Where(z => z.Invid == lst.Invid))
+                                                                    {
+                                                                    <tr>
+                                                                        <td> @i</td>
+                                                                        @{ i++; }
+                                                                        <td>@item.VehicleName</td>
+                                                                        <td>@item.ChassiNo</td>
+                                                                        <td>@item.EngineNo</td>
+                                                                        <td>@item.ModelNo</td>
+                                                                        <td>@item.KeyNo</td>
+                                                                        <td>@item.Color</td>
+                                                                        <td>@item.Status</td>
+
+                                                                    </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
                                         }
                                     </tbody>
                                     <tfoot>
-                                        <tr>
-
-                                            <th></th>
-                                            <th></th>
-                                            <th>Final Total</th>
-                                            <th><button type="submit" class="btn btn-primary ">@Model.TotalSaleReport.TRate </button></th>
-                                            <th><button type="submit" class="btn btn-danger ">@Model.TotalSaleReport.TInterests</button></th>
-                                            <th><button type="submit" class="btn btn-warning">@Model.TotalSaleReport.TDiscount</button></th>
-                                            <th><button type="submit" class="btn btn-success">@Model.TotalSaleReport.GrandNetTotal</button></th>
+                                        <tr style="border:2px solid #CCCCCC">
+                                            <th style="text-align:center;" colspan="4"><label class="label label-lg label-default" style="font-size: 15px">Amount Rs:</label></th>
+                                            <th style="border:2px solid #CCCCCC"><label class="label label-lg label-info" style="font-size: 15px">@sum_TotalRate.ToString("#,##0")</label></th>
+                                            <th style="border:2px solid #CCCCCC"><label class="label label-lg label-danger" style="font-size: 15px">@sum_Interests.ToString("#,##0")</label></th>
+                                            <th style="border:2px solid #CCCCCC"><label class="label label-lg label-warning" style="font-size: 15px">@sum_Discount.ToString("#,##0")</label></th>
+                                            <th style="border:2px solid #CCCCCC"><label class="label label-lg label-success" style="font-size: 15px">@sum_NetTotal.ToString("#,##0")</label></th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -102,4 +157,7 @@
 </div>
 <script>
     $('.chosen-select').chosen();
+    function myFunction(x) {
+        x.classList.toggle("fa-minus");
+    }
 </script>

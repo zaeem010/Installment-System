@@ -42,15 +42,14 @@
                             </div>
                             <a href="@Url.Action("Print", new { month = Model.Month } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>
                             <div class="card-block">
-
                                 <br />
                                 <br />
                                 <table id="" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead class="bordered-darkorange">
                                         <tr style="background-color:#2196F3;color:white">
-                                            <th>Installment No</th>
+                                            <th >Installment No #</th>
                                             <th>Installment Month</th>
-                                            <th>Customer Name</th>
+                                            <th>Customers</th>
                                             <th>Phone</th>
                                             <th>Vehicle </th>
                                             <th>Key No</th>
@@ -64,14 +63,14 @@
                                         @foreach (var lst in Model.Deadlist)
                                         {
                                         <tr>
-                                            <td align="center">@lst.InsId</td>
-                                            <td align="center">@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
+                                            <td align="center"><label class="badge badge-inverse-default">@lst.InsId</label></td>
+                                            <td >@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
                                             <td>@lst.Name</td>
                                             <td>@lst.Phone1</td>
                                             <td>@lst.VehicleName-@lst.EngineNo</td>
                                             <td>@lst.KeyNo</td>
                                             <td style="width:30px; text-align:center;"><span class="badge badge-danger">@lst.Status</span></td>
-                                            <td>@lst.PerMonthAmount</td>
+                                            <td>@lst.PerMonthAmount.ToString("#,##0")</td>
 
 
                                         </tr>

@@ -9,24 +9,33 @@
         <div class="col-lg-12">
             <br />
             <a href="@Url.Action("New","Brand")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
-            <div id="mydiv1" class="col-md-3">
-                <p class="text-center bg-danger">@TempData["Reg1"]</p>
-            </div>
+            <button class="btn btn-primary pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent1"><i class="fa fa-list"></i> Recent Invoice List</button>
             <div class="card" style="margin-top:20px">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
-
                             <div class="card-header">
                                 <h5 class="card-header-text"><u>Brand Tables</u></h5>
                             </div>
                             <div class="card-block">
+                                @if (TempData["Reg"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
                                 <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead>
-                                        <tr >
+                                        <tr>
                                             <th> Name</th>
                                             <th>Action</th>
                                         </tr>
@@ -44,7 +53,7 @@
                                                 <td>@lst.Name</td>
                                                 <td>
                                                     <a href="@Url.Action("Edit", new { id = lst.Id })" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
-                                                    <a href="@Url.Action("Delete", new { id = lst.Id })" class="badge badge-danger" data-toggle="tooltip" data-placement="left" title="Click Me To Delete"><i class="fa fa-trash"></i></a>
+
                                                 </td>
                                             </tr>
                                         }
@@ -67,9 +76,5 @@
         $('#mydiv').fadeOut('fast');
     }, 3000); // <-- time in milliseconds
 </script>
-<script>
-    setTimeout(function () {
-        $('#mydiv1').fadeOut('fast');
-    }, 3000); // <-- time in milliseconds
-</script>
+
 

@@ -41,26 +41,19 @@ namespace AR_IS.ViewModelQuery
         public string Date { get; set; }
     }
 
-    public class FinalProfitVMQ
-    {
-        public decimal TotalProfit { get; set; }
-        public decimal TotalSalePrice { get; set; }
-        public decimal TotalCostPrice { get; set; }
-    }
+    
 
-    public class PurchaseReportVMQ
+    public class VehiclePurchaseReportVMQ
     {
         public int Invid { get; set; }
         public string Date { get; set; }
         public string Name { get; set; }
         public decimal NetAmount { get; set; }
-        public decimal AdditionalCharges { get; set; }
+        public decimal CargoCharges { get; set; }
         public decimal Total { get; set; }
-        public decimal TTotal { get; set; }
-        public decimal TAdditionalCharges { get; set; }
-        public decimal TNetAmount { get; set; }
+        public int AccountNo { get; set; }
     }
-    public class PurchaseSummaryVMQ
+    public class VehiclePurchaseSummaryVMQ
     {
         public int Invid { get; set; }
         public string Date { get; set; }
@@ -72,33 +65,143 @@ namespace AR_IS.ViewModelQuery
         public decimal TAdditionalCharges { get; set; }
         public decimal TNetAmount { get; set; }
     }
+    public class PurchaseSummaryVMQ
+    {
+        public string Vtype { get; set; }
+        public int Invid { get; set; }
+        public string Date { get; set; }
+        public string Name { get; set; }
+        public string ItemName { get; set; }
+        public int Itemid { get; set; }
+        public decimal Qty { get; set; }
+        public decimal ItemUnit { get; set; }
+        public decimal CTN { get; set; }
+        public int AccountNo { get; set; }
+        public decimal NetTotal { get; set; }
 
-    public class SaleReportVMQ
+
+
+    }
+    public class VehicleSaleReportVMQ
     {
         public int Invid { get; set; }
         public string Date { get; set; }
         public string Name { get; set; }
-        public string VehicleName { get; set; }
-        public string EngineNo { get; set; }
         public decimal TotalRate { get; set; }
         public decimal NetTotal { get; set; }
         public decimal Interests { get; set; }
         public decimal Discount { get; set; }
-        public decimal TRate { get; set; }
-        public decimal TInterests { get; set; }
-        public decimal TDiscount { get; set; }
-        public decimal GrandNetTotal { get; set; }
+       
     }
-    public class SaleSummaryVMQ
+    public class VehicleSaleSummaryVMQ
+    {
+       
+        public string Date { get; set; }
+        public string Name { get; set; }
+        public int AccountNo { get; set; }
+        public int Invid { get; set; }
+        public string KeyNo { get; set; }
+        public string Color { get; set; }
+        public string Remarks { get; set; }
+        public string VehicleName { get; set; }
+        public string ModelNo { get; set; }
+        public string ChassiNo { get; set; }
+        public string EngineNo { get; set; }
+        public decimal NetTotal { get; set; }
+       
+    }
+    public class PurchaseReportVMQ
     {
         public int Invid { get; set; }
         public string Date { get; set; }
+        public string Vtype { get; set; }
         public string Name { get; set; }
-       
-        public string VehicleName { get; set; }
-        public string EngineNo { get; set; }
-        public decimal NetTotal { get; set; }
-        public decimal GrandNetTotal { get; set; }
+        public decimal NetAmount { get; set; }
+        public decimal CargoCharges { get; set; }
+        public decimal GrandTotal { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Total { get; set; }
 
+
+    }
+    public class PurchaseReportDetailVMQ
+    {
+        public int Invid { get; set; }
+        public int Itemid { get; set; }
+        public string ItemName { get; set; }
+        public decimal CP { get; set; }
+        public decimal Qty { get; set; }
+        public decimal NetTotal { get; set; }
+        public string Date { get; set; }
+        public string SrNo { get; set; }
+        public string Vtype { get; set; }
+        public int Comid { get; set; }
+        public decimal ItemUnit { get; set; }
+        public decimal CTN { get; set; }
+        public int AccountNo { get; set; }
+
+    }
+    public class SaleReportVMQ
+    {
+        public int Invid { get; set; }
+        public string Date { get; set; }
+        public string Vtype { get; set; }
+        public string Name { get; set; }
+        public decimal NetAmount { get; set; }
+        public decimal CargoCharges { get; set; }
+        public decimal GrandTotal { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    public class SaleReportDetailVMQ
+    {
+        public int Invid { get; set; }
+        public int Itemid { get; set; }
+        public string ItemName { get; set; }
+        public decimal CP { get; set; }
+        public decimal Qty { get; set; }
+        public decimal NetTotal { get; set; }
+        public string Date { get; set; }
+       
+        public string Vtype { get; set; }
+        public int Comid { get; set; }
+        public decimal ItemUnit { get; set; }
+        public decimal CTN { get; set; }
+        public int AccountNo { get; set; }
+
+    }
+    public class SaleSummaryVMQ
+    {
+        public string Vtype { get; set; }
+        public int Invid { get; set; }
+        public string Date { get; set; }
+        public string Name { get; set; }
+        public string ItemName { get; set; }
+        public int Itemid { get; set; }
+        public decimal Qty { get; set; }
+        public decimal ItemUnit { get; set; }
+        public decimal CTN { get; set; }
+        public int AccountNo { get; set; }
+        public decimal NetTotal { get; set; }
+    }
+
+    public class InventoryVMQ
+    {
+        public int Id { get; set; }
+        public string Iname { get; set; }
+        public int Openingstock { get; set; }
+        public int Itemunit { get; set; }
+        public int PurQty { get; set; }
+        public int PurCTN { get; set; }
+        public int SaleQty { get; set; }
+        public int SaleCTN { get; set; }
+    }
+    public class OpeningVMQ
+    {
+        public int Id { get; set; }
+        public string Iname { get; set; }
+        public int Opening { get; set; }
+       
     }
 }

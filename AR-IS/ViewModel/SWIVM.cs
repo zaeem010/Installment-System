@@ -26,5 +26,7 @@ namespace AR_IS.ViewModel
         public Setting Setting { get; set; }
         public string wordsinum { get; set; }
         public int status { get; set; }
+
+        public ReceiptPrintVMQ ReceiptPrint { get; set; }
     }
 }

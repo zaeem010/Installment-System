@@ -1,0 +1,602 @@
+﻿@model AR_IS.ViewModel.LoginVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>POS</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    <!--Chosen JS-->
+    <!-- Dropzone js -->
+    <script src="~/Content/bower_components/dropzone/dist/dropzone.js"></script>
+    <!-- Dropzone css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/bower_components/dropzone/dist/dropzone.css">
+    <!-- Favicon icon -->
+    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
+    <!-- Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700" rel="stylesheet">
+    <!--Date Picker Material Icon Css-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- themify -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/icon/themify-icons/themify-icons.css">
+    <!-- Font Awesome -->
+    <link href="~/Content/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- iconfont -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/icon/icofont/css/icofont.css">
+    <!-- simple line icon -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/icon/simple-line-icons/css/simple-line-icons.css">
+    <!-- Required Fremwork -->
+    <link rel="stylesheet" type="text/css" href="~/Content/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Style.css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/main.css">
+    <!-- Responsive.css-->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/responsive.css">
+    ----------------------
+    <style>
+        tfoot {
+            display: table-header-group;
+        }
+
+        .he {
+            height: 90px;
+        }
+
+        input {
+            height: 27px
+        }
+
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="sidebar-mini fixed">
+    <div class="loader-bg">
+        <div class="loader-bar"></div>
+    </div>
+    <div class="wrapper">
+        <!-- Navbar-->
+        <header class="main-header-top hidden-print">
+            <a href="@Url.Action("Index","Home")" class="logo"><h2 class="text-center">POS</h2></a>
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#!" data-toggle="offcanvas" class="sidebar-toggle"></a>
+
+                <!-- Navbar Right Menu-->
+                <div class="navbar-custom-menu">
+                    <ul class="top-nav">
+                        <!-- window screen -->
+                        @*<li class="pc-rheader-submenu">
+                            <a href="#!" class="drop icon-circle" onclick="javascript:toggleFullScreen()">
+                                <i class="icon-size-fullscreen"></i>
+                            </a>
+                        </li>*@
+                        <!-- User Menu-->
+                        <li class="dropdown">
+                            <a href="#!" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle drop icon-circle drop-image">
+                                <span>@(Session["UserName"])<i class=" icofont icofont-simple-down"></i></span>
+                            </a>
+                            <ul class="dropdown-menu settings-menu">
+                                <li><a href="@Url.Action("LogOut","Home")"><i class="icon-logout"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Side-Nav-->
+        @if (Session["UserName"] != null)
+        {
+            <!-- Side-Nav-->
+            <aside class="main-sidebar hidden-print ">
+                <section class="sidebar" id="sidebar-scroll">
+                    <!-- Sidebar Menu-->
+                    <ul class="sidebar-menu">
+                        <li class="treeview"><a class="waves-effect waves-dark" href="@Url.Action("Index", "Home")"> <img src="~/Content/Image/DashBoard.png" class="round" alt="Responsive image" style="width: 28px "> &nbsp;@*<i class="fa fa-dashboard" style="color:#2196F3"></i>*@<span> Dashboard</span></a></li>
+                        @if (Convert.ToString(Session["SuperAdmin"]) != "SuperAdmin")
+                        {
+                            if (Session["Reg"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/Reg.png" class="round" style="width: 28px"> &nbsp; @*<i class="fa fa-modx" style="color: #2196F3 "></i>*@<span> Registrations</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="background-color:white">
+
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Supplier")"><i class="fa fa-mail-forward"></i> Suppliers</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Customer")"><i class="fa fa-mail-forward"></i>Customers</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Reference")"><i class="fa fa-mail-forward"></i> References</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Brand")"><i class="fa fa-mail-forward"></i> Brands</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Category")"><i class="fa fa-mail-forward"></i> Categories</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "MeasuringUnit")"><i class="fa fa-mail-forward"></i>Measuring Units</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Product")"><i class="fa fa-mail-forward"></i> Products</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "InstallmentPlan")"><i class="fa fa-mail-forward"></i> Installment Plans</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Cargo")"><i class="fa fa-mail-forward"></i> Cargoes</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            if (Session["Purchase"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/Purchase.png" class="round" alt="Responsive image" style="width: 28px "> &nbsp;@*<i class="fa fa-shopping-basket" style="color: #2196F3 "></i>*@<span> Purchases</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark " href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Purchase Invoices</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseVehicle")"><i class="fa fa-mail-forward"></i>Purchase Vehicle </a></li>
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseWTC")"><i class="fa fa-mail-forward"></i> Purchase  parts</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark " href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Purchase Return</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseWTCReturn")"><i class="fa fa-mail-forward"></i> Purchase Return Parts</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark mya" href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Vehicle Reports</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseReport")"><i class="fa fa-mail-forward"></i> Purchase Report</a></li>
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "PurchaseSummary")"><i class="fa fa-mail-forward"></i> Purchase Summary</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark mya" href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Parts Reports</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Indexx", "PurchaseReport")"><i class="fa fa-mail-forward"></i> Purchase Report</a></li>
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Indexx", "PurchaseSummary")"><i class="fa fa-mail-forward"></i> Purchase Summary</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            if (Session["Sale"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/Sale.png" class="round" style="width: 28px "> &nbsp;@*<i class="fa fa-shopping-cart" style="color: #2196F3 "></i>*@<span> Sales</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark mya" href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Sale  Invoices</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu" style="background-color:white">
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SWI")"><i class="fa fa-mail-forward"></i> Sale  Installment</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SaleWTC")"><i class="fa fa-mail-forward"></i> Sale Parts</a></li>
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark " href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Sale Return</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+
+                                                <li><a class="waves-effect waves-dark menucolor" href="@Url.Action("Index", "SaleWTCReturn")"><i class="fa fa-mail-forward"></i> Sale Return Parts</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark mya" href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Vehicle Reports</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SaleReport")"><i class="fa fa-mail-forward"></i> Sale Report</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "SaleSummary")"><i class="fa fa-mail-forward"></i> Sale Summary</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark mya" href="#">
+                                                <i class="fa fa-mail-forward"></i><span>Parts Reports</span>&nbsp;<i class="fa fa-plus-circle"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Indexx", "SaleReport")"><i class="fa fa-mail-forward"></i> Sale Report</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Indexx", "SaleSummary")"><i class="fa fa-mail-forward"></i> Sale Summary</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            if (Session["Reports"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/Report.png" class="round" style="width: 28px "> &nbsp; @*<i class="fa fa-save" style="color: #2196F3 "></i>*@<span> Reports</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "InventoryReport")"><i class="fa fa-mail-forward"></i> Inventory Reports</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "DeadList")"><i class="fa fa-mail-forward"></i> Dead List</a></li>
+                                    </ul>
+
+                                </li>
+                            }
+                            if (Session["PaymenentRecovery"].ToString() != "0")
+                            {
+                                <li class="">
+                                    <a href="@Url.Action("Index", "PaymentRecovery")"> <img src="~/Content/Image/Recovery.png" class="round" style="width: 28px"> &nbsp;@*<i class="fa fa-recycle" style="color: #2196F3"></i>*@<span>Payment Recovery</span><i class="icon-arrow-down"></i></a>
+                                </li>
+                            }
+                            if (Session["Vouchers"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/Vouchers.png" class="round" style="width: 28px "> &nbsp; @*<i class="fa fa-file" style="color: #2196F3 "></i>*@<span> Vouchers</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="background-color:white">
+
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "ExpenseSheet")"><i class="fa fa-mail-forward"></i>Daily Expense Sheet</a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "CashPayment")"><i class="fa fa-mail-forward"></i> Cash Payment </a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "CashRecepit")"><i class="fa fa-mail-forward"></i> Cash Recipt </a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "BankPayment")"><i class="fa fa-mail-forward"></i> Bank Payment </a></li>
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "BankRecepit")"><i class="fa fa-mail-forward"></i> Bank Recipt </a></li>
+                                        @*<li><a class="waves-effect waves-dark " href="@Url.Action("Index", "JournalVoucher")"><i class="fa fa-mail-forward"></i> Journal </a></li>*@
+                                    </ul>
+                                </li>
+                            }
+
+                            if (Session["Accounts"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#"><img src="~/Content/Image/Account.png" class="round" style="width: 28px "> &nbsp;@*<i class="fa fa-usd" style="color: #2196F3 "></i>*@<span> Accounts</span><i class="icon-arrow-down"></i></a>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview " id="category-tabs">
+                                            <a class="waves-effect waves-dark mya" href="#">
+                                                <i class="fa fa-deviantart"></i><span> Registrations</span><i class="icon-arrow-down"></i>
+                                            </a>
+                                            <ul class="treeview-menu ">
+                                                <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "OpeningBalance")"><i class="fa fa-mail-forward"></i> Opening Balance</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Firstlevel")"><i class="fa fa-mail-forward"></i> First Level</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Secondlevel")"><i class="fa fa-mail-forward"></i> Second Level</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "Thirdlevel")"><i class="fa fa-mail-forward"></i> Third Level</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            if (Session["Financial"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#"> <img src="~/Content/Image/Statement.png" class="round" style="width: 28px"> &nbsp;@*<i class="fa fa-money" style="color: #2196F3 "></i>*@<span> Financial Statements</span><i class="icon-arrow-down"></i></a>
+                                    <ul class="treeview-menu" style="background-color:white">
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Chart Of Account</span><i class="icon-arrow-down"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "ChartofAccount")"><i class="fa fa-mail-forward"></i> Chart Of Account</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Ledger</span><i class="icon-arrow-down"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "Ledger")"><i class="fa fa-mail-forward"></i> Simple Ledger</a></li>
+                                                <li><a class="waves-effect waves-dark  " href="@Url.Action("Indexx", "Ledger")"><i class="fa fa-mail-forward"></i> Details Ledger</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Trail Balance</span><i class="icon-arrow-down"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "TrailBalance")"><i class="fa fa-mail-forward"></i> Trail Balance</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Transactions Details </span><i class="icon-arrow-down"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "Transactions")"><i class="fa fa-mail-forward"></i>Open Transactions </a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Balance Sheet</span><i class="icon-arrow-down"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a class="waves-effect waves-dark  " href="@Url.Action("Index", "BalanceSheet")"><i class="fa fa-mail-forward"></i> Balance Sheet</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="#"><i class="fa fa-align-justify"></i><span> Monthly Report</span><i class="icon-arrow-down"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "MonthlyExpense")"><i class="fa fa-mail-forward"></i>Expense Report</a></li>
+                                                <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "PayableReceivable")"><i class="fa fa-mail-forward"></i>Payable & Receivable</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="treeview mya">
+                                            <a class="waves-effect waves-dark mya" href="@Url.Action("Index", "VehicleProfit")"><i class="fa fa-align-justify"></i><span> Vehicle Profit</span></a>
+
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            if (Session["User"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/UserManagement.png" class="round" style="width: 28px"> &nbsp; @*<i class="fa fa-cog" style=" color: #2196F3 "></i>*@<span>User Management </span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("New", "UserMan")"><i class="fa fa-mail-forward"></i> User Roles</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            if (Session["setting"].ToString() != "0")
+                            {
+                                <li class="treeview">
+                                    <a class="waves-effect waves-dark" href="#">
+                                        <img src="~/Content/Image/Setting.png" class="round" style="width: 28px"> &nbsp; @*<i class="fa fa-cog" style=" color: #2196F3 "></i>*@<span>Settings</span><i class="icon-arrow-down"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a class="waves-effect waves-dark " href="@Url.Action("Update", "Setting")"><i class="fa fa-mail-forward"></i> Go To Settings</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+
+                            <li class="treeview">
+                                <a class="waves-effect waves-dark" href="#">
+                                    <span class="badge badge-danger">@(Session["Ex"]) Days are  Remaining </span>
+                                </a>
+
+                            </li>
+                        }
+                        @if (Convert.ToString(Session["SuperAdmin"]) == "SuperAdmin")
+                        {
+                            <li class="treeview">
+                                <a class="waves-effect waves-dark" href="#">
+                                    <i class="fa fa-user" style=" color: #2196F3 "></i><span>Admin Roles</span><i class="icon-arrow-down"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a class="waves-effect waves-dark " href="@Url.Action("Index", "UserDetails")"><i class="fa fa-mail-forward"></i> User Detail</a></li>
+                                </ul>
+                            </li>
+                        }
+
+
+
+                    </ul>
+                </section>
+            </aside>
+        }
+        <!-- Sidebar chat start -->
+        <!-- Sidebar chat end-->
+        <div class="content-wrapper">
+
+            <!-- Container-fluid starts -->
+            <!-- Main content starts -->
+            <div class="container-fluid">
+                @*<div class="row">
+                    <div class="main-header">
+                        <h4>Add User</h4>
+                    </div>
+                </div>*@
+                <div class="col-lg-12">
+                    <a href="@Url.Action("Index","UserMan")" class="btn btn-skype pull-right" data-toggle="tooltip" title="Click Me To View" style="margin-left:20px"><i class="fa fa-list"></i> User List</a>
+                    <br />
+                    <div class="card" style="margin-top:20px">
+                        <div class="card-header">
+                            <h5 class="card-header-text"><u>Register User</u></h5>
+                        </div>
+                        <div class="card-block">
+                            @if (TempData["Reg"] != null)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div id="mydiv" class="alert alert-danger alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                            <div class="alert-message">
+                                                <span>@TempData["Reg"]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (TempData["Reg1"] != null)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                            <div class="alert-message">
+                                                <span>@TempData["Reg1"]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @using (Html.BeginForm("Index", "UserMan", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <h6 id="userStatus"></h6>
+                                    <div class="col-md-3">
+                                        <label>User Name </label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                                        @Html.TextBoxFor(m => m.GeneralUser.UserName, new { @class = "form-control thresold-i", @maxlength = "30", @required = "required", @autocomplete = "off", @id = "username" })
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Email</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                                        @Html.TextBoxFor(m => m.GeneralUser.Email, new { @class = "form-control thresold-i", @maxlength = "30", @autocomplete = "off", @id = "Email", @required = "required", @type = "email" })
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label> Phone</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                                        @Html.TextBoxFor(m => m.GeneralUser.Phone, new { @class = "form-control thresold-i", @maxlength = "30", @autocomplete = "off", @id = "Phone", @required = "required", @type = "number" })
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Password </label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                                        @Html.TextBoxFor(m => m.GeneralUser.Password, new { @class = "form-control thresold-i", @maxlength = "30", @required = "required", @autocomplete = "off", @id = "Pass", @type = "password" })
+                                    </div>
+                                    <div class="form-group col-sm-12">
+                                        <br />
+                                        <h4>Roles</h4>
+                                        <div id="treeview"></div>
+                                    </div>
+                                    <div class="offset-md-4 col-md-5" style="margin-top:20px">
+                                        <button type="submit" onclick='return btnSave()' class="btn btn-primary pull-right col-md-8" style="margin-top:0px"><i class="fa fa-check"></i> Register User </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Warning Section Ends -->
+    <!-- Required Jqurey -->
+    <script src="~/Content/bower_components/Jquery/dist/jquery.min.js"></script>
+    <script src="~/Content/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/Content/bower_components/tether/dist/js/tether.min.js"></script>
+    <!-- Required Fremwork -->
+    <script src="~/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Scrollbar JS-->
+    <script src="~/Content/bower_components/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script src="~/Content/bower_components/jquery.nicescroll/dist/jquery.nicescroll.min.js"></script>
+    <!--classic JS-->
+    <script src="~/Content/bower_components/classie/classie.js"></script>
+    <!-- custom js -->
+    <script type="text/javascript" src="~/Content/assets/js/main.min.js"></script>
+    <!--Tree View-->
+    <link rel="stylesheet" href="~/Content/Tree/tree.min.css" />
+    <script src="~/Content/Tree/tree.min.js"></script>
+    <script>
+    $("#treeview").kendoTreeView({
+        checkboxes: {
+            checkChildren: true
+        },
+        check: onCheck,
+         dataSource: [{
+                id: 0, text: "Select Menu ", expanded: true, spriteCssClass: "rootfolder", items:[
+                 @foreach (var lst_subdept in Model.FormsMenus)
+                 {
+                     @:{
+                       @:id: @(lst_subdept.Id), text: "@(lst_subdept.Name)", expanded: false, spriteCssClass: "folder", items: [
+                  foreach (var lst_subdept1 in Model.FormsSubMenus.Where(c=>c.Formid==lst_subdept.Id))
+                 {
+                     @:{
+                        @:id: @(lst_subdept1.SubFormid), text: "@(lst_subdept1.Name)", spriteCssClass: "html", items: [
+                         foreach (var lst_subdept2 in Model.FormsSuperSubMenus.Where(c => c.SubFormid == lst_subdept1.SubFormid))
+                         {
+                         @: { id: @lst_subdept2.SuperFormid, text: "@(lst_subdept2.Name)", spriteCssClass: "html" },
+                         }
+                         @:]
+
+                     @:},
+                  }
+                     @:]
+                 @:},
+               }
+          ]
+        }]
+    });
+    function checkedNodeIds(nodes, checkedNodes) {
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].checked) {
+                checkedNodes.push(nodes[i].id);
+            }
+            if (nodes[i].hasChildren) {
+                checkedNodeIds(nodes[i].children.view(), checkedNodes);
+            }
+        }
+    }
+    var checkedNodes1 = [];
+    function onCheck() {
+        var checkedNodes = [],
+            treeView = $("#treeview").data("kendoTreeView"),
+            message;
+
+        checkedNodeIds(treeView.dataSource.view(), checkedNodes);
+        if (checkedNodes.length > 0) {
+            message = "IDs of checked nodes: " + checkedNodes.join(",");
+            checkedNodes1 = checkedNodes;
+        } else {
+            message = "No nodes checked.";
+            checkedNodes1 = checkedNodes;
+        }
+        $("#result").html(message);
+    }
+var data;
+    function btnSave() {
+        var username = document.getElementById("username").value;
+        var Email = document.getElementById("Email").value;
+        var Phone = document.getElementById("Phone").value;
+        var Pass = document.getElementById("Pass").value;
+
+        $.ajax({
+            url: "GetJavaScriptString/UserMan?ChildNodes=" + checkedNodes1 + "&username=" + username + "&Email=" + Email + "&Phone=" + Phone + "&Pass=" + Pass + "",
+            method: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    window.location.href = '@Url.Action("New", "UserMan")';
+                }
+        });
+        $('#username').val('');
+        $('#Email').val('');
+        $('#Phone').val('');
+        $('#Pass').val('');
+   }
+
+
+    </script>
+    <script>
+        $(function () {
+            $("#username").keyup(function () {
+                var name = $("#username").val();
+                var status = $("#userStatus");
+                var user = $.trim(name);
+                if (user.length > 3) {
+                    status.html("Checking....")
+                    $.post("/UserMan/chkPrevUser", { username: name },
+                        function (data) {
+
+
+                            if (data == true) {
+                                status.html("<font color=red>'<b>" + name + "</b>' is not available!</font>");
+                            } else {
+                                status.html("<font color=green>'<b>" + name + "</b>' is  available!</font>");
+                            }
+                        });
+                }
+                if (name.length == 0) {
+                    status.html("");
+                }
+            });
+        });
+        $(function () {
+            $('#username').on('keypress', function (e) {
+                if (e.which == 32) {
+                    console.log('Space Detected');
+                    return false;
+                }
+            });
+        })
+        setTimeout(function () {
+            $('#mydiv').fadeOut('fast');
+        }, 3000); // <-- time in milliseconds
+    </script>
+</body>
+</html>

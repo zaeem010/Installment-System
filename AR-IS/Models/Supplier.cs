@@ -22,6 +22,15 @@ namespace AR_IS.Models
         public int AccountNo { get; set; }
         public int Comid { get; set; }
         public string CNIC { get; set; }
+        public string NTN { get; set; }
+        public string GST { get; set; }
+        public string BankDetail { get; set; }
+        public decimal SpecialDiscount { get; set; }
+        public decimal PromptPaymentDiscount { get; set; }
+        public string PaymentConditions { get; set; }
+        public string Daysofpayment { get; set; }
+        public decimal CreditLimit { get; set; }
+        public string Description { get; set; }
 
     }
 }

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace AR_IS.Controllers
 {
+    [SessionTimeout]
     public class ProvinceController : Controller
     {
         private ApplicationDbContext _context;
@@ -37,7 +38,7 @@ namespace AR_IS.Controllers
                 _context.tbl_Province.Add(Province);
                 _context.SaveChanges();
                 vardirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
@@ -45,7 +46,7 @@ namespace AR_IS.Controllers
                 Provincedb.Name = Province.Name;
                 _context.SaveChanges();
                 vardirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             return RedirectToAction(vardirection, "Province");
         }

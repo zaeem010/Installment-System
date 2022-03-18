@@ -1,4 +1,5 @@
 ﻿using AR_IS.ViewModelQuery;
+using AR_IS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,12 @@ namespace AR_IS.ViewModel
         public int Suppliers { get; set; }
         public int Customers { get; set; }
         public int Products { get; set; }
-        public int AvailableVehicle { get; set; }
-        public int TodayPurchase { get; set; }
-        public int TodaySale { get; set; }
-        public int MonthPurchase { get; set; }
-        public int MonthSale { get; set; }
+        public Decimal TodayPurchase { get; set; }
+        public Decimal TodaySale { get; set; }
+        public Decimal MonthPurchase { get; set; }
+        public Decimal MonthSale { get; set; }
         public IEnumerable<MonthlyVehichleSaleVMQ> MonthlyVehicleSale { get; set; }
         public SaleAnalysisVMQ SaleAnalysis { get; set; }
-
         public IEnumerable<MonthlyVehichlePurchaseVMQ> MonthlyVehichlePurchase { get; set; }
         public PurchaseAnalysisVMQ PurchaseAnalysis { get; set; }
         public Decimal DailyRecovery { get; set; }
@@ -34,8 +33,13 @@ namespace AR_IS.ViewModel
         public decimal Expenses { get; set; }
         public Decimal DailyExpense { get; set; }
         public Decimal MonthlyExpense { get; set; }
-
-        public IEnumerable<PurchaseWVehicleVMQ> TopPurchase { get; set; }
-        public IEnumerable<SWIVMQ> TopSale { get; set; }
+        public IEnumerable<PurchaseWVehicleVMQ> TopVehiclePurchase { get; set; }
+        public IEnumerable<SWIVMQ> TopVehicleSale { get; set; }
+        public IEnumerable<PurchaseWTCVMQ> TopPartsPurchase { get; set; }
+        public IEnumerable<SaleWTCVMQ> TopPartsSale{ get; set; }
+        public IEnumerable<GeneralUser> Userlist { get; set; }
+        public int Total { get; set; }
+        public int Active { get; set; }
+        public int InActive { get; set; }
     }
 }

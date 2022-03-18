@@ -21,5 +21,6 @@ namespace AR_IS.Models
         public int Comid { get; set; }
         public decimal ItemUnit { get; set; }
         public decimal CTN { get; set; }
+        public int AccountNo { get; set; }
     }
 }

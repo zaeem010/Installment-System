@@ -1,104 +1,271 @@
 ﻿@model AR_IS.ViewModel.LedgerVM
 @{
     Layout = null;
-    double position = 0.00;
     double bal = 0.00;
     double sum_cr = 0.00;
     double sum_dr = 0.00;
-    double total = 0.00;
-    double gbal = 0.00;
+    var i = 0;
+    var count = Model.trans_list.Count();
+    double balance = 0.00;
+    
 }
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <!-- Favicon icon -->
-    <link rel="shortcut icon" href="~/Content/assets/images/favicon.png" type="image/x-icon">
-    <link rel="icon" href="~/Content/assets/images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <title>Print</title>
+    <style>
+        #invoice {
+            padding: 30px;
+        }
+
+        hr.new2 {
+            color: #2196F3;
+            border-top: 4px dotted;
+        }
+
+        .invoice {
+            position: relative;
+            background-color: #FFF;
+            min-height: 680px;
+            padding: 15px
+        }
+
+            .invoice header {
+                padding: 10px 0;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #3989c6
+            }
+
+            .invoice .company-details {
+                text-align: right
+            }
+
+                .invoice .company-details .name {
+                    margin-top: 0;
+                    margin-bottom: 0
+                }
+
+
+            .invoice .contacts {
+                margin-bottom: 20px
+            }
+
+            .invoice .invoice-to {
+                text-align: left
+            }
+                .invoice .invoice-to .to {
+                    margin-top: 0;
+                    margin-bottom: 0
+                }
+               
+
+            .invoice .invoice-details {
+                text-align: right
+            }
+                .invoice .invoice-details .invoice-id {
+                    margin-top: 0;
+                    color: #3989c6
+                }
+              
+
+            .invoice main {
+                padding-bottom: 50px
+            }
+
+                .invoice main .thanks {
+                    margin-top: -100px;
+                    font-size: 2em;
+                    margin-bottom: 50px
+                }
+
+                .invoice main .notices {
+                    padding-left: 6px;
+                    border-left: 6px solid #3989c6
+                }
+
+                    .invoice main .notices .notice {
+                        font-size: 1.2em
+                    }
+
+            .invoice table tfoot td {
+                background: 0 0;
+                border-bottom: none;
+                white-space: nowrap;
+                text-align: right;
+                padding: 10px 20px;
+                font-size: 1.2em;
+                border-top: 1px solid #aaa
+            }
+
+            .invoice table tfoot tr:first-child td {
+                border-top: none
+            }
+
+            .invoice table tfoot tr:last-child td {
+                color: #3989c6;
+                font-size: 1.4em;
+                border-top: 1px solid #3989c6
+            }
+
+            .invoice table tfoot tr td:first-child {
+                border: none
+            }
+
+            .invoice footer {
+                width: 100%;
+                text-align: center;
+                color: #777;
+                border-top: 1px solid #aaa;
+                padding: 8px 0
+            }
+    </style>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
-<body onload="window.print()">
-    <div class="container-fluid" style="border:1px solid black">
-        <br />
-        <div class="row">
-            <div class="col-md-5">
-                <h4><u style="font-size:18px">Installement System</u></h4>
-                <br />
-                <h4>From:&nbsp;&nbsp;&nbsp;<u style="font-size:18px">@Model.s_date</u></h4>
-                <h4>&nbsp;&nbsp;&nbsp;To:&nbsp;&nbsp;&nbsp;&nbsp;<u style="font-size:18px">@Model.e_date</u></h4>
+<body>
+    <div id="invoice">
+
+        <div class="toolbar hidden-print">
+            <div class="text-right">
+                <button class="btn btn-info pull-right" id="printInvoice" style="margin-top:-10px"><i class="fa fa-print"></i> Print</button>
+            </div>
+            <hr>
+        </div>
+        <div class="invoice overflow-auto" style="margin-top:-30px">
+            <div style="min-width: 600px">
+
+                <div class="row">
+                    <div class="col">
+                        <a>
+                            <img src="~/uploads/@Model.Setting.Logo" style="width:80px;height:80px;margin-left:20px" data-holder-rendered="true" />
+                        </a>
+                    </div>
+                    <div class="col company-details" style="padding:10px">
+                        <h2 class="name">
+                            @Model.Setting.Companyname
+                        </h2>
+                        <div>@Model.Setting.Address</div>
+                        <div>@Model.Setting.Email</div>
+                        <div>@Model.Setting.Phone</div>
+                    </div>
+                </div>
+
+                <main>
+                    <h3 class=" text-center">Ledger:</h3>
+                    <h4 class=" text-center">@Convert.ToDateTime(Model.s_date).ToString("dd-MMM-yyyy") To @Convert.ToDateTime(Model.e_date).ToString("dd-MMM-yyyy")</h4>
+                    <br />
+                    <table border="0" cellspacing="0" cellpadding="0" class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="4
+                                    ">(Account Holder Name : <u>@Model.ThirdLevel.AccountTitle</u>)</th>
+                                <th colspan="3">( Opening Balance Pkr : <u>@Model.ThirdLevel.Cr.ToString("#,##0"))</u></th>
+
+                            </tr>
+                            <tr>
+                                <th style="width:130px">Trans Id</th>
+                                <th style="width:130px">Date</th>
+                                <th >Vtype</th>
+                                <th style="width:530px">Description</th>
+                                <th>DEBIT</th>
+                                <th>CREDIT</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.trans_list.OrderBy(c => c.Transid))
+                            {
+                                bal = Convert.ToDouble(Model.ThirdLevel.Cr);
+                                sum_cr += Convert.ToDouble(item.Cr);
+                                sum_dr += Convert.ToDouble(item.Dr);
+                                if (item.HeadId == 1 || item.HeadId == 5)
+                                {
+                                    bal = (bal + (sum_dr - sum_cr));
+                                }
+                                else
+                                {
+                                    bal = (bal + (sum_cr - sum_dr));
+                                }
+                            <tr>
+                                <td>@item.Transid</td>
+                                <td style="width:50px">@Convert.ToDateTime(item.TransDate).ToString("dd-MMM-yyyy")</td>
+                                @if (item.Vtype == "PINVV" || item.Vtype == "PINVWTC")
+                                {
+                                    <td>PV</td>
+                                }
+                                else if (item.Vtype == "RPINVWTC")
+                                {
+                                    <td>PVRT</td>
+                                }
+                                else if (item.Vtype == "RSINVWTC")
+                                {
+                                    <td>SVRT</td>
+                                }
+                                else if (item.Vtype == "SINVWI" || item.Vtype == "SINVWTC")
+                                {
+                                    <td>SV</td>
+                                }
+                                else if (item.Vtype == "CPVPINVV" || item.Vtype == "CPVPINVWTC")
+                                {
+                                    <td>CPV</td>
+                                }
+                                else if (item.Vtype == "CRVSINVWI" || item.Vtype == "CRVSINVWTC")
+                                {
+                                    <td>CRV</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Vtype</td>
+                                }
+                                <td>@item.TransDes</td>
+                                <td>@item.Dr.ToString("#,##0")</td>
+                                <td>@item.Cr.ToString("#,##0")</td>
+                                @if (++i != count)
+                                {
+                                    <td>@bal.ToString("#,##0")</td>
+                                }
+                                else
+                                {
+                                    <td> @(balance = bal) </td>
+                                }
+                            </tr>
+                            
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th style="width:50px"></th>
+                                <th class="pull-right">Grand Total</th>
+                                <th> @sum_dr.ToString("#,##0") </th>
+                                <th>@sum_cr.ToString("#,##0")</th>
+                                <th>@balance.ToString("#,##0")</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </main>
             </div>
 
+            <div></div>
         </div>
-        <br />
-        <table class="table table-striped">
-            <thead class="bordered-darkorange">
-                <tr>
-                    <th></th>
-                    <th colspan="2">(Account Holder Name : <u>@Model.ThirdLevel.AccountTitle</u>)</th>
-
-
-                    <th colspan="2">( Opening Balance Pkr : <u> @Model.ThirdLevel.Cr)</u></th>
-
-                </tr>
-                <tr>
-
-                    <th style="width:130px">Date</th>
-                    <th style="width:530px">Description</th>
-                    <th>DEBIT</th>
-                    <th>CREDIT</th>
-                    <th>Balance</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.trans_list)
-                {
-                    // position = 0;
-                    sum_cr += Convert.ToDouble(item.Cr);
-                    sum_dr += Convert.ToDouble(item.Dr);
-                    if (position == 0 && item.HeadId == 1)
-                    {
-                        bal = (Convert.ToDouble(Model.ThirdLevel.Cr) + (Convert.ToDouble(item.Dr - item.Cr)));
-                    }
-                    else
-                    {
-                        if (item.HeadId == 1 || item.HeadId == 4 || item.HeadId == 5)
-                        {
-                            bal = (bal + (Convert.ToDouble(item.Dr - item.Cr)));
-                        }
-                        else
-                        {
-                            bal = (bal + (Convert.ToDouble(item.Cr - item.Dr)));
-                        }
-                    }
-                    <tr>
-
-                        <td style="width:50px">@item.TransDate</td>
-                        <td>@item.TransDes</td>
-                        <td>@item.Dr</td>
-                        <td>@item.Cr</td>
-                        <td>@bal</td>
-                    </tr>
-
-                    position++;
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-
-                    <th style="width:50px"></th>
-                    <th class="pull-right">Grand Total</th>
-                    <th style="display:none"> @(total = Convert.ToDouble(Model.ThirdLevel.Cr) + sum_dr) </th>
-                    <th> @Model.sumDr </th>
-                    <th>@Model.SumCr</th>
-                    <th style="display:none">@(gbal = total - sum_cr)</th>
-                    <th>@(gbal)</th>
-                </tr>
-            </tfoot>
-        </table>
     </div>
+
 </body>
 </html>
+<script>
+    $('#printInvoice').click(function () {
+        Popup($('.invoice')[0].outerHTML);
+        function Popup(data) {
+            window.print();
+            return true;
+        }
+    });
+</script>
+
+
+
+
+
+
+
+

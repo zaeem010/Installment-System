@@ -16,20 +16,41 @@
                             <div class="card-header">
                                 <h5 class="card-header-text"><u>Sale Tables</u></h5>
                             </div>
-                            <div class="row">
-                                <div id="mydiv" class="col-md-3">
-                                    <p class="text-center bg-success">@TempData["Reg"]</p>
-                                    <p class="text-center bg-danger">@TempData["Reg1"]</p>
-                                </div>
-                            </div>
                             <div class="card-block">
+                                @if (TempData["Reg"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (TempData["Reg1"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-danger alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg1"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
                                     <thead>
                                         <tr>
                                             <th>Inv No</th>
                                             <th>Date </th>
                                             <th>Customer </th>
-                                            <th>Vehicle </th>
                                             <th>Net Total </th>
                                             <th>Received  </th>
                                             <th>Balance  </th>
@@ -41,7 +62,6 @@
                                             <th>Inv No</th>
                                             <th>Date </th>
                                             <th>Customer </th>
-                                            <th>Vehicle </th>
                                             <th>Net Total </th>
                                             <th>Received  </th>
                                             <th>Balance  </th>
@@ -53,8 +73,7 @@
                                         {
                                             <tr>
                                                 <td>
-                                                    @lst.Invid
-
+                                                    <label class="badge badge-inverse-default">@lst.Invid</label>
                                                 </td>
                                                 <td>
                                                     @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
@@ -62,19 +81,25 @@
                                                 <td>
                                                     @lst.Name
                                                 </td>
+                                                
                                                 <td>
-                                                    @lst.VehicleName-@lst.EngineNo
-                                                </td>
-                                                <td>
-                                                    @lst.NetTotal
+                                                    @lst.NetTotal.ToString("#,##0")
                                                 </td>
 
                                                 <td>
-                                                    @lst.ReceivedTotal
+                                                    @lst.ReceivedTotal.ToString("#,##0")
                                                 </td>
-                                                <td>
-                                                    @lst.RemainingBalance
-                                                </td>
+
+                                                @if (lst.NetTotal == lst.ReceivedTotal)
+                                                {
+                                                    <td><label class="label label-lg label-success" style="font-size:15px">@lst.RemainingBalance.ToString("#,##0")</label></td>
+
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="label label-lg label-danger" style="font-size:15px">@lst.RemainingBalance.ToString("#,##0")</span></td>
+                                                }
+
                                                 <td>
                                                     <a href="@Url.Action("Delete", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Delete this Invoice?');" class="badge badge-danger" data-toggle="tooltip" data-placement="left" title="Click Me To Delete"><i class="fa fa-trash"></i></a>
                                                     <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
@@ -85,16 +110,7 @@
                                             </tr>
 
                                         }
-                                        @*<tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>12</td>
-                                            <td>12</td>
-                                            <td>12</td>
-                                            <td>00</td>
-                                        </tr>*@
+                                        
                                     </tbody>
                                 </table>
                             </div>

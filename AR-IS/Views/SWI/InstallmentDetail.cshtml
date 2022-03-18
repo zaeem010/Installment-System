@@ -11,22 +11,31 @@
             <br />
 
             <a href="@Url.Action("New","SWI")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
             <div class="card" style="margin-top:20px">
-                
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
-                         
                             <div class="card-header">
                                 <h5 class="card-header-text"><u>Installment Tables</u></h5>
                                 <a  href="@Url.Action("Print", new { Invid = Model.Vehicleinfo.Invid })" class="btn btn-primary pull-right" target="_blank" data-toggle="tooltip" data-placement="left" title="Click Me To  Print" style="margin-left:20px"><i class="fa fa-share-square-o"></i>Installment Plan</a>
                             </div>
                             <div class="card-block">
+                                @if (TempData["Reg"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 <div class="row">
-                                    @using (Html.BeginForm("SaveInstallment", "SWI", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    @using (Html.BeginForm("InstallmentDetail", "SWI", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                     {
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="Invid" value="@Model.Vehicleinfo.Invid" />
@@ -70,11 +79,13 @@
                                                         <th>Ins No </th>
                                                         <th>Checked </th>
                                                         <th>Installment Month </th>
+                                                        <th>Due Date </th>
                                                         <th>Receiving Date </th>
                                                         <th>Status </th>
                                                         <th>Monthly Amount </th>
                                                         <th>Discount </th>
                                                         <th>Received Amount </th>
+                                                        <th> Print Receipt</th>
                                                     </tr>
                                                 </thead>
                                                 <tfoot>
@@ -82,78 +93,97 @@
                                                         <th>Ins No </th>
                                                         <th>Checked </th>
                                                         <th>Installment Month </th>
+                                                        <th>Due Date </th>
                                                         <th>Receiving Date </th>
                                                         <th>Status </th>
                                                         <th>Monthly Amount </th>
                                                         <th>Discount </th>
                                                         <th>Received Amount </th>
+                                                        <th> Print Receipt</th>
                                                     </tr>
                                                 </tfoot>
                                                 <tbody>
                                                     @foreach (var lst in Model.SaleVehicleInstallment)
                                                     {
-                                                        <tr>
-                                                            <td>@lst.InsId</td>
-                                                            <td class="pull-left">
-                                                                @if (lst.Status == "Cleared")
-                                                                {
-                                                                    <span class="badge badge-success">Cleared</span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <input type="hidden" class="form-control" value="@lst.InsId" name="InsId">
-                                                                    @*<input type="checkbox" class="form-control" value="Clear" name="Status">*@
-                                                                    <select class="form-control" style="height:27px" name="checkeds">
-                                                                        <option value="Pending">Pending</option>
-                                                                        <option value="Cleared">Cleared</option>
-                                                                    </select>
-                                                                }
-                                                            </td>
-                                                            <td align="center">@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
-                                                            <td>
-                                                                @if (lst.Status == "Cleared")
-                                                                {
-                                                                    @Convert.ToDateTime(lst.Date).ToString("dd-MM-yyyy")
-                                                                }
-                                                                else
-                                                                {
-                                                                    <input type="date" class="form-control" name="date" value="@lst.Date" />
-                                                                }
-                                                            </td>
-                                                            @if (lst.Status == "Pending")
+                                                    <tr>
+                                                        <td>@lst.InsId</td>
+                                                        <td class="pull-left">
+                                                            @if (lst.Status == "Cleared")
                                                             {
-                                                                <td style="width:30px; text-align:center;"><span class="badge badge-danger">Pending</span><input type="hidden" class="form-control" name="Status" value="Pending" /></td>
+                                                                <span class="badge badge-success">Cleared</span>
                                                             }
                                                             else
                                                             {
-                                                                <td style="width:30px; text-align:center;"><span class="badge badge-success">Cleared</span></td>
+                                                                <input type="hidden" class="form-control" value="@lst.InsId" name="InsId">
+                                                                @*<input type="checkbox" class="form-control" value="Clear" name="Status">*@
+                                                                <select class="form-control" style="height:27px" name="checkeds">
+                                                                    <option value="Pending">Pending</option>
+                                                                    <option value="Cleared">Cleared</option>
+                                                                </select>
+                                                            }
+                                                        </td>
+                                                        <td align="center">@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
+                                                        <td>
+                                                           
+                                                                @Convert.ToDateTime(lst.DueDate).ToString("dd-MM-yyyy")
+                                                            
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                @Convert.ToDateTime(lst.ReceivedDate).ToString("dd-MM-yyyy")
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="date" class="form-control" name="date" value="@Convert.ToDateTime(DateTime.Now).ToString("yyyy-MM-dd")" />
+                                                            }
+                                                        </td>
+                                                        @if (lst.Status == "Pending")
+                                                        {
+                                                            <td style="width:30px; text-align:center;"><span class="badge badge-danger">Pending</span><input type="hidden" class="form-control" name="Status" value="Pending" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style="width:30px; text-align:center;"><span class="badge badge-success">Cleared</span></td>
+                                                        }
+
+                                                        <td>
+                                                            @lst.PerMonthAmount
+                                                        </td>
+                                                        <td>
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                @lst.Discounts
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="number" name="Dis" value="" class="form-control" />
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                @lst.ReceivedAmount
+                                                            }
+                                                            else
+                                                            {
+                                                                @lst.ReceivedAmount<input type="hidden" value="@lst.PerMonthAmount" name="ReceivedAmount">
+                                                            }
+                                                        </td>
+                                                        <td>
+
+                                                            @if (lst.Status == "Cleared")
+                                                            {
+                                                                <a href="@Url.Action("Receipt", new { insid = lst.InsId  , Invid = lst.Invid })" target="_blank" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i></a>
+                                                            }
+                                                            else
+                                                            {
+
                                                             }
 
-                                                            <td>
-                                                                @lst.PerMonthAmount
-                                                            </td>
-                                                            <td>
-                                                                @if (lst.Status == "Cleared")
-                                                                {
-                                                                    @lst.Discounts
-                                                                }
-                                                                else
-                                                                {
-                                                                    <input type="number" name="Dis" value="" class="form-control" />
-                                                                }
-                                                            </td>
-
-                                                            <td>
-                                                                @if (lst.Status == "Cleared")
-                                                                {
-                                                                    @lst.ReceivedAmount
-                                                                }
-                                                                else
-                                                                {
-                                                                    @lst.ReceivedAmount<input type="hidden" value="@lst.PerMonthAmount" name="ReceivedAmount">
-                                                                }
-                                                            </td>
-                                                        </tr>
+                                                        </td>
+                                                    </tr>
 
                                                     }
                                                 </tbody>
@@ -172,7 +202,7 @@
                                     }
 
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -212,20 +242,7 @@
         //
     });
 </script>
-<script>
-    function getPrice() {
-        var numval1 = parseFloat(document.getElementById("Balance").value || 0);
-        var numval2 = parseFloat(document.getElementById("Dis").value || 0);
-        var t_f = parseFloat(numval1) - parseFloat(numval2);
-        if (!isNaN(t_f)) {
-            document.getElementById("FinalBalance").value = t_f.toFixed(2);
-            
-        }
-        
 
-
-    };
-</script>
 
 
 

@@ -27,7 +27,7 @@
                                         @Html.AntiForgeryToken()
 
                                         <div class="col-md-12" style="overflow-x:auto">
-                                           
+
                                             <table id="table1" class="table table-striped table-bordered nowrap">
                                                 <thead>
                                                     <tr>
@@ -35,6 +35,7 @@
                                                         <th>Checked </th>
                                                         <th>Customer </th>
                                                         <th>Installment Month </th>
+                                                        <th>Due Date </th>
                                                         <th>Receiving Date </th>
                                                         <th>Status </th>
                                                         <th>Monthly Amount </th>
@@ -49,6 +50,7 @@
                                                         <th>Checked </th>
                                                         <th>Customer </th>
                                                         <th>Installment Month </th>
+                                                        <th>Due Date </th>
                                                         <th>Receiving Date </th>
                                                         <th>Status </th>
                                                         <th>Monthly Amount </th>
@@ -58,10 +60,11 @@
                                                     </tr>
                                                 </tfoot>
                                                 <tbody>
+
                                                     @foreach (var lst in Model)
                                                     {
                                                     <tr>
-                                                        <td>@lst.InsId</td>
+                                                        <td> <label class="badge badge-inverse-default">@lst.InsId</label></td>
                                                         <td class="pull-left">
                                                             @if (lst.Status == "Cleared")
                                                             {
@@ -69,24 +72,30 @@
                                                             }
                                                             else
                                                             {
-                                                                <input type="hidden" class="form-control" value="@lst.InsId" name="InsId">
+                                                                <input type="hidden" class="form-control" value="@lst.InsId" name="InsId" style="height:31px">
                                                                 @*<input type="checkbox" class="form-control" value="Clear" name="Status">*@
-                                                                <select class="form-control" style="height:27px" name="checkeds">
+                                                                <select class="form-control" style="height:31px" name="checkeds">
                                                                     <option value="Pending">Pending</option>
                                                                     <option value="Cleared">Cleared</option>
                                                                 </select>
                                                             }
                                                         </td>
-                                                        <td align="center">@lst.Name<input type="hidden" value="@lst.AccountNo"  name="AccountNo"/></td>
+                                                        <td align="center">@lst.Name<input type="hidden" value="@lst.AccountNo" name="AccountNo" /></td>
                                                         <td align="center">@Convert.ToDateTime(lst.InstallmentMonths).ToString("MMM yyyy")</td>
+                                                        <td>
+                                                            
+                                                                @Convert.ToDateTime(lst.DueDate).ToString("dd-MM-yyyy")
+                                                           
+                                                           
+                                                        </td>
                                                         <td>
                                                             @if (lst.Status == "Cleared")
                                                             {
-                                                                @Convert.ToDateTime(lst.Date).ToString("dd-MM-yyyy")
+                                                                @Convert.ToDateTime(lst.ReceivedDate).ToString("dd-MM-yyyy")
                                                             }
                                                             else
                                                             {
-                                                                <input type="date" class="form-control" name="date" value="@lst.Date" />
+                                                                <input type="date" class="form-control" name="date" value="@Convert.ToDateTime(DateTime.Now).ToString("yyyy-MM-dd")" />
                                                             }
                                                         </td>
                                                         @if (lst.Status == "Pending")
@@ -99,7 +108,7 @@
                                                         }
 
                                                         <td>
-                                                            @lst.PerMonthAmount<input type="hidden" name="Invid" value="@lst.Invid"/>
+                                                            @lst.PerMonthAmount<input type="hidden" name="Invid" value="@lst.Invid" />
                                                         </td>
                                                         <td>
                                                             @if (lst.Status == "Cleared")
@@ -125,12 +134,20 @@
                                                     </tr>
 
                                                     }
+
+
+
                                                 </tbody>
                                             </table>
                                         </div>
+
                                         <div class="col-md-10" style="margin-left:330px;margin-top:20px">
                                             <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:08px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-money f-20"></i> &nbsp; Payment Recovery</button>
                                         </div>
+
+
+
+
                                     }
                                 </div>
 

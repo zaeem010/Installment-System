@@ -1,0 +1,80 @@
+﻿@model IEnumerable<AR_IS.Models.Cargo>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <br />
+            <a href="@Url.Action("New","Cargo")" class="btn btn-primary offset-lg-10"><i class="fa fa-plus"></i>Create New</a>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Cargo Tables</u></h5>
+                            </div>
+                            <div class="card-block">
+                                @if (TempData["Reg"] != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                                <div class="alert-message">
+                                                    <span>@TempData["Reg"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                <table id="advanced-table" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th> Name</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th> Name</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var lst in Model)
+                                        {
+                                            <tr>
+                                                <td>@lst.Name</td>
+                                                <td>
+                                                    <a href="@Url.Action("Edit", new { id = lst.Id })" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+<script>
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
+</script>
+
+
+

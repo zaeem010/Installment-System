@@ -9,12 +9,6 @@
         <div class="col-lg-12">
             <br />
             <a href="@Url.Action("Index","ExpenseSheet")" class="btn btn-primary offset-lg-10"><i class="fa fa-list"></i>Expense Sheet List</a>
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
-            <div id="mydiv1" class="col-md-3">
-                <p class="text-center bg-danger">@TempData["Reg1"]</p>
-            </div>
             <div class="card" style="margin-top:20px">
                 <div class="row">
                     <div class="col-sm-12">
@@ -22,6 +16,20 @@
                             <div class="card-header">
                                 <h5 class="card-header-text"><u>Daily Expense Sheet</u></h5>
                             </div>
+                            @if (TempData["Reg"] != null)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                            <div class="alert-message">
+                                                <span>@TempData["Reg"]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                             @if (Model.Transcation == null)
                             {
                                 using (Html.BeginForm("Save", "ExpenseSheet", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -109,13 +117,13 @@
                                                         </tr>
                                                     </tfoot>
                                                     <tbody>
-                                                            <tr>
-                                                                <td>@Model.Transcation.AccountType</td>
-                                                                <td>@Model.Transcation.AccountTitle <input type="hidden" name="accountno" value="@Model.Transcation.AccountNo" /></td>
-                                                                <td><input type="number" value="@Model.Transcation.Dr" name="amount" class="form-control" /><input type="hidden" name="id" value="@Model.Transcation.V_No" /></td>
-                                                                <td><textarea class="form-control" rows="1" name="Remarks" cols="60">@Model.Transcation.TransDes</textarea></td>
-                                                            </tr>
-                                                        
+                                                        <tr>
+                                                            <td>@Model.Transcation.AccountType</td>
+                                                            <td>@Model.Transcation.AccountTitle <input type="hidden" name="accountno" value="@Model.Transcation.AccountNo" /></td>
+                                                            <td><input type="number" value="@Model.Transcation.Dr" name="amount" class="form-control" /><input type="hidden" name="id" value="@Model.Transcation.V_No" /></td>
+                                                            <td><textarea class="form-control" rows="1" name="Remarks" cols="60">@Model.Transcation.TransDes</textarea></td>
+                                                        </tr>
+
                                                     </tbody>
 
                                                 </table>

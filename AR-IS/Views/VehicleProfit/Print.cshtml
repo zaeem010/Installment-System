@@ -2,6 +2,9 @@
 @{
     Layout = null;
     //int sr = 0;
+    double sum_TotalCostPrice = 0;
+    double sum_TotalSalePrice = 0;
+    double sum_TotalProfit = 0;
 }
 <html lang="en">
 <head>
@@ -143,56 +146,59 @@
                         </div>
                     </div>
                 
-                <main>
-                    <h3 class=" text-center">Vehicle Profit Report:</h3>
-                    <br />
-                    <table border="0" cellspacing="0" cellpadding="0" class="table">
-                        <thead>
-                            <tr style="background-color:grey;color:white">
-                                <th>Date </th>
-                                <th>Vehicle </th>
-                                <th>Engine No </th>
-                                <th>Cost Price</th>
-                                <th>Sale Price </th>
-                                <th>Profit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var lst in Model.VehicleProfit)
-                            {
-
-
-                                <tr style="height:20px;">
-                                    <td>@Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")</td>
-                                    <td>@lst.VehicleName</td>
-                                    <td>@lst.EngineNo</td>
-                                    <td>@lst.CostPrice</td>
-                                    <td>@lst.SalePrice</td>
-
-                                    @if (lst.Profit > 0)
-                                    {
-                                        <td style="width:30px; text-align:center;"><span class="badge badge-success">@lst.Profit</span></td>
-
-                                    }
-                                    else
-                                    {
-                                        <td style="width:30px; text-align:center;"><span class="badge badge-danger">@lst.Profit</span></td>
-                                    }
+                    <main>
+                        <h3 class=" text-center">Vehicle Profit Report:</h3>
+                        <h4 class=" text-center">@Convert.ToDateTime(Model.Sdate).ToString("dd-MMM-yyyy") To @Convert.ToDateTime(Model.Edate).ToString("dd-MMM-yyyy")</h4>
+                        <br />
+                        <table border="0" cellspacing="0" cellpadding="0" class="table">
+                            <thead>
+                                <tr style="background-color:grey;color:white">
+                                    <th>Date </th>
+                                    <th>Vehicle </th>
+                                    <th>Engine No </th>
+                                    <th>Cost Price</th>
+                                    <th>Sale Price </th>
+                                    <th>Profit</th>
                                 </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th>Final Total</th>
-                                <th> @Model.FinalProfit.TotalCostPrice</th>
-                                <th>@Model.FinalProfit.TotalSalePrice</th>
-                                <th><span class="badge badge-success">@Model.FinalProfit.TotalProfit</span></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </main>
+                            </thead>
+                            <tbody>
+                                @foreach (var lst in Model.VehicleProfit)
+                                {
+                                    sum_TotalCostPrice += Convert.ToDouble(lst.CostPrice);
+                                    sum_TotalSalePrice += Convert.ToDouble(lst.SalePrice);
+                                    sum_TotalProfit += Convert.ToDouble(lst.Profit);
+
+                                    <tr style="height:20px;">
+                                        <td>@Convert.ToDateTime(lst.Date).ToString("dd-MMM-yyyy")</td>
+                                        <td>@lst.VehicleName</td>
+                                        <td>@lst.EngineNo</td>
+                                        <td>@lst.CostPrice.ToString("#,##0")</td>
+                                        <td>@lst.SalePrice.ToString("#,##0")</td>
+
+                                        @if (lst.Profit > 0)
+                                        {
+                                            <td style="width:30px; text-align:center;"><span class="badge badge-success">@lst.Profit.ToString("#,##0")</span></td>
+
+                                        }
+                                        else
+                                        {
+                                            <td style="width:30px; text-align:center;"><span class="badge badge-danger">@lst.Profit.ToString("#,##0")</span></td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Amount Rs:</th>
+                                    <th> @sum_TotalCostPrice.ToString("#,##0")</th>
+                                    <th>@sum_TotalSalePrice.ToString("#,##0")</th>
+                                    <th>@sum_TotalProfit.ToString("#,##0")</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </main>
             </div>
 
             <div></div>

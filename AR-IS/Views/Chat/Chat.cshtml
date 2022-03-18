@@ -1,0 +1,171 @@
+﻿@model IEnumerable<AR_IS.Models.GeneralUser>
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="content-wrapper">
+    <!-- Container-fluid starts -->
+    <div id="main-chat" class="container-fluid">
+        <!-- Main content starts -->
+        <!-- Row Starts -->
+        <div class="row">
+            <div class="col-sm-12 p-0">
+                <div class="main-header">
+                    <h4>Chat</h4>
+                    <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
+                        <li class="breadcrumb-item">
+                            <a href="index.html"><i class="icofont icofont-home"></i></a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#!">Apps</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="chat.html">Chat</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- Row end -->
+        <div class="row">
+            <div class="chat-box">
+                <ul class="text-right boxs">
+                    
+                </ul>
+                
+                <div id="sidebar" class="p-fixed users p-chat-user">
+                    <div class="had-container">
+                        <div class="card card_main p-fixed users-main ">
+                            <div class="card-block user-box">
+                                <div class="md-group-add-on p-relative md-float-material">
+                                    <span class="md-add-on">
+                                        <i class="icofont icofont-search-alt-2"></i>
+                                    </span>
+                                    <div class="md-input-wrapper">
+                                        <input type="text" class="md-form-control search-text">
+                                        <label>Search..</label>
+
+                                        <span class="md-line"></span>
+                                    </div>
+                                </div>
+                                @foreach (var lst in Model)
+                                {
+                                    <div class="media userlist-box" data-id="@lst.Id" data-status="online" data-username="@lst.UserName" data-toggle="tooltip" data-placement="left" title="@lst.UserName">
+                                        <a class="media-left" href="#!">
+                                            <img class="media-object img-circle" src="~/Content/assets/images/avatar-1.png" alt="Generic placeholder image">
+                                            <div class="live-status bg-success"></div>
+                                        </a>
+                                        <div class="media-body">
+                                            <div class="f-13 chat-header">@lst.UserName</div>
+                                        </div>
+                                    </div>
+                                }
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    @foreach(var lst in Model)
+            {
+                <text>
+
+    $(document).on('click', '#main-chat #sidebar .user-box .userlist-box', function () {
+
+        var dataId = $(this).attr('data-id');
+        var dataStatus = $(this).data('status');
+        var dataUserName = $(this).attr('data-username');
+        var _return = false;
+       
+        $('#main-chat .chat-box .boxs .chat-single-box').each(function (index) {
+            if ($(this).attr('data-id') == dataId) {
+                removeBoxCollapseClass(this);
+                ActiveChatBox(this);
+                _return = true;
+            }
+        });
+
+
+        if (_return) {
+
+            return;
+        }
+        if (dataStatus == "online" && dataId == @lst.Id) {
+            //alert("dsadasd");
+            var newBox = `
+<li class="chat-single-box card-shadow bg-white active" data-id="@lst.Id">
+<div class="had-container">
+<div class="chat-header p-10 bg-gray">
+<div class="user-info d-inline-block f-left">
+<div class="box-live-status bg-danger  d-inline-block m-r-10">
+</div>
+<a href="#">{1}</a>
+</div>
+<div class="box-tools d-inline-block">
+<a href="#" class="mini">
+<i class="icofont icofont-minus f-20 m-r-10"></i></a>
+<a class="close" href="#"><i class="icofont icofont-close f-20"></i></a>
+</div>
+</div>
+<div class="chat-body p-10">
+<div class="message-scrooler">
+<div class="messages">
+<div class="message out no-avatar  media m-b-20">
+<div class="body media-body text-right p-l-50">
+<div class="content msg-reply p-5 f-12 bg-primary d-inline-block">
+                                                    Hisa
+</div>
+<div class="seen">
+<i class="icon-clock f-12 m-r-5 txt-muted d-inline-block"></i>
+<p class="d-inline-block">a few seconds ago </p>
+<div class="clear"></div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="chat-footer b-t-muted">
+<div class="input-group write-msg">
+<input type="text" class="form-control input-value" placeholder="Type a Message">
+<span class="input-group-btn"><button  id="paper-btn" class="btn btn-secondary "  type="button">
+<i class="fa fa-paper-plane"></i></button></span>
+</div>
+</div>
+</div>
+</li>
+`;
+        }
+        else {
+
+            var newBox = '<li class="chat-single-box card-shadow bg-white active" data-id="{0}"><div class="had-container"><div class="chat-header p-10 bg-gray"><div class="user-info d-inline-block f-left"><div class="box-live-status bg-danger  d-inline-block m-r-10"></div><a href="#">{1}</a></div><div class="box-tools d-inline-block"><a href="#" class="mini"><i class="icofont icofont-minus f-20 m-r-10"></i></a><a class="close" href="#"><i class="icofont icofont-close f-20"></i></a></div></div><div class="chat-body p-10"><div class="message-scrooler"><div class="messages"></div></div></div><div class="chat-footer b-t-muted"><div class="input-group write-msg"><input type="text" class="form-control input-value" placeholder="Type a Message"><span class="input-group-btn"><button  id="paper-btn" class="btn btn-secondary "  type="button"><i class="fa fa-paper-plane"></i></button></span></div></div></div></li>';
+        }
+
+        $('#main-chat .chat-single-box').removeClass('active');
+        $('#main-chat .chat-box .boxs').append(newBox.format(dataId, dataUserName, dataStatus));
+        generatePlaceholder();
+        messageScroll();
+        boxMinimized();
+        initialTooltip();
+
+
+
+
+    });
+
+    </text>
+            }
+
+</script>

@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "New";
 }
+<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <style>
     hr.new2 {
         color: #2196F3;
@@ -13,7 +14,7 @@
         opacity: 0 !important;
         position: absolute !important;
         display: flex !important;
-        width: 300px;
+        width: 400px;
     }
 
         select:invalid[multiple] {
@@ -28,46 +29,71 @@
             <a href="@Url.Action("Index","SaleWTC")" class="btn btn-primary pull-right" data-toggle="tooltip" style="margin-left:20px"><i class="fa fa-list"></i> Invoice List</a>
             <button class="btn btn-primary pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent1"><i class="fa fa-list"></i> Recent Invoice List</button>
             <br />
-            <div id="mydiv" class="col-md-3">
-                <p class="text-center bg-success">@TempData["Reg"]</p>
-            </div>
             <div class="card" style="margin-top:20px">
                 <div class="card-header text-center">
                     <h3 class="text-primary-color"><u><b>Sale Invoice</b></u></h3>
                 </div>
                 <div class="card-block">
+                    @if (TempData["Reg"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (TempData["Reg1"] != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="mydiv" class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+                                    <div class="alert-message">
+                                        <span>@TempData["Reg1"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @using (Html.BeginForm("Save", "SaleWTC", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="card-header">
                             <h5 class="card-header-text text-primary-color"><b><u class="size">Invoice Info</u></b></h5>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label>Inv No </label>
                             @Html.TextBoxFor(m => m.SaleMaster.Invid, new { @class = "form-control thresold-i", @placeholder = "", @readonly = "off" })
                         </div>
-                        <div class="col-md-4">
-                            <label>Inv Date </label>
+                        <div class="col-md-5">
+                            <label>Inv Date </label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             @Html.TextBoxFor(m => m.SaleMaster.Date, new { @class = "form-control thresold-i", @placeholder = "", @type = "date", id = "Date" })
                         </div>
-                        <div class="col-md-4">
-                            <label><b>Select Customer</b></label>
+                        <div class="col-md-5">
+                            <label><b>Select Customer</b> &nbsp;</label><i class="fa fa-asterisk text-danger"></i>&nbsp;&nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" href="#addCustomer" @*data-target="#addCustomer"*@><i class="fa fa-plus" style="color:white"></i></a>
                             @Html.DropDownListFor(m => m.SaleMaster.AccountNo, new SelectList(Model.Cus_list, "AccountNo", "Name"), "Select Customer", htmlAttributes: new { @class = "form-control input-xs chosen-select", @required = "true" })
                         </div>
                         <div class="col-md-4">
                             <br />
                             <label>Remarks For Related Invoice </label>
-                            @Html.TextAreaFor(m => m.TranscationDetail.Remarks, new { @class = "form-control thresold-i", rows = 2, columns = 5 })
+                            @Html.TextAreaFor(m => m.SaleMaster.Address, new { @class = "form-control thresold-i", rows = 2, columns = 5 })
+                        </div>
+                        <div class="col-md-4">
+                            <br />
+                            <label>Cargo  &nbsp;<a class="badge badge-success" data-toggle="modal" title="Click Me To Add New" data-target="#addCargo"><i class="fa fa-plus" style="color:white"></i></a> </label>
+                            @Html.DropDownListFor(m => m.SaleMaster.CargoId, new SelectList(Model.Cargo_list, "Id", "Name"), "Select Cargo", htmlAttributes: new { @class = "form-control input-xs chosen-select" })
                         </div>
                         <div class="col-md-4">
                             <br />
                             <label>Cargo Number </label>
                             @Html.TextBoxFor(m => m.SaleMaster.Phone, new { @class = "form-control thresold-i", @type = "number", @autocomplete = "off" })
-                        </div>
-                        <div class="col-md-4">
-                            <br />
-                            <label>Cargo Name </label>
-                            @Html.TextBoxFor(m => m.SaleMaster.CargoName, new { @class = "form-control thresold-i", @placeholder = "", @autocomplete = "off" })
                         </div>
                         <div class="col-md-12">
                             <hr class="new2">
@@ -79,33 +105,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <input class="form-control" autocomplete="off" id="ProductID" readonly type="hidden">
                             <input class="form-control" autocomplete="off" id="Itemunit" value="0" type="hidden">
                             <a class="btn btn-wide btn-danger pull-right" data-toggle="modal" title="Click Me To View" data-target="#recent" style="margin-top:25px"><i class="fa fa-search-plus"></i></a>
                         </div>
-                        <div class="col-md-3">
-                            <label>Name</label>
+                        <div class="col-md-2">
+                            <label>Name</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             <input class="form-control" autocomplete="off" id="ProductName" readonly type="text">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label>CTN</label>
-                            <input class="form-control" autocomplete="off" id="ctn" value="0" onkeyup="getPrice()" type="text">
+                            <input class="form-control" autocomplete="off" id="ctn" value="0" onkeyup="getPrice()" type="number" onkeypress="return /[0-9a-zA-Z]/i.test(event.key)">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label>Qty</label>
-                            <input class="form-control" autocomplete="off" id="qty" value="0" onkeyup="getPrice()" type="text">
+                            <input class="form-control" autocomplete="off" id="qty" value="0" onkeyup="getPrice()" type="number" onkeypress="return /[0-9a-zA-Z]/i.test(event.key)">
                         </div>
                         <div class="col-md-1">
-                            <label>SP</label>
+                            <label>SP</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
                             <input class="form-control" autocomplete="off" id="sp" value="0" onkeyup="getPrice()" type="text">
                         </div>
                         <div class="col-md-2">
                             <label>Net Total</label>
                             <input readonly class="form-control" autocomplete="off" type="text" id="nettotal">
                         </div>
-                        <div class="col-md-2 ">
-                            <button style="margin-top:28px ;background-color:#4cff00" type="button" onclick='abc()' class="btn"><i class="fa fa-plus"></i>Add Item</button>
+                        <div class="col-md-1 ">
+                            <button style="margin-top:28px ;background-color:#4cff00" type="button" onclick='abc()' class="btn"><i class="fa fa-plus"></i></button>
                         </div>
                         <br />
                         <div class="col-md-12">
@@ -141,7 +167,7 @@
 
                                                 <td style="display:none"><input type="text" name="itemunit[]" value="@lst.ItemUnit" readonly Class="form-control total" /></td>
 
-                                                <td><input type="text" name="ctn[]" value="@lst.CTN" readonly Class="form-control total" /></td>
+                                                <td><input type="text" name="ctn[]" value="@lst.CTN"  readonly Class="form-control total" /></td>
 
                                                 <td><input type="text" name="qty[]" value="@lst.Qty" readonly Class="form-control total" /></td>
 
@@ -211,7 +237,7 @@
                             <label>Balance Total</label>
                             @Html.TextBoxFor(m => m.SaleMaster.BTotal, new { @class = "form-control thresold-i", @placeholder = "", @type = "number", id = "BalanceTotal", @readonly = "true" })
                         </div>
-                        <div class="col-md-10" style="margin-left:420px;margin-top:20px">
+                        <div class="col-md-10" style="margin-left: 370px; margin-top: 20px">
                             @if (Model.SaleMaster.Id == 0)
                             {
                                 <button type="submit" class="btn btn-primary  col-sm-4 col-sm-offset-12" style="margin-top:10px" onclick="return confirm('Do you want to Save ..')"><i class="fa fa-paste f-20"></i> &nbsp; Save Invoice</button>
@@ -230,6 +256,9 @@
     </div>
 </div>
 <script type="text/javascript">
+    setTimeout(function () {
+        $('#mydiv').fadeOut('fast');
+    }, 3000); // <-- time in milliseconds
     //This Function call The Addition of Rows
     function abc() {
         //Appending the Colums By Same Id
@@ -247,10 +276,7 @@
 
             alert("Please Enter Cost Price");
         }
-        else if (ctn == "" || ctn == 0) {
-
-            alert("Please Enter CTN");
-        }
+        
         else {
             var htmlrows = '';
             htmlrows += '<tr>';
@@ -288,7 +314,7 @@
         document.getElementById("total").value = sumVal.toFixed(2);
         document.getElementById("granttotal").value = sumVal.toFixed(2);
         document.getElementById("grantnettotal").value = sumVal.toFixed(2);
-        document.getElementById("BalanceTotal").value = sumVal.toFixed(2);
+        document.getElementById("Paidtotal").value = sumVal.toFixed(2);
         //cargo //discount// received
         var cgo_charges = document.getElementById("cgo_charges").value || 0;
         var total = document.getElementById("total").value || 0;
@@ -316,7 +342,7 @@
         document.getElementById("total").value = sumVal.toFixed(2);
         document.getElementById("granttotal").value = sumVal.toFixed(2);
         document.getElementById("grantnettotal").value = sumVal.toFixed(2);
-        document.getElementById("BalanceTotal").value = sumVal.toFixed(2);
+        document.getElementById("Paidtotal").value = sumVal.toFixed(2);
         //cargo //discount// received
         var cgo_charges = document.getElementById("cgo_charges").value || 0;
         var total = document.getElementById("total").value || 0;
@@ -360,7 +386,7 @@
         document.getElementById("total").value = sumVal.toFixed(2);
         document.getElementById("granttotal").value = sumVal.toFixed(2);
         document.getElementById("grantnettotal").value = sumVal.toFixed(2);
-        document.getElementById("BalanceTotal").value = sumVal.toFixed(2);
+        document.getElementById("Paidtotal").value = sumVal.toFixed(2);
 
         //cargo //discount// received
         var cgo_charges = document.getElementById("cgo_charges").value || 0;
@@ -454,12 +480,207 @@
     }
 });
     }
-
+    
 </script>
+<div class="modal fade" id="addCustomer">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title text-center" style="color:white">Register Customer</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_cus", "SaleWTC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <span id="uname_response"></span>
+                    @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="card-header  ">
+                    <h5 class=" text-primary "><u><b>Personal Information</b></u></h5>
+                </div>
+                <div class="col-md-3">
+                    <label> Customer Name(Ledger)</label>&nbsp;<i class="fa fa-asterisk text-danger"></i>
+                    @Html.TextBoxFor(m => m.Customer.Name, new { @class = "form-control thresold-i ", @required = "required", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <label> Company Name</label>
+                    @Html.TextBoxFor(m => m.Customer.Comname, new { @class = "form-control thresold-i ", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <label> Enter Description</label>
+                    @Html.TextBoxFor(m => m.Customer.Description, new { @class = "form-control thresold-i ", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <label>Enter CNIC Number</label>
+                        <input type="text" data-inputmask="'mask': '99999-9999999-9'" name="CNIC" id="CNIC" class="form-control input-xs">
+                </div>
+                <script>
+                    $(":input").inputmask();
+
+                </script>
+                <div class="col-md-3">
+                    <br />
+                    <label>Email</label>
+                    @Html.TextBoxFor(m => m.Customer.Email, new { @class = "form-control thresold-i ", @type = "email", @placeholder = "", autocomplete = "off" })
+                </div>
+
+                <div class="col-md-3">
+                    <br />
+                    <label>Phone1</label>
+
+                    @Html.TextBoxFor(m => m.Customer.Phone1, new { @class = "form-control thresold-i ", @type = "text", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Phone2</label>
+
+                    @Html.TextBoxFor(m => m.Customer.Phone2, new { @class = "form-control thresold-i ", @type = "text", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Phone3</label>
+
+                    @Html.TextBoxFor(m => m.Customer.Phone3, new { @class = "form-control thresold-i ", @type = "text", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Telephone</label>
+                    @Html.TextBoxFor(m => m.Customer.Telephone, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Photo</label>
+                    @if (Model.Customer.Image == "" || Model.Customer.Image == null)
+                    {
+                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control thresold-i" />
+                    }
+                    else
+                    {
+                        <input type="file" name="img" id="img" accept="image/*" onchange="preview_image(event)" class="form-control thresold-i" />
+                    }
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label><b>Select Town</b></label>
+                    @Html.DropDownListFor(m => m.Customer.Town, new SelectList(Model.Town_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Select Province</label>
+                    @Html.DropDownListFor(m => m.Customer.Province, new SelectList(Model.Province_list, "Name", "Name"), "Select", htmlAttributes: new { @class = "form-control input-xs chosen-select", onchange = "Action(this.value)" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Address</label>
+
+                    @Html.TextAreaFor(m => m.Customer.Address, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Bank Details</label>
+                    @Html.TextAreaFor(m => m.Customer.BankDetail, new { @class = "form-control thresold-i ", @type = "", autocomplete = "off", cols = "10", rows = "2" })
+                </div>
+                <div class="col-md-12">
+                    <hr class="new2">
+                </div>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="card-header  ">
+                            <h5 class=" text-primary "><u><b>Financial Information</b></u></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+
+                    <label>NTN</label>
+                    @Html.TextBoxFor(m => m.Customer.NTN, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+
+                    <label>GST</label>
+                    @Html.TextBoxFor(m => m.Customer.GST, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <label>Special Discount</label>
+                    @Html.TextBoxFor(m => m.Customer.SpecialDiscount, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+
+                    <label>Prompt Payment Discount</label>
+                    @Html.TextBoxFor(m => m.Customer.PromptPaymentDiscount, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Payment Conditions</label>
+                    @Html.TextBoxFor(m => m.Customer.PaymentConditions, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Days of payment</label>
+                    @Html.TextBoxFor(m => m.Customer.Daysofpayment, new { @class = "form-control thresold-i ", @placeholder = "", autocomplete = "off" })
+                </div>
+                <div class="col-md-3">
+                    <br />
+                    <label>Credit Limit</label>
+                    @Html.TextBoxFor(m => m.Customer.CreditLimit, new { @class = "form-control thresold-i ", @type = "number", @placeholder = "", autocomplete = "off" })
+                </div>
+            </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:310px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Customer?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addCargo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title text-center" style="color:white">Register Cargo</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("Save_cargo", "SaleWTC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <br />
+                            <label>Name </label>
+                            <br />
+                            @Html.TextBoxFor(m => m.Cargo.Name, new { @class = "form-control thresold-i ", @required = "required", id = "txt_username", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <div class="col-md-10" style="margin-left:200px;margin-top:-42px">
+                        <button type="submit" class="btn btn-primary col-sm-4 col-sm-offset-12" style="margin-top:10px" new { onclick="return confirm('Are you sure you want to Save this Cargo?');"><i class="icofont icofont-ui-check"></i>  Save </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="recent" aria-labelledby="modal-large-label">
     <div class="modal-dialog modal-lg  ">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
                 <h4 class="modal-title text-center" style="color:white"><i class="icofont icofont-cart-alt f-20" style="color: white;font-size:35px"></i>Item Details</h4>
             </div>
             <div style="overflow-x:auto">
@@ -472,43 +693,27 @@
                             <thead class="bordered-darkorange">
                                 <tr>
                                     <th>Action</th>
-                                    <th>ID</th>
-                                    <th>Name</th>
                                     <th>Sale Price</th>
-                                    <th>Item Unit</th>
                                     <th>Barcode</th>
-                                    <th>Shelf Number</th>
-                                    <th>Reorder level</th>
-                                    <th>Op Stock</th>
+
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>Action</th>
-                                    <th>ID</th>
-                                    <th>Name</th>
                                     <th>Sale Price</th>
-                                    <th>Item Unit</th>
                                     <th>Barcode</th>
-                                    <th>Shelf Number</th>
-                                    <th>Reorder level</th>
-                                    <th>Op Stock</th>
                                 </tr>
                             </tfoot>
                             <tbody>
                                 @foreach (var item in Model.Prod_list)
                                 {
-                                <tr>
-                                    <td><button class="btn btn-primary btn-icon waves-effect waves-light" onclick="Action(this.value)" value="@item.Id" data-dismiss="modal"><i class="fa fa-check"></i></button></td>
-                                    <td>@item.Id</td>
-                                    <td>@item.Iname</td>
-                                    <td>@item.Sprice</td>
-                                    <td>@item.Itemunit</td>
-                                    <td>@item.Barcode</td>
-                                    <td>@item.Shelfnumber</td>
-                                    <td>@item.Reorderlevel</td>
-                                    <td>@item.Openingstock</td>
-                                </tr>
+                                    <tr>
+                                        <td><button class="btn btn-success " onclick="Action(this.value)" value="@item.Id" data-dismiss="modal"><i class="fa fa-check"></i></button>&nbsp; @item.Iname</td>
+                                        <td>@item.Sprice</td>
+                                        <td>@item.Barcode</td>
+
+                                    </tr>
                                 }
                             </tbody>
 
@@ -527,6 +732,9 @@
 
             <!-- Modal Header -->
             <div class="modal-header" style="background-color:#2196F3">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span style="color:white" aria-hidden="true">×</span>
+                </button>
                 <h4 class="modal-title text-center" style="color:white">Recent Invoices</h4>
             </div>
             <!-- Modal body -->
@@ -560,36 +768,46 @@
                         <tbody>
                             @foreach (var lst in Model.SaleRecent)
                             {
-                                <tr>
+                            <tr>
+                                <td>
+
+                                    <label class="badge badge-inverse-default">@lst.Invid</label>
+                                </td>
+                                <td>
+                                    @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
+
+                                </td>
+                                <td>
+                                    @lst.Name
+
+                                </td>
+                                <td>
+                                    @lst.NetAmount.ToString("#,##0")
+
+                                </td>
+                                <td>
+                                    @lst.Rtotal.ToString("#,##0")
+
+                                </td>
+                                @if (lst.NetAmount == lst.Rtotal)
+                                {
                                     <td>
-                                        @lst.Invid
+                                        <label class="label label-lg label-success" style="font-size:15px"> @lst.BTotal.ToString("#,##0")</label>
 
                                     </td>
+                                }
+                                else
+                                {
                                     <td>
-                                        @Convert.ToDateTime(lst.Date).ToString("dd MMM yyyy")
+                                        <label class="label label-lg label-danger" style="font-size:15px"> @lst.BTotal.ToString("#,##0")</label>
 
                                     </td>
-                                    <td>
-                                        @lst.Name
-
-                                    </td>
-                                    <td>
-                                        @lst.NetAmount
-
-                                    </td>
-                                    <td>
-                                        @lst.Rtotal
-
-                                    </td>
-                                    <td>
-                                        @lst.BTotal
-
-                                    </td>
-                                    <td>
-                                        <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
-                                        <a href="@Url.Action("Print", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i> </a>
-                                    </td>
-                                </tr>
+                                }
+                                <td>
+                                    <a href="@Url.Action("Edit", new { Invid = lst.Invid })" new { onclick="return confirm('Are you sure you want to Edit this Invoice?');" class="badge badge-primary" data-toggle="tooltip" data-placement="left" title="Click Me To Edit"><i class="fa fa-pencil"></i></a>
+                                    <a href="@Url.Action("Print", new {   Invid = lst.Invid  })" target="_blank" class="badge badge-warning" data-toggle="tooltip" data-placement="left" title="Click Me To Print"><i class="ion-printer"></i> </a>
+                                </td>
+                            </tr>
 
                             }
                         </tbody>

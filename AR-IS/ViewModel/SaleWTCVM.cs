@@ -9,6 +9,7 @@ namespace AR_IS.ViewModel
 {
     public class SaleWTCVM
     {
+        public Customer Customer { get; set; }
         public IEnumerable<Customer> Cus_list { get; set; }
         public IEnumerable<Product> Prod_list { get; set; }
         public IEnumerable<SaleDetail> SaleDetail_list { get; set; }
@@ -18,5 +19,9 @@ namespace AR_IS.ViewModel
         public string wordsinum { get; set; }
         public PrintSaleVMQ PrintSale { get; set; }
         public IEnumerable<SaleWTCVMQ> SaleRecent { get; set; }
+        public IEnumerable<Town> Town_list { get; set; }
+        public IEnumerable<Province> Province_list { get; set; }
+        public IEnumerable<Cargo> Cargo_list { get; set; }
+        public Cargo Cargo { get; set; }
     }
 }

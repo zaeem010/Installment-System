@@ -13,7 +13,6 @@ namespace AR_IS.Controllers
     public class PayableReceivableController : Controller
     {
         private ApplicationDbContext _context;
-
         public PayableReceivableController()
         {
             _context = new ApplicationDbContext();

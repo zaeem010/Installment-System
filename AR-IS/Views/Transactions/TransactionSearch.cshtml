@@ -1,0 +1,157 @@
+﻿@model AR_IS.ViewModel.LedgerVM
+@{
+    ViewBag.Title = "LedgerSearch";
+    double bal = 0.00;
+    double sum_cr = 0.00;
+    double sum_dr = 0.00;
+   
+    
+
+}
+<div class="content-wrapper">
+
+    <!-- Container-fluid starts -->
+    <!-- Main content starts -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="main-header">
+                <h4></h4>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-header-text"><u>Transactions</u></h5>
+                </div>
+                <div class="card-block">
+                    @using (Html.BeginForm("TransactionSearch", "Transactions", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <label><b>Select Account</b></label>
+                                @Html.DropDownListFor(m => m.ThirdLevel.AccountNo, new SelectList(Model.ThirdList, "AccountNo", "AccountTitle"), "Select Account", htmlAttributes: new { @class = "chosen-select form-control" })
+                            </div>
+                            <div class="col-md-4">
+                                <label> Date From</label>
+                                <input type="date" name="s_date" value="@Model.s_date" class="form-control" id="date_st" />
+                            </div>
+                            <div class="col-md-4">
+                                <label> Date To</label>
+                                <input type="date" name="e_date" value="@Model.e_date" class="form-control" id="date_end" />
+                            </div>
+                            <br />
+                            <div class="col-md-3 offset-sm-10">
+                                <button type="submit" class="btn btn-primary" style="margin-top:30px"><i class="fa fa-search"></i>&nbsp; Search</button>
+
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-header-text"><u>Transactions</u></h5>
+                            </div>
+                            <a href="@Url.Action("print", new { s_date = Model.s_date, e_date= Model.e_date , AccountNo= Model.ThirdLevel.AccountNo } )" target="_blank" class="btn btn-primary col-md-3" style="margin-left:20px"><i class="fa fa-print"></i>&nbsp; Print</a>
+                            <div class="card-block">
+
+                                <br />
+                                <br />
+                                <table id="accounts" class="table dt-responsive table-striped table-bordered nowrap">
+                                    <thead class="bordered-darkorange">
+                                        
+                                        <tr>
+                                            <th>Trans Id</th>
+                                            <th style="width:50px">Date</th>
+                                            <th>Vtype</th>
+                                            <th>Description</th>
+                                            <th>DEBIT</th>
+                                            <th>CREDIT</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.trans_list.OrderBy(c => c.Transid))
+                                        {
+                                            bal = Convert.ToDouble(Model.ThirdLevel.Cr);
+                                            sum_cr += Convert.ToDouble(item.Cr);
+                                            sum_dr += Convert.ToDouble(item.Dr);
+                                            if (item.HeadId == 1 || item.HeadId == 5)
+                                            {
+                                                bal = (bal + (sum_dr - sum_cr));
+                                            }
+                                            else
+                                            {
+                                                bal = (bal + (sum_cr - sum_dr));
+                                            }
+                                            <tr>
+                                                <td>@item.Transid</td>
+                                                <td style="width:100px">@Convert.ToDateTime(item.TransDate).ToString("dd-MMM-yyyy")</td>
+                                                @if (item.Vtype == "PINVV" || item.Vtype == "PINVWTC")
+                                                {
+                                                    <td>PV</td>
+                                                }
+                                                else if (item.Vtype == "RPINVWTC")
+                                                {
+                                                    <td>PVRT</td>
+                                                }
+                                                else if (item.Vtype == "RSINVWTC")
+                                                {
+                                                    <td>SVRT</td>
+                                                }
+                                                else if (item.Vtype == "SINVWI" || item.Vtype == "SINVWTC")
+                                                {
+                                                    <td>SV</td>
+                                                }
+                                                else if (item.Vtype == "CPVPINVV" || item.Vtype == "CPVPINVWTC")
+                                                {
+                                                    <td>CPV</td>
+                                                }
+                                                else if (item.Vtype == "CRVSINVWI" || item.Vtype == "CRVSINVWTC" || item.Vtype == "SIV")
+                                                {
+                                                    <td>CRV</td>
+                                                }
+
+                                                else
+                                                {
+                                                    <td>@item.Vtype</td>
+                                                }
+                                                <td>@item.TransDes</td>
+                                                <td>@item.Dr.ToString("#,##0")</td>
+                                                <td>@item.Cr.ToString("#,##0")</td>
+
+                                                
+                                              
+                                                    <td>@bal.ToString("#,##0")</td>
+                                              
+
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Main content ends -->
+    <!-- Container-fluid ends -->
+</div>
+
+<script>
+    $('.chosen-select').chosen();
+</script>
+
+

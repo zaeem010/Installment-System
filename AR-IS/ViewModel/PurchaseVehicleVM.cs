@@ -20,5 +20,7 @@ namespace AR_IS.ViewModel
         public IEnumerable<PurchaseWVehicleVMQ> PurchaseRecent { get; set; }
         public IEnumerable<Town> Town_list { get; set; }
         public IEnumerable<Province> Province_list { get; set; }
+        public IEnumerable<Cargo> Cargo_list { get; set; }
+        public Cargo Cargo { get; set; }
     }
 }

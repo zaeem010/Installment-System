@@ -15,8 +15,8 @@ namespace AR_IS.Models
         public string Address { get; set; }
         public string Phone { get; set; }
         public string Date { get; set; }
-       
-        public decimal AdditionalCharges { get; set; }
+        public int CargoId { get; set; }
+        public decimal CargoCharges { get; set; }
         public decimal NetAmount { get; set; }
         public decimal GrandTotal { get; set; }
         public decimal Total { get; set; }

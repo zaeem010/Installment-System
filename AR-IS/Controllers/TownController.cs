@@ -37,7 +37,7 @@ namespace AR_IS.Controllers
                 _context.tbl_Town.Add(Town);
                 _context.SaveChanges();
                 vardirection = "New";
-                TempData["Reg"] = "Data Submitted Successfully";
+                TempData["Reg"] = "Registered Successfully";
             }
             else
             {
@@ -46,7 +46,7 @@ namespace AR_IS.Controllers
                 Towndb.Name = Town.Name;
                 _context.SaveChanges();
                 vardirection = "Index";
-                TempData["Reg"] = "Data Update Successfully";
+                TempData["Reg"] = " Update Successfully";
             }
             return RedirectToAction(vardirection, "Town");
         }

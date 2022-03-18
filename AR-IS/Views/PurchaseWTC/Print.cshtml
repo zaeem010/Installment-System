@@ -174,9 +174,9 @@
                             <tr style="height:20px;">
                                 <td>@{sr++;}@sr</td>
                                 <td>@lst.ItemName</td>
-                                <td>@lst.CTN</td>
-                                <td>@lst.Qty</td>
-                                <td>@lst.CP</td>
+                                <td>@Convert.ToInt32(lst.CTN)</td>
+                                <td>@Convert.ToInt32(lst.Qty)</td>
+                                <td>@lst.CP.ToString("#,##0")</td>
                                 <td style="text-align:right">@lst.NetTotal.ToString("#,##0")</td>
                             </tr>
                             }

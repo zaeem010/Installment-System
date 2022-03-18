@@ -201,7 +201,7 @@ $(document).on('click', '#main-chat .chat-single-box .stickers .tab-content li',
         _sendMsg.html(_img);
     } else {
         _str = _sendMsg.html();
-        //_sendMsg.html(_str + ' ' + '<div class="send-sticker" style="background-image:url({0})"></div>'.format(_src));
+        _sendMsg.html(_str + ' ' + '<div class="send-sticker" style="background-image:url({0})"></div>'.format(_src));
         _sendMsg.html(_str + ' ' + _img);
     }
 });
@@ -213,7 +213,7 @@ $(document).on('click', '#main-chat #paper-btn', function (e) {
         var text= $($(e.currentTarget).parent().parent().parent()).find(".input-value").val();
         _box_message.append('<div class="message out no-avatar  media m-b-20">' +
             '<div class="body media-body text-right p-l-50"><div class="content msg-reply p-5 f-12 bg-primary d-inline-block">'+ text +'</div><div class="seen"><i class="icon-clock f-12 m-r-5 txt-muted d-inline-block"></i><span><p class="d-inline-block">a few seconds ago </p></span><div class="clear"></div> </div></div>' +
-            ' <div class="sender media-right friend-box"><a href="javascript:void(0);" title="Me"><img src="assets/images/avatar-1.png" class="img-circle img-chat-profile" alt="Me"></a> </div>' +
+            ' <div class="sender media-right friend-box"><a href="javascript:void(0);" title="you"><img src="~/Content/assets/images/avatar-1.png" class="img-circle img-chat-profile" alt="Melk"></a> </div>' +
             '</div>');
         
         hideStickerBox();

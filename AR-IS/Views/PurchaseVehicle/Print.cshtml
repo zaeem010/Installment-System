@@ -159,15 +159,15 @@
                         <thead>
                             <tr style="background-color:grey;color:white">
                                 <td> # </td>
-                                <th>Vehicle Name</th>
+                                <th>Vehicle </th>
                                 <th>Model No</th>
                                 <th>Chessise No</th>
                                 <th>Engine No</th>
                                 <th>Rate</th>
                                 <th>Discount</th>
-                                <th>Without GST</th>
-                                <th>GST</th>
-                                <th style="text-align:right">With GST Total</th>
+                                <th>Without Txt</th>
+                                <th>Txt%</th>
+                                <th style="text-align:right">Net Total</th>
                                 
                             </tr>
                         </thead>
@@ -180,10 +180,10 @@
                                 <td>@lst.ModelNo</td>
                                 <td>@lst.ChassiNo</td>
                                 <td>@lst.EngineNo</td>
-                                <td>@lst.Rate</td>
-                                <td>@lst.Discount</td>
-                                <td>@lst.WithoutGSTTotal</td>
-                                <td>@lst.GST</td>
+                                <td>@lst.Rate.ToString("#,##0")</td>
+                                <td>@lst.Discount.ToString("#,##0")</td>
+                                <td>@lst.WithoutGSTTotal.ToString("#,##0")</td>
+                                <td>@lst.GST.ToString("#,##0")</td>
                                 <td style="text-align:right">@lst.WithGSTTotal.ToString("#,##0")</td>
                             </tr>
                             }
@@ -198,8 +198,8 @@
                             </tr>
                             <tr>
                                 <td colspan="8"></td>
-                                <td>Additional Charges</td>
-                                <td>@Model.PrintPurchase.AdditionalCharges.ToString("#,##0")</td>
+                                <td>Cargo Charges</td>
+                                <td>@Model.PrintPurchase.CargoCharges.ToString("#,##0")</td>
                             </tr>
                             <tr>
                                 <td colspan="8"></td>

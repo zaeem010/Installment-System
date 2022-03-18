@@ -33,7 +33,7 @@ namespace AR_IS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var ThirdLevels = _context.tbl_ThirdLevel.SingleOrDefault(c => c.AccountNo == ID);
+            var ThirdLevels = _context.Database.SqlQuery<ThirdLevel>("SELECT  * FROM   ThirdLevels WHERE   (AccountNo = '"+ID+"') and (Comid = '" + Session["Company"] + "')").SingleOrDefault();
             var ViewModel = new AccountVM
             {
 
